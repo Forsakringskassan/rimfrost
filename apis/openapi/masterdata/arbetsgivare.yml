@@ -5,7 +5,7 @@ info:
   description: API för att tillhandahålla information om personen arbetar i Sverige
 
 paths:
-  /arbete/{persnr}:
+  /arbetsgivare/{persnr}:
     get:
       summary: Kolla om personen arbetar i Sverige
       description: Returnerar true/false beroende på om personen arbetar i Sverige

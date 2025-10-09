@@ -4,15 +4,15 @@ sequenceDiagram
     participant VAH_flode
     participant RTF_regel
     participant folkbokforing
-    participant arbete
+    participant arbetsgivare
 
     Kund ->> VAH_flode: Swagger: VAH ansökan (persnr)
     note over VAH_flode: new processId
-    VAH_flode ->> RTF_regel: Kafka: Rätt till VAH försäkring ? (processId, persnr)
-    RTF_regel ->> folkbokforing: API: Folkbokförd ? (persnr)
-    folkbokforing -->> RTF_regel: Folkbokford (JA)
-    RTF_regel ->> arbete: API:  Arbete i Sverige ? (persnr)
-    arbete -->> RTF_regel: Arbete i Sverige (JA)
+    VAH_flode ->> RTF_regel: Kafka: VahRtfRequestMessage (processId, persnr)
+    RTF_regel ->> folkbokforing: API: GET /folkbokforing/{persnr}
+    folkbokforing -->> RTF_regel: True
+    RTF_regel ->> arbetsgivare: API:  GET /arbetsgivare/{persnr}
+    arbetsgivare -->> RTF_regel: True
     note over RTF_regel: kolla om regel uppfylld
-    RTF_regel ->> VAH_flode: Kafka: Rätt till VAH försäkring (processId, persnr, JA)
+    RTF_regel ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, persnr, JA)
     VAH_flode ->> Kund: Kafka: VAH ansökan resultat (processId, persnr, Godkänd)
