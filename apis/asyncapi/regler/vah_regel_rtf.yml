@@ -1,0 +1,76 @@
+asyncapi: 3.0.0
+info:
+  title: Regel Vård av husdjur API
+  version: 1.0.0
+  description: Regel för att kontrollera om en person har rätt till Vård av husdjur.
+
+channels:
+  vah.rtf.requests:
+    messages:
+      VahRtfRequestMessage:
+        $ref: '#/components/messages/VahRtfRequestMessage'
+  vah.rtf.responses:
+    messages:
+      VahRtfResponseMessage:
+        $ref: '#/components/messages/VahRtfResponseMessage'
+operations:
+  vahRtfRequest:
+    action: receive
+    channel:
+      $ref: '#/channels/vah.rtf.requests'
+    reply:
+      address:
+        description: Topic där response ska skickas
+        location: "$message.header#/replyTo"
+      channel:
+        $ref: '#/channels/vah.rtf.responses'
+components:
+  messages:
+    VahRtfRequestMessage:
+      headers:
+        type: object
+        properties:
+          replyTo:
+            type: string
+            description: Topic där response ska skickas
+          correlationId:
+            type: string
+            description: Unikt id som kopplar ihop request & response
+      payload:
+        type: object
+        properties:
+          processId:
+            type: string
+            description: Unikt id som identifierar processinstansen
+          personNummer:
+            type: string
+            description: Svenskt personnummer 12 siffror
+            pattern: '^\d{10}-\d{4}$'
+            example: 19990101-0123
+      correlationId:
+        $ref: "#/components/correlationIds/correlationId"
+    VahRtfResponseMessage:
+      headers:
+        type: object
+        properties:
+          correlationId:
+            type: string
+            description: Unikt id som kopplar ihop request & response
+      payload:
+        type: object
+        properties:
+          processId:
+            type: string
+            description: Unikt id som identifierar processinstansen
+          personNummer:
+            type: string
+            description: Svenskt personnummer 12 siffror
+            pattern: '^\d{10}-\d{4}$'
+            example: 19990101-0123
+          rattTillForsakring:
+            type: boolean
+            description: Utfall av regel, om personen har rätt till försäkring
+            example: true
+  correlationIds:
+    correlationId:
+      location: '$message.header#/requestId'
