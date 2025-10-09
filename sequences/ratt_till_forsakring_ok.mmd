@@ -1,0 +1,18 @@
+sequenceDiagram
+    title Kunden har rätt till försäkringen
+    participant Kund
+    participant VAH_flode
+    participant RTF_regel
+    participant folkbokforing
+    participant arbete
+
+    Kund ->> VAH_flode: Swagger: VAH ansökan (persnr)
+    note over VAH_flode: new processId
+    VAH_flode ->> RTF_regel: Kafka: Rätt till VAH försäkring ? (processId, persnr)
+    RTF_regel ->> folkbokforing: API: Folkbokförd ? (persnr)
+    folkbokforing -->> RTF_regel: Folkbokford (JA)
+    RTF_regel ->> arbete: API:  Arbete i Sverige ? (persnr)
+    arbete -->> RTF_regel: Arbete i Sverige (JA)
+    note over RTF_regel: kolla om regel uppfylld
+    RTF_regel ->> VAH_flode: Kafka: Rätt till VAH försäkring (processId, persnr, JA)
+    VAH_flode ->> Kund: Kafka: VAH ansökan resultat (processId, persnr, Godkänd)
