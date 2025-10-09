@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: Arbetsgivare API
+  version: 1.0.0
+  description: API för att tillhandahålla information om personen arbetar i Sverige
+
+paths:
+  /arbete/{persnr}:
+    get:
+      summary: Kolla om personen arbetar i Sverige
+      description: Returnerar true/false beroende på om personen arbetar i Sverige
+      parameters:
+        - name: persnr
+          in: path
+          required: true
+          description: Svenskt personnummer 12 siffror
+          schema:
+            type: string
+            pattern: '^\d{10}-\d{4}$'
+            example: "19990101-0123"
+      responses:
+        '200':
+          description: Förfrågan utförd OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    description: Status huruvida personen arbetar i Sverige
+                    example: true
+              examples:
+                valid:
+                  summary: Personen arbetar i Sverige
+                  value:
+                    result: true
+                invalid:
+                  summary: Personen arbetar ej i Sverige
+                  value:
+                    result: false
+        '400':
+          description: Ej godkänd förfrågan (t.ex. fel format i personnr)
