@@ -1,26 +1,26 @@
 openapi: 3.0.3
 info:
-  title: Folkbokföring API
+  title: Employer API
   version: 1.0.0
-  description: API för att tillhandahålla folkbokföringsstatus för givet personnummer
+  description: Check if a person has an employer in Sweden
 
 paths:
-  /folkbokforing/{persnr}:
+  /employer/{social_security_nr}:
     get:
-      summary: Kolla om personen är folkbokförd i Sverige
-      description: Returnerar true/false beroende på om personen är folkbokförd i Sverige
+      summary: Check if person has employer in Sweden
+      description: Returns true if person has employer in Sweden
       parameters:
-        - name: persnr
+        - name: social_security_nr
           in: path
           required: true
-          description: Svenskt personnummer 12 siffror
+          description: Swedish social security number 12 digits
           schema:
             type: string
             pattern: '^\d{10}-\d{4}$'
             example: "19990101-0123"
       responses:
         '200':
-          description: Förfrågan utförd OK
+          description: Request performed successfully
           content:
             application/json:
               schema:
@@ -28,16 +28,16 @@ paths:
                 properties:
                   result:
                     type: boolean
-                    description: Folkbokföringsstatus
+                    description: True if person has employer in Sweden
                     example: true
               examples:
                 valid:
-                  summary: Personen folkbokförd i Sverige
+                  summary: Person has employer in Sweden
                   value:
                     result: true
                 invalid:
-                  summary: Personen ej folkbokförd i Sverige
+                  summary: Person has no employer in Sweden
                   value:
                     result: false
         '400':
-          description: Ej godkänd förfrågan (t.ex. fel format i personnr)
+          description: Bad request (e.g. illegal format of social_security_nr)
