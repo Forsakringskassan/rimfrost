@@ -58,7 +58,7 @@ jobs:
           java -version
           javac -version
           cd regler
-          ./mvnw -T 1C -s -s $RUNNER_TEMP/maven/settings.xml verify
+          ./mvnw -T 1C -s $RUNNER_TEMP/maven/settings.xml verify
 
       - name: Publish Build
         uses: actions/upload-artifact@v4
