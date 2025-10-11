@@ -36,7 +36,7 @@
         <version.jib.plugin>3.3.1</version.jib.plugin>
         <!-- Reproducible builds -->
         <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
-        <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+        <version.maven.artifact.plugin>3.6.1</version.maven.artifact.plugin>
     </properties>
 
     <repositories>
