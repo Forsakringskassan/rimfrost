@@ -31,7 +31,7 @@
         <!-- JKube -->
         <version.org.eclipse.jkube>1.18.1</version.org.eclipse.jkube>
         <!-- WebJars -->
-        <version.org.webjars>4.5.3</version.org.webjars>
+        <version.org.webjars>4.6.2</version.org.webjars>
 
         <version.jib.plugin>3.3.1</version.jib.plugin>
         <!-- Reproducible builds -->
