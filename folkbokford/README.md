@@ -35,6 +35,18 @@ If you want to build an _über-jar_, execute the following command:
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
+## Packaging and running as docker
+
+Build a docker image _rimfrost/masterdata/population_registration:latest_ :
+```shell script
+./mvnw clean package
+```
+Launch container:
+
+```shell script
+docker run -p 8080:8080 rimfrost/masterdata/population_registration
+```
+
 ## Creating a native executable
 
 You can create a native executable using:
