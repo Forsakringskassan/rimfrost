@@ -5,6 +5,11 @@
                               http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
+            <id>github--Forsakringskassan--repository</id>
+            <username>${env.GITHUB_ACTOR}</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+        <server>
             <id>github--Forsakringskassan--rimfrost-folkbokforing-api</id>
             <username>${env.GITHUB_ACTOR}</username>
             <password>${env.GITHUB_TOKEN}</password>

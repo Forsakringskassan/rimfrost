@@ -9,16 +9,18 @@ import se.fk.rimfrost.api.folkbokforing.jaxrsspec.controllers.generatedsource.Po
 import se.fk.rimfrost.api.folkbokforing.jaxrsspec.controllers.generatedsource.model.PopulationRegistrationSocialSecurityNrGet200Response;
 
 @Path("/population_registration")
-public class population_registration implements PopulationRegistrationControllerApi {
-    @GET
-    @Path("/{social_security_nr}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public PopulationRegistrationSocialSecurityNrGet200Response populationRegistrationSocialSecurityNrGet(@PathParam("social_security_nr") String social_security_nr) {
+public class population_registration implements PopulationRegistrationControllerApi
+{
+   @GET
+   @Path("/{social_security_nr}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public PopulationRegistrationSocialSecurityNrGet200Response populationRegistrationSocialSecurityNrGet(
+         @PathParam("social_security_nr") String social_security_nr)
+   {
 
-        var response = new PopulationRegistrationSocialSecurityNrGet200Response();
-        String lastFour = social_security_nr.substring(social_security_nr.length() - 4);
-        response.setResult(!lastFour.equals("9999"));
-        return response;
-      }
+      var response = new PopulationRegistrationSocialSecurityNrGet200Response();
+      String lastFour = social_security_nr.substring(social_security_nr.length() - 4);
+      response.setResult(!lastFour.equals("9999"));
+      return response;
+   }
 }
-
