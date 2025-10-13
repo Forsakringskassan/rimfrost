@@ -10,11 +10,9 @@ import se.fk.rimfrost.api.folkbokforing.jaxrsspec.controllers.generatedsource.Po
 import se.fk.rimfrost.api.folkbokforing.jaxrsspec.controllers.generatedsource.model.PopulationRegistrationSocialSecurityNrGet200Response;
 
 @ApplicationScoped
-@Path("/population_registration")
+@Path("/population_registration/{social_security_nr}")
 public class PopulationRegistration implements PopulationRegistrationControllerApi
 {
-   @GET
-   @Path("/{social_security_nr}")
    public PopulationRegistrationSocialSecurityNrGet200Response populationRegistrationSocialSecurityNrGet(
          String social_security_nr)
    {
