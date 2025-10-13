@@ -19,7 +19,8 @@ jobs:
       matrix:
         java: ["25"]
         os: ["ubuntu-latest"]
-    name: Java ${{ matrix.Java }} (${{ matrix.os }})
+        project: ["regler", "folkbokford"]
+    name: Java ${{ matrix.Java }} (${{ matrix.os }}) - ${{ matrix.project }}
     env:
       skip-automatic-fk-code-standard-apply: true
       GITHUB_ACTOR: ${{ github.actor }}
@@ -57,12 +58,16 @@ jobs:
         run: |
           java -version
           javac -version
-          cd regler
+          cd ${{ matrix.project }}
           ./mvnw -T 1C -s $RUNNER_TEMP/maven/settings.xml verify
+          cd ..
 
       - name: Publish Build
         uses: actions/upload-artifact@v4
         if: failure()
+        with:
+          name: build-${{ github.run_number }}-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.project }}
+          path: ${{ github.workspace }}
         with:
           name: build-${{ github.run_number }}-${{ matrix.os }}-${{ matrix.java }}
           path: ${{ github.workspace }}

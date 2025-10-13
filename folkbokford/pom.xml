@@ -79,8 +79,8 @@
       <url>https://repo.maven.apache.org/maven2</url>
     </repository>
     <repository>
-      <id>github--Forsakringskassan--rimfrost-folkbokforing-api</id>
-      <url>https://maven.pkg.github.com/Forsakringskassan/rimfrost-folkbokforing-api</url>
+      <id>github--Forsakringskassan--repository</id>
+      <url>https://maven.pkg.github.com/Forsakringskassan/repository</url>
     </repository>
   </repositories>
 
