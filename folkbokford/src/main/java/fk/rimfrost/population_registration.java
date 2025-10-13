@@ -5,12 +5,11 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import se.fk.rimfrost.api.folkbokforing.jaxrsspec.controllers.generatedsource.DefaultApi;
+import se.fk.rimfrost.api.folkbokforing.jaxrsspec.controllers.generatedsource.PopulationRegistrationControllerApi;
 import se.fk.rimfrost.api.folkbokforing.jaxrsspec.controllers.generatedsource.model.PopulationRegistrationSocialSecurityNrGet200Response;
 
 @Path("/population_registration")
-public class population_registration implements DefaultApi {
-    @Override
+public class population_registration implements PopulationRegistrationControllerApi {
     @GET
     @Path("/{social_security_nr}")
     @Produces(MediaType.APPLICATION_JSON)
