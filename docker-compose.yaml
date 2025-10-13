@@ -1,0 +1,81 @@
+name: rimfrost-dev
+
+volumes:
+  m2-cache: {} # för snabbare Maven cache i Docker, så att du inte måste ladda ned maven-deps varje gång
+
+services:
+  kafka-broker:
+    image: redpandadata/redpanda:v24.2.6
+    command: ["redpanda","start","--mode=dev-container","--overprovisioned","--smp=1","--memory=512M",
+              "--kafka-addr=0.0.0.0:9092","--advertise-kafka-addr=kafka-broker:9092"]
+    ports: ["9092:9092"]
+
+  processer-vard-av-husdjur:
+    image: maven:3.9-eclipse-temurin-21
+    volumes:
+      - ./processer:/workspace         # mounta /processer för att få parent pom för vard-av-husdjur, ger även stöd för hot-reload
+      - m2-cache:/root/.m2             # ta del av m2-cachen vi skapat tidigare
+    working_dir: /workspace/vard-av-husdjur
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-broker:9092   # för att den ska peka på rätt kafka-broker och inte försöka starta en egen
+      QUARKUS_DEVSERVICES_ENABLED: "false"         # inaktivera quarkus devservices för att undvika att den försöker starta egna docker containers
+      QUARKUS_KAFKA_DEVSERVICES_ENABLED: "false"   
+      QUARKUS_KOGITO_DEVSERVICES_ENABLED: "false"  
+    depends_on: [kafka-broker]
+    command:
+      [
+        "/bin/sh","-lc",
+        # prefetch deps (parallel) then start dev mode        
+        "mvn -f /workspace/pom.xml -pl vard-av-husdjur -am -T 1C -DskipTests -q dependency:go-offline && \
+         mvn -f /workspace/pom.xml -pl vard-av-husdjur -am -T 1C \
+             -DskipTests \
+             -Dquarkus.test.continuous-testing=disabled \
+             quarkus:dev -Dquarkus.http.host=0.0.0.0"
+      ]
+    ports: ["8082:8080"]
+
+  regler-ratt-till-forsakring:
+    image: maven:3.9-eclipse-temurin-21
+    volumes:
+      - ./regler:/workspace            # mounta /regler för att få parent pom för ratt-till-forsakring, ger även stöd för hot-reload
+      - m2-cache:/root/.m2             # ta del av m2-cachen vi skapat tidigare 
+    working_dir: /workspace/ratt-till-forsakring
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-broker:9092   # för att den ska peka på rätt kafka-broker och inte försöka starta en egen
+    depends_on: [kafka-broker]
+    command:
+      [
+        "/bin/sh","-lc",
+        # prefetch deps (parallel) then start dev mode
+        "mvn -f /workspace/pom.xml -pl ratt-till-forsakring -am -T 1C -DskipTests -q dependency:go-offline && \
+         mvn -f /workspace/pom.xml -pl ratt-till-forsakring -am -T 1C \
+             -DskipTests \
+             -Dquarkus.test.continuous-testing=disabled \
+             quarkus:dev -Dquarkus.http.host=0.0.0.0"
+      ]
+    ports: ["8083:8080"]
+
+
+  # Exempel på hur du kan lägga till en ny regel-microservice
+  # OBS! Se även till att uppdatera parent pom.xml i regler-mappen med den nya modulen
+
+  # regler-new-rule-name:
+  #   image: maven:3.9-eclipse-temurin-21
+  #   volumes:
+  #     - ./regler:/workspace
+  #     - m2-cache:/root/.m2
+  #   working_dir: /workspace/new-rule-name
+  #   environment:
+  #     KAFKA_BOOTSTRAP_SERVERS: kafka-broker:9092
+  #   depends_on: [kafka-broker]
+  #   command:
+  #     [
+  #       "/bin/sh","-lc",
+  #       "mvn -f /workspace/pom.xml -pl <new-rule-name> -am -T 1C -DskipTests -q dependency:go-offline && \
+  #        mvn -f /workspace/pom.xml -pl <new-rule-name> -am -T 1C \
+  #            -DskipTests \
+  #            -Dquarkus.test.continuous-testing=disabled \
+  #            quarkus:dev -Dquarkus.http.host=0.0.0.0"
+  #     ]
+  #   ports: ["<unused_port>:8080"]
+
