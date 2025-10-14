@@ -26,20 +26,20 @@ class PopulationRegistrationTest
             """);
    }
 
-    @Test
-    void testPopulationRegistrationFalse()
-    {
-        String actualResponse = given()
-                .when().get("/population_registration/19999")
-                .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .asString();
+   @Test
+   void testPopulationRegistrationFalse()
+   {
+      String actualResponse = given()
+            .when().get("/population_registration/19999")
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .asString();
 
-        assertThat(actualResponse).isEqualToIgnoringWhitespace("""
+      assertThat(actualResponse).isEqualToIgnoringWhitespace("""
             {"result":false}
             """);
-    }
+   }
 
 }
