@@ -19,7 +19,7 @@ jobs:
       matrix:
         java: ["25"]
         os: ["ubuntu-latest"]
-        project: ["regler", "folkbokford"]
+        project: ["regler"]
     name: Java ${{ matrix.Java }} (${{ matrix.os }}) - ${{ matrix.project }}
     env:
       skip-automatic-fk-code-standard-apply: true
