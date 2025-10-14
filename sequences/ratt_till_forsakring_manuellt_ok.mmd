@@ -1,0 +1,32 @@
+sequenceDiagram
+    title Kunden har rätt till försäkringen efter manuell utredning
+    participant Kund
+    participant VAH_flode
+    participant RTF_rule_automatic
+    participant RTF_rule_manual
+    participant population_registration
+    participant employer
+    participant tasks
+    participant handler
+
+    Kund ->> VAH_flode: Swagger: VAH ansökan (persnr)
+    note over VAH_flode: new processId
+    VAH_flode ->> RTF_rule_automatic: Kafka: VahRtfRequestMessage (processId, persnr)
+    RTF_rule_automatic ->> population_registration: API: GET /population_registration/{social_security_nr}
+    population_registration -->> RTF_rule_automatic: True
+    RTF_rule_automatic ->> employer: API:  GET /employer/{social_security_nr}
+    employer -->> RTF_rule_automatic: False
+    note over RTF_rule_automatic: kolla om regel uppfylld
+    RTF_rule_automatic ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, persnr, NEJ)
+    note over VAH_flode: Ej godkänt. Starta manuell utredning
+    VAH_flode ->> RTF_rule_manual: Kafka: VahRtfRequestMessage (processId, persnr)
+    RTF_rule_manual ->> tasks: Kafka: TaskRequest (task_specification: "VAH_RTF")
+    handler ->> tasks: API: GET /task/{handler_id}
+    tasks -->> handler: {task_specification: "VAH_RTF"} (including task_id)
+    note over handler: Handler performs manual task
+    handler ->> tasks: API: POST /task/{handler_id}/{task_id} (update state)
+    tasks -->> handler: OK
+    tasks ->> RTF_rule_manual: Kafka: TaskComplete (task_specification, handler_id, state?)
+    note over RTF_rule_manual: kolla om regel uppfylld
+    RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, persnr, JA)
+    VAH_flode ->> Kund: Kafka: VAH ansökan resultat (processId, persnr, Godkänd)
