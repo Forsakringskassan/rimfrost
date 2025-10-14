@@ -68,6 +68,3 @@ jobs:
         with:
           name: build-${{ github.run_number }}-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.project }}
           path: ${{ github.workspace }}
-        with:
-          name: build-${{ github.run_number }}-${{ matrix.os }}-${{ matrix.java }}
-          path: ${{ github.workspace }}
