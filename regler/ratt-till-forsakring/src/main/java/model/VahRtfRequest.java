@@ -1,4 +1,4 @@
-package model;
+package se.fk.github.rimfrost.regler.ratttillforsakring.model;
 
 import java.util.UUID;
 

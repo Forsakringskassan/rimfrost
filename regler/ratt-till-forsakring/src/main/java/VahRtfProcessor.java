@@ -1,6 +1,8 @@
+package se.fk.github.rimfrost.regler.ratttillforsakring;
+
 import jakarta.enterprise.context.ApplicationScoped;
-import model.VahRtfRequest;
-import model.VahRtfResponse;
+import se.fk.github.rimfrost.regler.ratttillforsakring.model.VahRtfRequest;
+import se.fk.github.rimfrost.regler.ratttillforsakring.model.VahRtfResponse;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
