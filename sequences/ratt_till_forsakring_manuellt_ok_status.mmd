@@ -4,6 +4,7 @@ sequenceDiagram
     participant VAH_flode
     participant RTF_rule_automatic
     participant RTF_rule_manual
+    participant status_subscribers
     participant folkbokford
     participant arbetsgivare
     participant uppgiftslager
@@ -20,13 +21,16 @@ sequenceDiagram
     RTF_rule_automatic ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, NEJ)
     note over VAH_flode: Ej godkänt. Starta manuell utredning
     VAH_flode ->> RTF_rule_manual: Kafka: VahRtfRequestMessage (processId, personnummer)
-    RTF_rule_manual ->> uppgiftslager: Kafka: UppgiftRequest (uppgift_id: "VAH_RTF")
-    handlaggare ->> uppgiftslager: API: POST /uppgifter/{handlaggar_id}
+    RTF_rule_manual ->> uppgiftslager: Kafka: UppgiftRequest (uppgift: "VAH_RTF")
+    uppgiftslager ->> status_subscribers: Kafka: UppgiftStatus (Ny)
+    handlaggare ->> uppgiftslager: API: POST /uppgifter/{handlaggare_id}/next
     uppgiftslager -->> handlaggare: {uppgift_id: "VAH_RTF"}
+    uppgiftslager ->> status_subscribers: Kafka: UppgiftStatus (Tilldelad)
     note over handlaggare: Handläggare utför manuell uppgift
-    handlaggare ->> uppgiftslager: API: PATCH /uppgifter/{handlaggar_id}/{uppgift_id} (update state)
+    handlaggare ->> uppgiftslager: API: PATCH /task/{handlaggare_id}/{uppgift_id} (update state)
     uppgiftslager -->> handlaggare: OK
-    uppgiftslager ->> RTF_rule_manual: Kafka: UppgiftResponse (uppgift_id, handlaggar_id, state?)
+    uppgiftslager ->> status_subscribers: Kafka: UppgiftStatus (Avslutad)
+    uppgiftslager ->> RTF_rule_manual: Kafka: UppgiftResponse (uppgift_id, handlaggare_id, state)
     note over RTF_rule_manual: kolla om regel uppfylld
     RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, JA)
     VAH_flode ->> Kund: Kafka: VAH ansökan resultat (processId, personnummer, Godkänd)
