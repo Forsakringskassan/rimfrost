@@ -1,0 +1,50 @@
+sequenceDiagram
+    title Kunden har rätt till försäkringen efter manuell utredning
+    participant Kund
+    participant VAH_flode
+    participant RTF_rule_automatic
+    participant RTF_rule_manual
+    participant status_subscribers
+    participant folkbokford
+    participant arbetsgivare
+    participant OUL
+    participant uppgiftsregister
+    participant handlaggare
+
+    Kund ->> VAH_flode: Swagger: VAH ansökan (personnummer)
+    note over VAH_flode: new processId
+    VAH_flode ->> RTF_rule_automatic: Kafka: VahRtfRequestMessage (processId, personnummer)
+    RTF_rule_automatic ->> folkbokford: API: GET /folkbokford/{personnummer}
+    folkbokford -->> RTF_rule_automatic: False
+    RTF_rule_automatic ->> arbetsgivare: API:  GET /arbetsgivare/{personnummer}
+    arbetsgivare -->> RTF_rule_automatic: True
+    note over RTF_rule_automatic: kolla om regel uppfylld
+    RTF_rule_automatic ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, NEJ)
+    note over VAH_flode: Ej godkänt. Starta manuell utredning
+
+    VAH_flode ->> RTF_rule_manual: Kafka: VahRtfRequestMessage (processId, personnummer)
+    RTF_rule_manual ->> OUL: Kafka: UppgiftRequest (uppgiftsregister_id: "VAH_RTF", personnummer, datum)
+    OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, status=Ny)
+    handlaggare ->> OUL: API: POST /uppgifter/handlaggare/{handlaggare_id}
+
+    OUL ->> uppgiftsregister: API: GET /uppgiftsregister/{uppgiftsregister_id}
+    uppgiftsregister -->> OUL: uppgiftsregister (beskrivning, "frontend_url")
+    
+    OUL ->> folkbokford: API: GET /folkbokford/info/{personnummer}
+    folkbokford -->> OUL: person (namn, kön, adress ...)
+
+    OUL ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> OUL: anställningsinfo (period, orgnummer, orgnamn)
+
+    OUL -->> handlaggare: {uppgift_id: "VAH_RTF", uppgiftsregister (beskrivning, "frontend_url"), personinfo, anställningsinfo}
+    
+    OUL ->> status_subscribers: Kafka: UppgiftStatus (Tilldelad)
+    note over handlaggare: Handläggare utför manuell uppgift
+    handlaggare ->> OUL: API: PATCH /uppgifter/{uppgift_id} (update state)
+    OUL -->> handlaggare: OK
+    OUL ->> status_subscribers: Kafka: UppgiftStatus (Avslutad)
+    OUL ->> RTF_rule_manual: Kafka: UppgiftResponse (uppgift_id, handlaggare_id, state)
+    note over RTF_rule_manual: kolla om regel uppfylld
+    RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, JA)
+
+    VAH_flode ->> Kund: Kafka: VAH ansökan resultat (processId, personnummer, Godkänd)
