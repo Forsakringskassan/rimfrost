@@ -1,0 +1,27 @@
+sequenceDiagram
+    title Handläggare väljer ett ärende
+    participant folkbokford
+    participant arbetsgivare
+    participant OUL
+    participant uppgiftsregister
+    participant portal
+    participant frontend
+
+    frontend ->> portal: API: GET /uppgifter/frontend/{frontend_id}
+    portal ->> OUL: API: GET /uppgifter/frontend/{frontend_id}
+    OUL -->> portal: (lista av uppgift_id, uppgiftsregister_id, beskrivning, personnummer, datum)
+    portal -->> frontend: (lista av uppgift_id, uppgiftsregister_id, beskrivning, personnummer, datum)
+    note over frontend: Handläggare väljer en av sina uppgifter
+    frontend ->> portal: API: GET /uppgifter/{uppgift_id}
+
+    portal ->> uppgiftsregister: API: GET /uppgiftsregister/{uppgiftsregister_id}
+    uppgiftsregister -->> portal: (beskrivning, "frontend_url", all info...)
+
+    portal ->> folkbokford: API: GET /folkbokford/info/{personnummer}
+    folkbokford -->> portal: person (namn, kön, adress ...)
+
+    portal ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> portal: anställningsinfo (period, orgnummer, orgnamn)
+    portal -->> frontend: (all info om vald uppgift...inkl uppgifts-url)
+
+    note over frontend: uppgiftens url renderas
