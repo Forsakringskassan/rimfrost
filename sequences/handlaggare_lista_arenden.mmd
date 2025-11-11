@@ -22,6 +22,6 @@ sequenceDiagram
 
     portal ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
     arbetsgivare -->> portal: anställningsinfo (period, orgnummer, orgnamn)
-    portal -->> frontend: (all info om vald uppgift...inkl uppgifts-url)
+    portal -->> frontend: (all info om vald uppgift...inkl frontend-url)
 
     note over frontend: uppgiftens url renderas
