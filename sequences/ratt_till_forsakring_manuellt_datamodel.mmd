@@ -35,29 +35,32 @@ sequenceDiagram
     portal -->> frontend: (uppgiftsregister_id, uppgift_id, frontend_url, personnummer, datum)
     note over frontend: Tilldelad uppgift visas för handläggare
     note over frontend: frontend_url renderar tilldelad uppgift
-    frontend ->> RTF_rule_manual: Get all data for uppgift
+    frontend ->> RTF_rule_manual: API: GET /regel/VAH_RTF_manual/{uppgift_id}
     RTF_rule_manual ->> folkbokford: API: GET /folkbokford/info/{personnummer}
     folkbokford -->> RTF_rule_manual: person (namn, kön, adress ...)
 
     RTF_rule_manual ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
     arbetsgivare -->> RTF_rule_manual: anställningsinfo (period, orgnummer, orgnamn)
 
-    RTF_rule_manual -->> frontend: (all info...)
+    RTF_rule_manual -->> frontend: (all info som frontend_url behöver)
     note over frontend: Handläggare utför manuell uppgift
+    note over frontend: Handläggare avslutar uppgift
     frontend ->> portal: API: PATCH /uppgifter/{uppgift_id} (update state)
     portal ->> OUL: API: PATCH /uppgifter/{uppgift_id} (update state)
     OUL -->> portal: OK
-    portal -->> frontend: OK
-    frontend ->>  RTF_rule_manual:POST DONE...
-
-
-
-
-
-
-
-
     OUL ->> status_subscribers: Kafka: UppgiftStatus (Avslutad)
+    portal -->> frontend: OK
+    frontend ->>  RTF_rule_manual:API: POST /regel/VAH_RTF_manual/{uppgift_id} (info om uppgift och resultat)
+    RTF_rule_manual -->> frontend: OK
+
+
+
+
+
+
+
+
+
 
     note over RTF_rule_manual: kolla om regel uppfylld
     RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, JA)
