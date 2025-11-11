@@ -20,7 +20,7 @@ sequenceDiagram
     RTF_rule_automatic ->> arbetsgivare: API:  GET /arbetsgivare/{personnummer}
     arbetsgivare -->> RTF_rule_automatic: True
     note over RTF_rule_automatic: kolla om regel uppfylld
-    RTF_rule_automatic ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, NEJ)
+    RTF_rule_automatic ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, UTREDNING)
     note over VAH_flode: Ej godkänt. Starta manuell utredning
 
     VAH_flode ->> RTF_rule_manual: Kafka: VahRtfRequestMessage (processId, personnummer)
