@@ -7,8 +7,8 @@ sequenceDiagram
     participant portal
     participant frontend
 
-    frontend ->> portal: API: GET /uppgifter/frontend/{frontend_id}
-    portal ->> OUL: API: GET /uppgifter/frontend/{frontend_id}
+    frontend ->> portal: API: GET /uppgifter/handlaggare/{handlaggare_id}
+    portal ->> OUL: API: GET /uppgifter/handlaggare/{handlaggare_id}
     OUL -->> portal: (lista av uppgift_id, uppgiftsregister_id, beskrivning, personnummer, datum)
     portal -->> frontend: (lista av uppgift_id, uppgiftsregister_id, beskrivning, personnummer, datum)
     note over frontend: Handläggare väljer en av sina uppgifter

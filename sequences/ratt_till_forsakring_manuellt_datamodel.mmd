@@ -27,8 +27,8 @@ sequenceDiagram
     RTF_rule_manual ->> OUL: Kafka: UppgiftRequest (uppgiftsregister_id: "VAH_RTF", personnummer, datum)
     note over OUL: Skapa ny operativ uppgift
     OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, status=Ny)
-    frontend ->> portal: API: POST /uppgifter/frontend/{frontend_id}
-    portal ->> OUL: API: POST /uppgifter/frontend/{frontend_id}
+    frontend ->> portal: API: POST /uppgifter/handlaggare/{handlaggare_id}
+    portal ->> OUL: API: POST /uppgifter/handlaggare/{handlaggare_id}
     note over OUL: tilldela uppgift till handläggare
     OUL -->> portal: (uppgiftsregister_id, uppgift_id, personnummer, datum)
     OUL ->> status_subscribers: Kafka: UppgiftStatus (Tilldelad)
@@ -51,7 +51,7 @@ sequenceDiagram
     OUL -->> portal: OK
     portal -->> frontend: OK
     OUL ->> status_subscribers: Kafka: UppgiftStatus (Avslutad)
-    OUL ->> RTF_rule_manual: Kafka: UppgiftResponse (uppgift_id, frontend_id, state)
+    OUL ->> RTF_rule_manual: Kafka: UppgiftResponse (uppgift_id, handlaggare_id, state)
     note over RTF_rule_manual: kolla om regel uppfylld
     RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, JA)
 
