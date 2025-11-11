@@ -24,34 +24,41 @@ sequenceDiagram
     note over VAH_flode: Ej godkänt. Starta manuell utredning
 
     VAH_flode ->> RTF_rule_manual: Kafka: VahRtfRequestMessage (processId, personnummer)
-    RTF_rule_manual ->> OUL: Kafka: UppgiftRequest (uppgiftsregister_id: "VAH_RTF", personnummer, datum)
+    RTF_rule_manual ->> OUL: Kafka: UppgiftRequest (uppgiftsregister_id: "VAH_RTF", frontend_url, personnummer, datum)
     note over OUL: Skapa ny operativ uppgift
     OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, status=Ny)
     frontend ->> portal: API: POST /uppgifter/handlaggare/{handlaggare_id}
     portal ->> OUL: API: POST /uppgifter/handlaggare/{handlaggare_id}
     note over OUL: tilldela uppgift till handläggare
-    OUL -->> portal: (uppgiftsregister_id, uppgift_id, personnummer, datum)
     OUL ->> status_subscribers: Kafka: UppgiftStatus (Tilldelad)
+    OUL -->> portal: (uppgiftsregister_id, uppgift_id, frontend_url, personnummer, datum)
+    portal -->> frontend: (uppgiftsregister_id, uppgift_id, frontend_url, personnummer, datum)
+    note over frontend: Tilldelad uppgift visas för handläggare
+    note over frontend: frontend_url renderar tilldelad uppgift
+    frontend ->> RTF_rule_manual: Get all data for uppgift
+    RTF_rule_manual ->> folkbokford: API: GET /folkbokford/info/{personnummer}
+    folkbokford -->> RTF_rule_manual: person (namn, kön, adress ...)
 
+    RTF_rule_manual ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> RTF_rule_manual: anställningsinfo (period, orgnummer, orgnamn)
 
-    portal ->> uppgiftsregister: API: GET /uppgiftsregister/{uppgiftsregister_id}
-    uppgiftsregister -->> portal: uppgiftsregister (beskrivning, "frontend_url")
-    
-    portal ->> folkbokford: API: GET /folkbokford/info/{personnummer}
-    folkbokford -->> portal: person (namn, kön, adress ...)
-
-    portal ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
-    arbetsgivare -->> portal: anställningsinfo (period, orgnummer, orgnamn)
-
-    portal -->> frontend: {uppgift_id: "VAH_RTF", uppgiftsregister (beskrivning, "frontend_url"), personinfo, anställningsinfo}
-    
+    RTF_rule_manual -->> frontend: (all info...)
     note over frontend: Handläggare utför manuell uppgift
     frontend ->> portal: API: PATCH /uppgifter/{uppgift_id} (update state)
     portal ->> OUL: API: PATCH /uppgifter/{uppgift_id} (update state)
     OUL -->> portal: OK
     portal -->> frontend: OK
+    frontend ->>  RTF_rule_manual:POST DONE...
+
+
+
+
+
+
+
+
     OUL ->> status_subscribers: Kafka: UppgiftStatus (Avslutad)
-    OUL ->> RTF_rule_manual: Kafka: UppgiftResponse (uppgift_id, handlaggare_id, state)
+
     note over RTF_rule_manual: kolla om regel uppfylld
     RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, JA)
 
