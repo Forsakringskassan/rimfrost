@@ -29,7 +29,7 @@ sequenceDiagram
     note over portal: Handläggare vill hämta ny uppgift
     portal ->> OUL: API: POST /uppgifter/handlaggare/{handlaggare_id}
     note over OUL: tilldela uppgift till handläggare
-    OUL ->> status_subscribers: Kafka: UppgiftStatus (Tilldelad)
+    OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, Tilldelad)
     OUL -->> portal: (uppgiftsregister_id, uppgift_id, frontend_url, personnummer, datum)
     note over portal: Tilldelad uppgift visas för handläggare
     note over portal: frontend_url renderar tilldelad uppgift
@@ -45,11 +45,12 @@ sequenceDiagram
 
     note over portal: Handläggare utför manuell uppgift
     note over portal: Handläggare avslutar uppgift
-    portal ->> OUL: API: PATCH /uppgifter/{uppgift_id} (update state)
-    OUL -->> portal: OK
-    OUL ->> status_subscribers: Kafka: UppgiftStatus (Avslutad)
+
     portal ->>  RTF_rule_manual:API: POST /regel/VAH_RTF_manual/{uppgift_id} (info om uppgift och resultat)
     RTF_rule_manual -->> portal: OK
+    RTF_rule_manual ->> OUL: Kafka: UppgiftStatus (uppgifts_id, Avslutad)
+    OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, Avslutad)
+
     note over RTF_rule_manual: kolla om regel uppfylld
     RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, JA)
 
