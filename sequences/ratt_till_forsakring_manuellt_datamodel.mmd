@@ -22,14 +22,14 @@ sequenceDiagram
     RTF_rule_automatic ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, UTREDNING)
     note over VAH_flode: Ej godkänt. Starta manuell utredning
 
-    VAH_flode ->> RTF_rule_manual: Kafka: VahRtfRequestMessage (processId, personnummer)
-    RTF_rule_manual ->> OUL: Kafka: UppgiftRequest (uppgiftsregister_id: "VAH_RTF", frontend_url, personnummer, datum)
+    VAH_flode ->> RTF_rule_manual: Kafka: VahRtfManuellRequestMessage (processId, personnummer)
+    RTF_rule_manual ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (uppgiftsregister_id: "VAH_RTF", frontend_url, personnummer, datum)
     note over OUL: Skapa ny operativ uppgift
-    OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, status=Ny)
+    OUL ->> status_subscribers: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, status=Ny)
     note over portal: Handläggare vill hämta ny uppgift
     portal ->> OUL: API: POST /uppgifter/handlaggare/{handlaggare_id}
     note over OUL: tilldela uppgift till handläggare
-    OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, Tilldelad)
+    OUL ->> status_subscribers: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Tilldelad)
     OUL -->> portal: (uppgiftsregister_id, uppgift_id, frontend_url, personnummer, datum)
     note over portal: Tilldelad uppgift visas för handläggare
     note over portal: frontend_url renderar tilldelad uppgift
@@ -48,10 +48,10 @@ sequenceDiagram
 
     portal ->>  RTF_rule_manual:API: POST /regel/VAH_RTF_manual/{uppgift_id} (info om uppgift och resultat)
     RTF_rule_manual -->> portal: OK
-    RTF_rule_manual ->> OUL: Kafka: UppgiftStatus (uppgifts_id, Avslutad)
-    OUL ->> status_subscribers: Kafka: UppgiftStatus (uppgifts_id, Avslutad)
+    RTF_rule_manual ->> OUL: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Avslutad)
+    OUL ->> status_subscribers: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Avslutad)
 
     note over RTF_rule_manual: kolla om regel uppfylld
-    RTF_rule_manual ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, JA)
+    RTF_rule_manual ->> VAH_flode: Kafka: VahRtfManuellResponseMessage (processId, personnummer, JA)
 
     VAH_flode ->> Kund: Kafka: VAH ansökan resultat (processId, personnummer, Godkänd)
