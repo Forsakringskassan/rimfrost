@@ -6,7 +6,7 @@
   <parent>
     <groupId>se.fk.maven</groupId>
     <artifactId>fk-maven-quarkus-parent</artifactId>
-    <version>1.10.1</version>
+    <version>1.11.1</version>
   </parent>
 
   <groupId>fk.rimfrost</groupId>
