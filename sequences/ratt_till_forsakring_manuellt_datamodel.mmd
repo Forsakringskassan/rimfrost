@@ -25,6 +25,7 @@ sequenceDiagram
     VAH_flode ->> RTF_rule_manual: Kafka: VahRtfManuellRequestMessage (processId, personnummer)
     RTF_rule_manual ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (uppgiftsregister_id: "VAH_RTF", frontend_url, personnummer, datum)
     note over OUL: Skapa ny operativ uppgift
+    OUL ->> RTF_rule_manual: Kafka: OperativtUppgiftslagerResponseMessage (uppgifts_id)
     OUL ->> status_subscribers: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, status=Ny)
     note over portal: Handläggare vill hämta ny uppgift
     portal ->> OUL: API: POST /uppgifter/handlaggare/{handlaggare_id}
