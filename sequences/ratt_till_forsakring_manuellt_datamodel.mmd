@@ -11,8 +11,9 @@ sequenceDiagram
     participant uppgiftsregister
     participant portal
 
-    Kund ->> VAH_flode: Swagger: VAH ansökan (personnummer)
+    Kund ->> VAH_flode: Swagger: VahRequest (personnummer)
     note over VAH_flode: new processId
+    VAH_flode -->> Kund: VahResponse (process_id, personnummer)
     VAH_flode ->> RTF_rule_automatic: Kafka: VahRtfRequestMessage (processId, personnummer)
     RTF_rule_automatic ->> folkbokford: API: GET /folkbokford/{personnummer}
     folkbokford -->> RTF_rule_automatic: False
