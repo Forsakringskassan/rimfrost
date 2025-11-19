@@ -1,25 +1,20 @@
 sequenceDiagram
     title Handläggare väljer ett ärende
-    participant RTF_rule_manual
+    participant RTF_regel_manuell
     participant folkbokford
     participant arbetsgivare
     participant OUL
-    participant uppgiftsregister
     participant portal
 
     note over portal: Handläggare listar sina uppgifter
     portal ->> OUL: API: GET /uppgifter/handlaggare/{handlaggare_id}
-    OUL -->> portal: (lista av uppgift_id, uppgiftsregister_id, frontend_url, beskrivning, personnummer, datum)
+    OUL -->> portal: (lista av uppgift_id, regeltyp, kundbehovsflode_id)
     note over portal: Handläggare väljer en av sina uppgifter
 
 
-    portal ->> RTF_rule_manual: API: GET /regel/VAH_RTF_manual/{uppgift_id}
-    RTF_rule_manual ->> folkbokford: API: GET /folkbokford/info/{personnummer}
-    folkbokford -->> RTF_rule_manual: person (namn, kön, adress ...)
+    portal ->> RTF_regel_manuell: API: GET /regel/VAH_RTF_manual/{kundbehovsflode_id}
+    note over RTF_regel_manuell, portal: uppgiftens url renderas
 
-    RTF_rule_manual ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
-    arbetsgivare -->> RTF_rule_manual: anställningsinfo (period, orgnummer, orgnamn)
-
-    RTF_rule_manual -->> portal: (all info som frontend_url behöver)
+    RTF_regel_manuell -->> portal: (all info som frontend_url behöver)
 
     note over portal: uppgiftens url renderas
