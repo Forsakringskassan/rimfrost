@@ -1,59 +1,80 @@
 sequenceDiagram
     title Kunden har rätt till försäkringen efter manuell utredning
     participant Kund
-    participant VAH_flode
-    participant RTF_rule_automatic
-    participant RTF_rule_manual
+    participant VAH
+    participant RTF_regel_maskinell
+    participant RTF_regel_manuell
     participant status_subscribers
+    participant kundbehovsflode
     participant folkbokford
     participant arbetsgivare
     participant OUL
     participant uppgiftsregister
     participant portal
 
-    Kund ->> VAH_flode: Swagger: VahRequest (personnummer)
-    note over VAH_flode: new processId
-    VAH_flode -->> Kund: VahResponse (process_id, personnummer)
-    VAH_flode ->> RTF_rule_automatic: Kafka: VahRtfRequestMessage (processId, personnummer)
-    RTF_rule_automatic ->> folkbokford: API: GET /folkbokford/{personnummer}
-    folkbokford -->> RTF_rule_automatic: False
-    RTF_rule_automatic ->> arbetsgivare: API:  GET /arbetsgivare/{personnummer}
-    arbetsgivare -->> RTF_rule_automatic: True
-    note over RTF_rule_automatic: kolla om regel uppfylld
-    RTF_rule_automatic ->> VAH_flode: Kafka: VahRtfResponseMessage (processId, personnummer, UTREDNING)
-    note over VAH_flode: Ej godkänt. Starta manuell utredning
+    Kund ->> kundbehovsflode: API: POST /kundbehovsflode (persnr, datum, förmånstyp)
+    note over kundbehovsflode: Skapa nytt flöde med nytt kundbehovsflode_id
+    kundbehovsflode -->> Kund: (kundbehovsflode_id)
 
-    VAH_flode ->> RTF_rule_manual: Kafka: VahRtfManuellRequestMessage (processId, personnummer)
-    RTF_rule_manual ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (uppgiftsregister_id: "VAH_RTF", frontend_url, personnummer, datum)
+    kundbehovsflode ->> VAH: Kafka: KundbehovsFlodeRequestMessage(kundbehovsflode_id)
+    VAH ->> RTF_regel_maskinell: Kafka: VahRtfRequestMessage (kundbehovsflode_id)
+    RTF_regel_maskinell ->> kundbehovsflode: API: GET /kundbehovsflode/{kundbehovsflode_id}
+    kundbehovsflode -->> RTF_regel_maskinell: (kundbehovsflode)
+    RTF_regel_maskinell ->> folkbokford: API: GET /folkbokford/info/{personnummer}
+    folkbokford -->> RTF_regel_maskinell: False
+    RTF_regel_maskinell ->> arbetsgivare: API:  GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> RTF_regel_maskinell: True
+
+    RTF_regel_maskinell ->> kundbehovsflode: API: POST /kundbehovsflode/{kundbehovsflode_id} (kundbehovsflode)
+    kundbehovsflode -->> RTF_regel_maskinell: -
+
+    note over RTF_regel_maskinell: kolla om regel uppfylld
+    RTF_regel_maskinell ->> VAH: Kafka: VahRtfResponseMessage (kundbehovsflode_id, UTREDNING)
+    note over VAH: Ej godkänt. Starta manuell utredning
+
+    VAH ->> RTF_regel_manuell: Kafka: VahRtfManuellRequestMessage (kundbehovsflode_id)
+    RTF_regel_manuell ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (kundbehovsflode_id, regeltyp: "VAH_RTF")
     note over OUL: Skapa ny operativ uppgift
-    OUL ->> RTF_rule_manual: Kafka: OperativtUppgiftslagerResponseMessage (uppgifts_id)
+    OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerResponseMessage (kundbehovsflode_id, uppgifts_id)
     OUL ->> status_subscribers: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, status=Ny)
     note over portal: Handläggare vill hämta ny uppgift
     portal ->> OUL: API: POST /uppgifter/handlaggare/{handlaggare_id}
     note over OUL: tilldela uppgift till handläggare
     OUL ->> status_subscribers: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Tilldelad)
-    OUL -->> portal: (uppgiftsregister_id, uppgift_id, frontend_url, personnummer, datum)
+    OUL -->> portal: (kundbehovsflode_id, regeltyp)
     note over portal: Tilldelad uppgift visas för handläggare
     note over portal: frontend_url renderar tilldelad uppgift
 
-    portal ->> RTF_rule_manual: API: GET /regel/VAH_RTF_manual/{uppgift_id}
-    RTF_rule_manual ->> folkbokford: API: GET /folkbokford/info/{personnummer}
-    folkbokford -->> RTF_rule_manual: person (namn, kön, adress ...)
+    portal ->> RTF_regel_manuell: API: GET /regel/VAH_RTF_manual/{kundbehovsflode_id}
+    RTF_regel_manuell ->> kundbehovsflode: API: GET /kundbehovsflode/{kundbehovsflode_id}
+    kundbehovsflode -->> RTF_regel_manuell: (kundbehovsflode)
 
-    RTF_rule_manual ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
-    arbetsgivare -->> RTF_rule_manual: anställningsinfo (period, orgnummer, orgnamn)
+    RTF_regel_manuell ->> folkbokford: API: GET /folkbokford/info/{personnummer}
+    folkbokford -->> RTF_regel_manuell: person (namn, kön, adress ...)
 
-    RTF_rule_manual -->> portal: (all info som frontend_url behöver)
+    RTF_regel_manuell ->> arbetsgivare: API: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> RTF_regel_manuell: anställningsinfo (period, orgnummer, orgnamn)
+
+    RTF_regel_manuell ->> kundbehovsflode: API: POST /kundbehovsflode/{kundbehovsflode_id} (kundbehovsflode)
+    kundbehovsflode -->> RTF_regel_manuell: -
+
+    RTF_regel_manuell -->> portal: (all info som frontend_url behöver)
 
     note over portal: Handläggare utför manuell uppgift
     note over portal: Handläggare avslutar uppgift
 
-    portal ->>  RTF_rule_manual:API: POST /regel/VAH_RTF_manual/{uppgift_id} (info om uppgift och resultat)
-    RTF_rule_manual -->> portal: OK
-    RTF_rule_manual ->> OUL: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Avslutad)
+    portal ->>  RTF_regel_manuell:API: POST /regel/VAH_RTF_manual/{kundbehovsflode_id} (info om uppgift och resultat)
+    RTF_regel_manuell -->> portal: OK
+
+    RTF_regel_manuell ->> kundbehovsflode: API: POST /kundbehovsflode/{kundbehovsflode_id} (kundbehovsflode)
+    kundbehovsflode -->> RTF_regel_manuell: -
+
+    RTF_regel_manuell ->> OUL: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Avslutad)
     OUL ->> status_subscribers: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Avslutad)
 
-    note over RTF_rule_manual: kolla om regel uppfylld
-    RTF_rule_manual ->> VAH_flode: Kafka: VahRtfManuellResponseMessage (processId, personnummer, JA)
+    note over RTF_regel_manuell: kolla om regel uppfylld
+    RTF_regel_manuell ->> VAH: Kafka: VahRtfManuellResponseMessage (kundbehovsflode_id, personnummer, JA)
 
-    VAH_flode ->> Kund: Kafka: VAH ansökan resultat (processId, personnummer, Godkänd)
+    VAH ->> kundbehovsflode: Kafka: KundbehovsFlodeResponseMessage (kundbehovsflode_id, personnummer, Godkänd)
+
+    kundbehovsflode ->> Kund: Kafka: KundbehovsFlodeDoneMessage (kundbehovsflode_id)
