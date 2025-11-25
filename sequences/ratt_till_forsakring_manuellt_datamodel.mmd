@@ -11,7 +11,12 @@ sequenceDiagram
     participant portal
 
     note over RTF_regel_manuell: Subscribe på oul-status uppdateringar
-    Kund ->> kundbehovsflode: POST /kundbehovsflode (persnr, datum, förmånstyp)
+
+    Kund ->> kundbehovsflode: POST /kundbehov (persnr, datum, förmånstyp)
+    kundbehovsflode -->> Kund: (kundbehov)
+    note over Kund: Hämta kundbehov_id från kundbehov
+
+    Kund ->> kundbehovsflode: POST /kundbehovsflode (kundbehov_id)
     note over kundbehovsflode: Skapa nytt flöde med nytt kundbehovsflode_id
     kundbehovsflode -->> Kund: (kundbehovsflode_id)
 
