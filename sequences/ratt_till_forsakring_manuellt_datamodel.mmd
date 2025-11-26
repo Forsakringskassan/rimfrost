@@ -21,7 +21,7 @@ sequenceDiagram
     kundbehovsflode -->> Kund: (kundbehovsflode_id)
 
     note over kundbehovsflode: Initiera nytt kundbehovsflöde för förmånstypen
-    kundbehovsflode ->> VAH: Kafka: KundbehovsFlodeRequestMessage(kundbehovsflode_id)
+    kundbehovsflode ->> VAH: Kafka: VahKundbehovsFlodeRequestMessage(kundbehovsflode_id)
     note over VAH: Initiera maskinell RTF regel
     VAH ->> RTF_regel_maskinell: Kafka: VahRtfRequestMessage (kundbehovsflode_id)
     note over RTF_regel_maskinell: Hämta kundbehovsflödesinfo
@@ -112,6 +112,6 @@ sequenceDiagram
 
     RTF_regel_manuell ->> VAH: Kafka: VahRtfManuellResponseMessage (kundbehovsflode_id, personnummer, JA)
 
-    VAH ->> kundbehovsflode: Kafka: KundbehovsFlodeResponseMessage (kundbehovsflode_id, personnummer, Godkänd)
+    VAH ->> kundbehovsflode: Kafka: VahKundbehovsFlodeResponseMessage (kundbehovsflode_id, personnummer, Godkänd)
 
     kundbehovsflode ->> Kund: Kafka: KundbehovsFlodeDoneMessage (kundbehovsflode_id)
