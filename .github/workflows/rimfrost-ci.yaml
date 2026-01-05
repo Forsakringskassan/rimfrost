@@ -52,7 +52,9 @@ jobs:
               </server>
             </servers>
           </settings>
-          EOF
+      - name: Build all parent POMs
+        run: |
+          ./mvnw -s settings.xml clean install -DskipTests -U
       - name: "Maven build"
         shell: bash
         run: |
