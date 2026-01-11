@@ -32,7 +32,7 @@
   <name>vard-av-husdjur</name>
   <description>vard-av-husdjur Kogito with Kafka - Quarkus</description>
   <properties>
-    <quarkus-plugin.version>3.30.5</quarkus-plugin.version>
+    <quarkus-plugin.version>3.30.6</quarkus-plugin.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>3.30.5</quarkus.platform.version>
