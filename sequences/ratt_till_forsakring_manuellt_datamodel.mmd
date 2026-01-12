@@ -47,7 +47,7 @@ sequenceDiagram
     RTF_regel_manuell ->> kundbehovsflode: GET /kundbehovsflode/{kundbehovsflode_id}
     kundbehovsflode -->> RTF_regel_manuell: (kundbehovsflode)
     note over RTF_regel_manuell: Ny operativ uppgift behövs
-    RTF_regel_manuell ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (kundbehovsflode_id, regeltyp: "VAH_RTF")
+    RTF_regel_manuell ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (kundbehovsflode_id, regel: "VAH_RTF", url, roll, ...)
     note over OUL: Skapa ny operativ uppgift
     OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerResponseMessage (kundbehovsflode_id, uppgifts_id)
     note over RTF_regel_manuell: Filtrera på uppgifts_id i oul-status uppdateringar
@@ -59,8 +59,12 @@ sequenceDiagram
 
     note over kundbehovsflode: Skapa ny uppgift i kundbehovsflödesinfo
 
+    note over portal: Handläggare listar sina uppgifter
+    portal ->> OUL: GET /uppgifter/handlaggare/{handlaggare_id}
+    OUL -->> portal: (uppgifter)
+
     note over portal: Handläggare vill hämta ny uppgift
-    portal ->> OUL: PUT /uppgifter/handlaggare/{handlaggare_id}
+    portal ->> OUL: POST /uppgifter/handlaggare/{handlaggare_id}
     note over OUL: tilldela uppgift till handläggare
     OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgifts_id, Tilldelad)
 
@@ -69,9 +73,9 @@ sequenceDiagram
     RTF_regel_manuell ->> kundbehovsflode: PUT /kundbehovsflode/{kundbehovsflode_id}/uppgift/{uppgifts_id}
     kundbehovsflode -->> RTF_regel_manuell: OK
 
-    OUL -->> portal: (kundbehovsflode_id, regeltyp)
+    OUL -->> portal: (kundbehovsflode_id, url, ...)
     note over portal: Tilldelad uppgift visas för handläggare
-    note over portal: frontend_url renderar tilldelad uppgift
+    note over portal: url renderar tilldelad uppgift
 
 
     portal ->> RTF_regel_manuell: GET /regel/VAH_RTF_manual/{kundbehovsflode_id}
