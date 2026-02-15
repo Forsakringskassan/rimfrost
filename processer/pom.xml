@@ -29,7 +29,7 @@
         <!-- dependencies version -->
         <version.org.skyscreamer>1.5.3</version.org.skyscreamer>
         <!-- JKube -->
-        <version.org.eclipse.jkube>1.18.2</version.org.eclipse.jkube>
+        <version.org.eclipse.jkube>1.19.0</version.org.eclipse.jkube>
         <!-- WebJars -->
         <version.org.webjars>4.6.2</version.org.webjars>
 
