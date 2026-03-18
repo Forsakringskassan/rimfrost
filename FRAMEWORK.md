@@ -3,13 +3,12 @@ graph TD
 
     rimfrost-template-regel-manuell -->|inherits| rimfrost-framework-regel-manuell
 
-    rimfrost-template-regel-maskinell -->|inherits| TODO-rimfrost-framework-regel-maskinell
-    TODO-rimfrost-framework-regel-maskinell -->|inherits| rimfrost-framework-regel
+    rimfrost-template-regel-maskinell -->|inherits| rimfrost-framework-regel-maskinell
+    rimfrost-framework-regel-maskinell -->|inherits| rimfrost-framework-regel
 
     rimfrost-framework-regel-manuell -->|inherits| rimfrost-framework-oul
     rimfrost-framework-regel-manuell -->|inherits| rimfrost-framework-regel
 
-    style TODO-rimfrost-framework-regel-maskinell stroke-dasharray: 5 5
     
 ```
 
@@ -21,7 +20,7 @@ Komponenter gemensamma för alla typer av regler (både maskinella och manuella)
 
 - Inläsning av regel-konfiguration
 - Kafka-interface request/response för regel initiering/avslut
-- Rest-interface för Kundbehovsflöde get/update
+- Rest-interface för hantering av Yrkande och Handläggning
 
 ### rimfrost-framework-oul
 
