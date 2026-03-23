@@ -3,6 +3,7 @@ sequenceDiagram
     participant Kund
     participant VAH
     participant RTF_regel_maskinell
+    participant individ
     participant folkbokford
     participant arbetsgivare
     participant RTF_regel_manuell
@@ -33,6 +34,12 @@ sequenceDiagram
 
 
     note over RTF_regel_maskinell: Hämta info som behövs för regelns evaluering
+
+    note over RTF_regel_maskinell: individId hämtas från handläggningsinformation
+
+    RTF_regel_maskinell ->> individ: GET /individ/{individId}
+    individ -->> RTF_regel_maskinell: (individId, typ, värde)
+
     RTF_regel_maskinell ->> folkbokford: GET /folkbokford/info/{personnummer}
     folkbokford -->> RTF_regel_maskinell: False
     RTF_regel_maskinell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
@@ -51,6 +58,12 @@ sequenceDiagram
     note over RTF_regel_manuell: Hämta handläggningsinformation
     RTF_regel_manuell ->> handlaggning: GET /handlaggning/handlaggningId}
     handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+    note over RTF_regel_manuell: individId hämtas från handläggningsinformation
+
+    RTF_regel_manuell ->> individ: GET /individ/{individId}
+    individ -->> RTF_regel_manuell: (individId, typ, värde)
+
 
     note over RTF_regel_manuell: Ny operativ uppgift behövs
     RTF_regel_manuell ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (handlaggningId, regel: "VAH_RTF", individer, url, roll, ...)
