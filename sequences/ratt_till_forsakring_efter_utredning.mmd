@@ -1,0 +1,130 @@
+sequenceDiagram
+    title Kunden har rätt till försäkringen efter manuell utredning
+    participant Kund
+    participant VAH
+    participant RTF_regel_maskinell
+    participant folkbokford
+    participant arbetsgivare
+    participant RTF_regel_manuell
+    participant handlaggning
+    participant OUL
+    participant portal
+
+    note over RTF_regel_manuell: Subscribe på oul-status uppdateringar
+
+    Kund ->> handlaggning: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat)
+    handlaggning -->> Kund: (yrkande)
+    note over Kund: Hämta yrkandeId från yrkande
+
+    Kund ->> handlaggning: POST /handlaggning (yrkandeId)
+    note over handlaggning: Skapa nytt flöde med nytt yrkandeId
+    handlaggning -->> Kund: (handlaggning inkl. yrkande))
+
+    note over handlaggning: Initiera nytt handläggningsärende för erbjudandet
+    handlaggning ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
+
+    note over VAH: Initiera maskinell regel
+
+    VAH ->> RTF_regel_maskinell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
+
+    note over RTF_regel_maskinell: Hämta handläggningsinformation
+    RTF_regel_maskinell ->> handlaggning: GET /handlaggning/handlaggningId}
+    handlaggning -->> RTF_regel_maskinell: (handlaggning)
+
+
+    note over RTF_regel_maskinell: Hämta info som behövs för regelns evaluering
+    RTF_regel_maskinell ->> folkbokford: GET /folkbokford/info/{personnummer}
+    folkbokford -->> RTF_regel_maskinell: False
+    RTF_regel_maskinell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> RTF_regel_maskinell: True
+    note over RTF_regel_maskinell: kolla om regel uppfylld
+
+    note over RTF_regel_maskinell: Spara handläggningsinformation
+
+    RTF_regel_maskinell ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> RTF_regel_maskinell: (handlaggning)
+
+    RTF_regel_maskinell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=UTREDNING)
+    note over VAH: Ej godkänt. Starta manuell utredning
+
+    VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
+    note over RTF_regel_manuell: Hämta handläggningsinformation
+    RTF_regel_manuell ->> handlaggning: GET /handlaggning/handlaggningId}
+    handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+    note over RTF_regel_manuell: Ny operativ uppgift behövs
+    RTF_regel_manuell ->> OUL: Kafka: OperativtUppgiftslagerRequestMessage (handlaggningId, regel: "VAH_RTF", individer, url, roll, ...)
+    note over OUL: Skapa ny operativ uppgift
+    OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerResponseMessage (uppgiftId, handlaggningId)
+    
+    
+    
+    note over RTF_regel_manuell: Filtrera på uppgiftsId i oul-status uppdateringar
+    OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, handlaggningId, utforarId, status=Ny)
+    
+    note over RTF_regel_manuell: Uppdatera handläggningsinformation med ny uppgiftsinformation
+
+    RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}/
+    handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+
+    note over portal: Handläggare listar sina uppgifter
+    portal ->> OUL: GET /uppgifter/handlaggare/{handlaggareId}
+    OUL -->> portal: (uppgifter)
+
+    note over portal: Handläggare vill hämta ny uppgift
+    portal ->> OUL: POST /uppgifter/handlaggare/{handlaggareId}
+    note over OUL: tilldela uppgift till handläggare
+    OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftsId, status=Tilldelad)
+
+    note over RTF_regel_manuell: Spara uppdaterad uppgift i handläggningsinformation
+
+    RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}/
+    handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+    OUL -->> portal: (operativUppgift inkl url)
+    note over portal: Tilldelad uppgift visas för handläggare
+    note over portal: url renderar tilldelad uppgift
+
+
+    portal ->> RTF_regel_manuell: GET /regel/VAH_RTF_manual/{handlaggningId}
+
+    note over RTF_regel_manuell: Hämta handläggningsinformation
+
+    RTF_regel_manuell ->> handlaggning: GET /handlaggning/{handlaggningId}
+    handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+    note over RTF_regel_manuell: Hämta infon som behövs för regeln
+
+    RTF_regel_manuell ->> folkbokford: GET /folkbokford/info/{personnummer}
+    folkbokford -->> RTF_regel_manuell: person (namn, kön, adress ...)
+
+    RTF_regel_manuell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> RTF_regel_manuell: anställningsinfo (period, orgnummer, orgnamn)
+
+    note over RTF_regel_manuell: Uppdatera handläggningsinformation
+
+    RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+    RTF_regel_manuell -->> portal: (all info som frontend_url behöver)
+
+    note over portal: Handläggare utför manuell uppgift
+    note over portal: Handläggare avslutar uppgift
+
+    portal ->>  RTF_regel_manuell: PUT /regel/VAH_RTF_manual/{handlaggningId} (info om uppgift och resultat)
+    RTF_regel_manuell -->> portal: OK
+    note over RTF_regel_manuell: kolla om regel uppfylld
+
+    note over RTF_regel_manuell: Uppdatera handläggningsinformation
+
+    RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+    RTF_regel_manuell ->> OUL: Kafka: OperativtUppgiftslagerStatusMessage (handlaggningId, uppgiftId, utforarId, status=Avslutad)
+
+    RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)
+
+    VAH ->> handlaggning: Kafka: HandlaggningResponseMessage (handlaggningId, resultat)
+
+    handlaggning ->> Kund: Kafka: HandlaggningDoneMessage (handlaggningId)
