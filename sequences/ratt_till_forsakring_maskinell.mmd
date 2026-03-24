@@ -25,10 +25,10 @@ note over RTF_regel_maskinell: START Regel (processRegel)
     individ -->> RTF_regel_maskinell: (individId, typ, värde)
 
     RTF_regel_maskinell ->> folkbokford: GET /folkbokford/info/{personnummer}
-    folkbokford -->> RTF_regel_maskinell: False
+    folkbokford -->> RTF_regel_maskinell: (personinformation)
 
     RTF_regel_maskinell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
-    arbetsgivare -->> RTF_regel_maskinell: True
+    arbetsgivare -->> RTF_regel_maskinell: (anställningar)
 
     note over RTF_regel_maskinell: kolla om regel uppfylld
     note over RTF_regel_maskinell: Uppdatera handläggningsinformation
