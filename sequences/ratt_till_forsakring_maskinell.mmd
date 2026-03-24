@@ -1,0 +1,47 @@
+sequenceDiagram
+title Exempel på sekvens för maskinell regel
+participant VAH
+participant RTF_regel_maskinell
+participant individ
+participant folkbokford
+participant arbetsgivare
+participant handlaggning
+
+VAH ->> RTF_regel_maskinell: Kafka: RegelRequestMessage (handlaggningId, aktivitetsId)
+
+rect rgb(200, 200, 200)
+    note over RTF_regel_maskinell: START Framework
+        note over RTF_regel_maskinell: Hämta handläggningsinformation
+        RTF_regel_maskinell ->> handlaggning: GET /handlaggning/handlaggningId}
+        handlaggning -->> RTF_regel_maskinell: (handlaggning)
+    note over RTF_regel_maskinell: END Framework
+end
+
+note over RTF_regel_maskinell: START Regel (processRegel)
+    note over RTF_regel_maskinell: Hämta info som behövs för regelns evaluering
+    note over RTF_regel_maskinell: individId hämtas från handläggningsinformation
+
+    RTF_regel_maskinell ->> individ: GET /individ/{individId}
+    individ -->> RTF_regel_maskinell: (individId, typ, värde)
+
+    RTF_regel_maskinell ->> folkbokford: GET /folkbokford/info/{personnummer}
+    folkbokford -->> RTF_regel_maskinell: False
+
+    RTF_regel_maskinell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> RTF_regel_maskinell: True
+
+    note over RTF_regel_maskinell: kolla om regel uppfylld
+    note over RTF_regel_maskinell: Uppdatera handläggningsinformation
+
+note over RTF_regel_maskinell: END Regel
+
+rect rgb(200, 200, 200)
+    note over RTF_regel_maskinell: START Framework
+
+        RTF_regel_maskinell ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> RTF_regel_maskinell: (handlaggning)
+
+        RTF_regel_maskinell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=UTREDNING)
+
+    note over RTF_regel_maskinell: END Framework
+end
