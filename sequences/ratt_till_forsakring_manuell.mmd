@@ -74,7 +74,7 @@ rect rgb(200, 200, 200)
     note over RTF_regel_manuell: END Framework
 end
 
-note over RTF_regel_manuell: START Regel (getData)
+note over RTF_regel_manuell: START Regel (readData)
 note over RTF_regel_manuell: Hämta infon som behövs för regeln
 note over RTF_regel_manuell: individId hämtas från handläggningsinformation
 
@@ -107,7 +107,7 @@ rect rgb(200, 200, 200)
 
 end
 
-note over RTF_regel_manuell: START Regel (updateHandlaggning)
+note over RTF_regel_manuell: START Regel (updateData)
 
 note over RTF_regel_manuell: Uppdatera handläggningsinformation
 
@@ -135,7 +135,7 @@ rect rgb(200, 200, 200)
 
 end
 
-note over RTF_regel_manuell: START Regel (handleRegelDone)
+note over RTF_regel_manuell: START Regel (done)
 note over RTF_regel_manuell: Eventuell cleanup som regeln kräver
 note over RTF_regel_manuell: framework-metod: sendRegelResponse(handlaggningId, Utfall=JA)
 
