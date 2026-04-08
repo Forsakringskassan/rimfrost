@@ -21,8 +21,21 @@ TODOs i template-filerna ger tips om vad som behöver justeras.
 
 https://github.com/Forsakringskassan/rimfrost-template-regel-manuell/blob/main/src/main/resources/application.properties
 
-Konfigurera de kafka-topics som regeln kopplas till (incoming/outgoing).
 Konfiguration av container.image är optionellt och används endast för att kunna bygga docker-image lokalt.
+
+### Konfigurera de kafka-topics som regeln kopplas till (incoming/outgoing).
+
+De topics som manuella regler behöver konfigurera är:
+
+| Topic | Beskrivning |
+|------|------------|
+| mp.messaging.incoming.regel-requests.topic | Regeln konsumerar denna topic för initiering av ny regel-exekvering |
+| mp.messaging.outgoing.regel-responses.topic | Regeln producerar resultat av genomförd regel-exekvering på denna topic |
+| mp.messaging.outgoing.operativt-uppgiftslager-requests.topic | Regeln skapar ny uppgift i Operativt uppgiftslager genom att skicka request på denna topic |
+| mp.messaging.incoming.operativt-uppgiftslager-responses.topic | Regeln konsumerar svar från Operativt uppgiftslager på skapande av ny uppgift |
+| mp.messaging.incoming.operativt-uppgiftslager-status-notification.topic | Regeln lyssnar på denna topic för uppdaterad information om uppgiftsstatus från Operativt uppgiftslager |
+| mp.messaging.outgoing.operativt-uppgiftslager-status-control.topic | Regeln skickar information om uppdaterad status för uppgift på denna topic (till Operativt uppgiftslager) |
+
 
 ## config.yaml
 

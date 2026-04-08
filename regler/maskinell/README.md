@@ -13,8 +13,16 @@ TODOs i template-filerna ger tips om vad som behöver justeras.
 
 https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/blob/main/src/main/resources/application.properties
 
-Konfigurera de kafka-topics som regeln kopplas till (incoming/outgoing).
 Konfiguration av container.image är optionellt och används endast för att kunna bygga docker-image lokalt.
+
+### Konfigurera de kafka-topics som regeln kopplas till (incoming/outgoing).
+
+De topics som maskinella regler behöver konfigurera är:
+
+| Topic | Beskrivning |
+|------|------------|
+| mp.messaging.incoming.regel-requests.topic | Regeln konsumerar denna topic för initiering av ny regel-exekvering |
+| mp.messaging.outgoing.regel-responses.topic | Regeln producerar resultat av genomförd regel-exekvering på denna topic |
 
 ## config.yaml
 
