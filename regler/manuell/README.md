@@ -3,12 +3,40 @@
 NOTE: Se 
 - https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell 
 - https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-openapi
-- för exempel på implementerad regel och dess API
+- https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-subprocess
+- för exempel på implementerad regel och dess API samt subprocess-flöde
 
 ## Skapa nytt repo för regelns Rest-API
 
 Specificera det API som portalen använder (GET/PATCH) för att hämta/uppdatera information om den operativa uppgiften.
 Skapa en openapi.yaml i det nya repot för api't.
+
+## Skapa nytt repo för regelns Sub-process
+
+Template för ny subprocess: https://github.com/Forsakringskassan/rimfrost-template-regel-subprocess
+
+### Konfigurera de kafka-topics som regeln kopplas till (incoming/outgoing).
+
+mp.messaging.incoming.<DIN_INCOMING_KAFKA_TOPIC>.connector=smallrye-kafka
+mp.messaging.incoming.<DIN_INCOMING_KAFKA_TOPIC>.auto.offset.reset=earliest
+mp.messaging.incoming.<DIN_INCOMING_KAFKA_TOPIC>.group.id=<DIN_INCOMING_KAFKA_TOPIC>-consumer
+mp.messaging.incoming.<DIN_INCOMING_KAFKA_TOPIC>.value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+
+mp.messaging.outgoing.<DIN_OUTGOING_KAFKA_TOPIC>.connector=smallrye-kafka
+mp.messaging.outgoing.<DIN_OUTGOING_KAFKA_TOPIC>.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+
+### Konfigurera pom.xml
+
+I pom.xml byt artifactId till något unikt som representerar regeln.
+
+### Konfigurera template_regel.bpmn
+
+Rekommenderar att man använder sig av VS code plugin Apache KIE Kogito Bundle för att hantera .bpmn filer.
+
+Uppdatera Properties Process ID till något unikt för denna regel (Process ID används av huvudprocesser för att anropa denna subprocess via Called Element).
+Uppdatera Throwing Intermediate Message eventets Implementation/Execution Message att matcha <DIN_OUTGOING_KAFKA_TOPIC> i application.properties.
+Uppdatera Catching Intermediate Message eventets Implementation/Execution Message att matcha <DIN_INCOMING_KAFKA_TOPIC> i application.properties.
+Byt namn på template_regel.bpmn till något som passar reglen.
 
 ## Skapa nytt repo baserat på template
 
