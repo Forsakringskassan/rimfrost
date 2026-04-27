@@ -8,7 +8,7 @@ Det här dokumentet riktar sig till nya utvecklare och ger en övergripande för
 
 Rimfrost är ett ramverk för att bygga beslutsstödjande mikrotjänster hos Försäkringskassan. Det ger en standardiserad, återanvändbar grund för att implementera **processer** och **regler** — de grundläggande byggstenarna i FK:s handläggningsflöden.
 
-Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i fyra kategorier:
+Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i sex kategorier:
 
 | Prefix | Syfte |
 |--------|-------|
@@ -16,8 +16,18 @@ Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i fyra kategorie
 | `rimfrost-template-*` | Startprojekt att kopiera när man skapar nytt |
 | `rimfrost-regel-*` | Faktiska regelimplementationer |
 | `rimfrost-process-*` | Faktiska processimplementationer |
+| `rimfrost-service-*` | Tjänster som regler kommunicerar med |
+| `rimfrost-framework-*-adapter` | REST-klienter för integration mot tjänster |
 
-Teknikstacken är **Java 21, Quarkus** och **Kogito/jBPM** för processorkestration, med **Kafka** som kommunikationskanal mellan tjänster.
+Teknikstacken är **Java 21, Quarkus** och **Kogito** för processorkestration, med **Kafka** som kommunikationskanal mellan tjänster.
+
+### Tjänster (rimfrost-service-*)
+
+Tjänsterna är de bakgrundssystem som regler hämtar data från eller interagerar med. De exponerar REST- och/eller Kafka-API:er och har egna specifikationer i tillhörande `-openapi`- och `-asyncapi`-repon.
+
+### Adaptrar (rimfrost-framework-*-adapter)
+
+Adaptrarna är återanvändbara REST-klienter paketerade som Maven-bibliotek. En regel lägger till en adapter som beroende för att prata med en tjänst — utan att behöva implementera HTTP-kommunikationen själv.
 
 ---
 
@@ -58,7 +68,6 @@ Baskod som är gemensam för **alla** regler, oavsett om de är maskinella eller
 
 - Läser in regelns konfiguration från `config.yaml`
 - Exponerar Kafka-interface för request/response (regelinitiering och avslut)
-- Exponerar REST-interface för Yrkande och Handläggning
 
 ### rimfrost-framework-regel-maskinell
 
@@ -76,7 +85,8 @@ Du som implementatör behöver bara implementera `processRegel`.
 Bygger på `rimfrost-framework-regel` och `rimfrost-framework-oul` och lägger till det som krävs för manuella regler:
 
 - Initierar ny regel och skapar uppgift i OUL
-- Lyssnar på OUL-svar och statussuppdateringar
+- Lyssnar på OUL-svar och statusuppdateringar
+- Hämtar handläggningsdata
 - Exponerar REST-API som portalen (micro-frontend) anropar
 
 Du som implementatör behöver implementera `readData`, `updateData` och `done`.
@@ -143,7 +153,7 @@ Använd VS Code-pluginen **Apache KIE Kogito Bundle** för att redigera BPMN-fil
 
 ### 5. Implementera tester
 
-Utgå från `TemplateContainerSmokeIT.java` i template-repot. Testerna använder TestContainers för att starta en riktig Kafka-broker och mockar regelernas svar med WireMock.
+Utgå från `TemplateContainerSmokeIT.java` i template-repot.
 
 ---
 
@@ -222,7 +232,7 @@ Utöka `RegelMaskinellTest` (från template) och testa `processRegel`-metoden di
 
 > Exempelimplementation: `rimfrost-regel-rtf-manuell`
 
-En manuell regel kräver att en handläggare tar ställning via portalen. Ramverket skapar en uppgift i OUL och väntar på att handläggaren agerar.
+En manuell regel kräver att en handläggare agerar på ärendet via portalen. Ramverket skapar en uppgift i OUL och väntar på att handläggaren agerar.
 
 ### Varje manuell regel består av tre repon
 
@@ -301,21 +311,19 @@ Utöka `RegelTemplateTest` från template-repot och testa de tre metoderna. Bask
 - [ ] Konfigurera `config.yaml` och `application.properties`
 - [ ] Implementera `processRegel` i `RegelService.java`
 - [ ] Skriv tester
-- [ ] Lägg till subprocess som beroende i processen
 
 ### Ny manuell regel
 - [ ] Skapa OpenAPI-spec-repo
 - [ ] Skapa subprocess-repo från `rimfrost-template-regel-subprocess`
 - [ ] Konfigurera unikt Process ID i BPMN-filen
 - [ ] Skapa regelrepo från `rimfrost-template-regel-manuell`
-- [ ] Konfigurera `config.yaml` och `application.properties` (6 topics)
+- [ ] Konfigurera `config.yaml` och `application.properties`
 - [ ] Implementera `readData`, `updateData` och `done`
 - [ ] Skriv tester
-- [ ] Lägg till subprocess som beroende i processen
 
 ### Ny process
 - [ ] Skapa repo från `rimfrost-template-process`
 - [ ] Konfigurera `application.properties` (incoming/outgoing topics)
 - [ ] Lägg till regelberoenden i `pom.xml`
 - [ ] Konfigurera BPMN-flödet med Start/End-events och regelsubprocesser
-- [ ] Skriv integrationstester med TestContainers
+- [ ] Skriv integrationstester
