@@ -17,7 +17,7 @@ Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i sex kategorier
 | `rimfrost-regel-*` | Faktiska regelimplementationer |
 | `rimfrost-process-*` | Faktiska processimplementationer |
 | `rimfrost-service-*` | Tjänster som regler kommunicerar med |
-| `rimfrost-framework-*-adapter` | REST-klienter för integration mot tjänster |
+| `rimfrost-adapter-*` | REST-klienter för integration mot tjänster |
 
 Teknikstacken är **Java 21, Quarkus** och **Kogito** för processorkestration, med **Kafka** som kommunikationskanal mellan tjänster.
 
