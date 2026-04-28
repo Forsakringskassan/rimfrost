@@ -70,7 +70,7 @@ De topics som manuella regler behöver konfigurera är:
 https://github.com/Forsakringskassan/rimfrost-template-regel-manuell/blob/main/src/main/resources/config.yaml
 
 YAML-fil för grundläggande konfiguration av regeln (beskrivning, roll, lagrum etc.).
-Schema för YAML-filen: https://github.com/Forsakringskassan/rimfrost-framework-regel/blob/main/core/src/main/resources/schema/regel_schema.yaml
+Schema för YAML-filen: https://github.com/Forsakringskassan/rimfrost-framework-regel/blob/main/src/main/resources/schema/regel_schema.yaml
 
 ## Regel service implementation
 
@@ -99,5 +99,5 @@ https://github.com/Forsakringskassan/rimfrost-template-regel-manuell/blob/main/s
 
 Implementera tester av metoderna _readData_, _updateData_ och _done_.<br>
 
-Det är också möjligt att implementera service-tester genom att extenda bastest-klassen:<br>
-https://github.com/Forsakringskassan/rimfrost-framework-regel/blob/main/test-base/src/main/java/se/fk/rimfrost/framework/regel/test/RegelTest.java
+Det är också möjligt att implementera service-tester genom att extenda bastest-klassen för manuella regler:<br>
+https://github.com/Forsakringskassan/rimfrost-framework-regel-manuell/blob/main/src/test/java/se/fk/rimfrost/framework/regel/manuell/base/AbstractRegelManuellTest.java
