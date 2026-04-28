@@ -59,19 +59,19 @@ De topics som maskinella regler behöver konfigurera är:
 https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/blob/main/src/main/resources/config.yaml
 
 YAML-fil för grundläggande konfiguration av regeln (beskrivning, roll, lagrum etc.).
-Schema för YAML-filen: https://github.com/Forsakringskassan/rimfrost-framework-regel/blob/main/core/src/main/resources/schema/regel_schema.yaml
+Schema för YAML-filen: https://github.com/Forsakringskassan/rimfrost-framework-regel/blob/main/src/main/resources/schema/regel_schema.yaml
 
 ## Regel service implementation
 
-https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/blob/main/src/main/java/se/fk/github/regelmaskinell/logic/RegelService.java
+https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/blob/main/src/main/java/se/fk/github/regel/logic/RegelService.java
 
 Implementera den abstrakta metoden processRegel som baserat på en uppläst handläggning skapar en uppdaterad handläggning
 inklusive t.ex. producerade resultat samt ett utfall.
 
 ## Regel service test implementation
 
-https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/blob/main/src/test/java/se/fk/github/regelmaskinell/RegelMaskinellTest.java
+https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/blob/main/src/test/java/se/fk/github/regel/RegelProcessRegelTest.java
 
 Implementera tester av metoden processRegel.<br>
 Det är också möjligt att implementera service-tester genom att extenda bastest-klassen:<br>
-https://github.com/Forsakringskassan/rimfrost-framework-regel-maskinell/blob/main/src/test/java/se/fk/rimfrost/framework/regel/maskinell/AbstractRegelMaskinellTest.java
+https://github.com/Forsakringskassan/rimfrost-framework-regel-maskinell/blob/main/src/test/java/se/fk/rimfrost/framework/regel/maskinell/base/AbstractRegelMaskinellTest.java
