@@ -1,0 +1,68 @@
+sequenceDiagram
+
+    participant handlaggare
+    participant portal
+    participant portal_bff as portal-bff
+    participant OUL
+    participant micro_fe as micro-fe
+    participant micro_fe_bff as micro-fe-bff
+    participant regel
+
+    note over handlaggare, portal: Handläggare öppnar portalen
+
+    portal ->> portal_bff: GET /handlaggare
+    portal_bff -->> portal: (handlaggare[])
+
+    note over handlaggare: Handläggare väljer sin identitet i dropdown
+
+    portal ->> portal_bff: POST /tasks (body: handlaggarId)
+    portal_bff ->> OUL: GET /uppgifter/handlaggare/{typId}/{varde}
+    OUL -->> portal_bff: (operativa_uppgifter[])
+    portal_bff -->> portal: (operativa_uppgifter[])
+
+    note over handlaggare, portal: Tilldelade uppgifter visas i listan
+
+    note over handlaggare: Handläggare hämtar ny uppgift
+
+    portal ->> portal_bff: POST /tasks/getNext (body: handlaggarId)
+    portal_bff ->> OUL: POST /uppgifter/handlaggare/{typId}/{varde}
+    note over OUL: Tilldelar nästa ledig uppgift till handläggaren
+    OUL -->> portal_bff: (operativ_uppgift inkl. url)
+    portal_bff -->> portal: (uppgift)
+
+    note over portal: Portalen navigerar till uppgiftens url
+    note over portal: url laddar micro-frontend för aktuell regeltyp
+
+    rect rgb(200, 200, 200)
+        note over micro_fe, regel: Hämta uppgiftsinformation (readData)
+
+        micro_fe ->> micro_fe_bff: POST /api/task (body: handlaggningId)
+        micro_fe_bff ->> regel: GET /{handlaggningId}
+        regel -->> micro_fe_bff: (uppgiftsinformation)
+        micro_fe_bff -->> micro_fe: (uppgiftsinformation)
+    end
+
+    note over handlaggare: Handläggare utför manuell uppgift
+
+    rect rgb(200, 200, 200)
+        note over micro_fe, regel: Uppdatera uppgiftsinformation (updateData)
+
+        micro_fe ->> micro_fe_bff: PATCH /api/task (body: handlaggningId + resultat)
+        micro_fe_bff ->> regel: PATCH /{handlaggningId}
+        regel -->> micro_fe_bff: OK
+        micro_fe_bff -->> micro_fe: OK
+    end
+
+    note over handlaggare: Handläggare avslutar uppgiften
+
+    rect rgb(200, 200, 200)
+        note over micro_fe, regel: Avsluta uppgift (done)
+
+        micro_fe ->> micro_fe_bff: POST /api/task/done (body: handlaggningId)
+        micro_fe_bff ->> regel: POST /{handlaggningId}/done
+        regel -->> micro_fe_bff: (204)
+        micro_fe_bff -->> micro_fe: (204)
+    end
+
+    note over micro_fe: Dispatchar task-done-event
+    note over portal: Portalen visar notifiering och uppdaterar uppgiftslistan
