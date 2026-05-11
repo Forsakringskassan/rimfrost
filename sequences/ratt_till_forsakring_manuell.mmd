@@ -13,7 +13,7 @@ rect rgb(200, 200, 200)
     note over RTF_regel_manuell: Ny operativ uppgift behövs
     RTF_regel_manuell ->> OUL: POST /uppgifter (handlaggningId, regel: "VAH_RTF", individer, url, roll, status_topic, ...)
     note over OUL: Skapa ny operativ uppgift
-    OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId)
+    OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId, status)
 
     note over RTF_regel_manuell: Filtrera på uppgiftsId i oul-status uppdateringar
     OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, handlaggningId, utforarId, status=Ny)
@@ -126,7 +126,7 @@ rect rgb(200, 200, 200)
     portal ->> RTF_regel_manuell: POST /regel/rtf-manuell/{handlaggningId}/done
     RTF_regel_manuell -->> portal: OK
     RTF_regel_manuell ->> OUL: POST /uppgifter/{uppgiftId}/close (anledning=Avslutad)
-    OUL -->> RTF_regel_manuell: OK
+    OUL -->> RTF_regel_manuell: (status)
 
     note over RTF_regel_manuell: Uppdatera status för uppgift som del av handläggningsinformation
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}

@@ -12,7 +12,7 @@ VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, Aktivitet
     note over RTF_regel_manuell: Ny operativ uppgift behövs
     RTF_regel_manuell ->> OUL: POST /uppgifter (handlaggningId, regel: "VAH_RTF", individer, url, roll, status_topic, ...)
     note over OUL: Skapa ny operativ uppgift
-    OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId)
+    OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId, status)
 
     note over RTF_regel_manuell: Filtrera på uppgiftsId i oul-status uppdateringar
     OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, handlaggningId, utforarId, status=Ny)
@@ -22,7 +22,7 @@ VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, Aktivitet
 
 
     RTF_regel_manuell ->> OUL: POST /uppgifter/{uppgiftId}/close (anledning=Avbruten)
-    OUL -->> RTF_regel_manuell: OK
+    OUL -->> RTF_regel_manuell: (status)
 
     note over RTF_regel_manuell: END Framework
 
