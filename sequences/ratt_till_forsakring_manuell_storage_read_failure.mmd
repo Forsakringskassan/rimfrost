@@ -1,0 +1,39 @@
+sequenceDiagram
+
+VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
+
+
+    note over RTF_regel_manuell: START Framework
+
+    note over RTF_regel_manuell: Hämta handläggningsinformation
+    RTF_regel_manuell ->> handlaggning: GET /handlaggning/handlaggningId}
+    handlaggning -->> RTF_regel_manuell: (handlaggning)
+
+    note over RTF_regel_manuell: Ny operativ uppgift behövs
+    RTF_regel_manuell ->> OUL: POST /uppgifter (handlaggningId, regel: "VAH_RTF", individer, url, roll, status_topic, ...)
+    note over OUL: Skapa ny operativ uppgift
+    OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId)
+
+    note over RTF_regel_manuell: Filtrera på uppgiftsId i oul-status uppdateringar
+    OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, handlaggningId, utforarId, status=Ny)
+
+    note over RTF_regel_manuell: Uppdatera handläggningsinformation med ny uppgiftsinformation (storage read fails!!)
+
+
+
+    RTF_regel_manuell ->> OUL: POST /uppgifter/{uppgiftId}/close (anledning=Avbruten)
+    OUL -->> RTF_regel_manuell: OK
+
+    note over RTF_regel_manuell: END Framework
+
+
+note over RTF_regel_manuell: START Regel (abort)
+note over RTF_regel_manuell: Eventuell cleanup som regeln kräver vid abort
+note over RTF_regel_manuell: framework-metod: sendRegelResponse(handlaggningId, Utfall=ABORTED)
+
+    rect rgb(200, 200, 200)
+        note over RTF_regel_manuell: framework sendRegelResponse skickar:
+        RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)
+    end
+
+note over RTF_regel_manuell: END Regel
