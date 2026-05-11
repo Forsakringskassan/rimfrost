@@ -14,9 +14,6 @@ VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, Aktivitet
     note over OUL: Skapa ny operativ uppgift
     OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId, status)
 
-    note over RTF_regel_manuell: Filtrera på uppgiftsId i oul-status uppdateringar
-    OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, handlaggningId, utforarId, status=Ny)
-
     note over RTF_regel_manuell: Uppdatera handläggningsinformation med ny uppgiftsinformation (storage read fails!!)
 
 
