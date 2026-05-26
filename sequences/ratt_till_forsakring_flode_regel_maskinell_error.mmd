@@ -1,12 +1,9 @@
 sequenceDiagram
-    title Kunden har rätt till försäkringen efter manuell utredning
+    title Maskinell regel svarar med fel - handläggning initierar ny begäran till VAH
     participant Kund
     participant VAH
     participant RTF_regel_maskinell
-    participant RTF_regel_manuell
     participant handlaggning
-
-    note over RTF_regel_manuell: Subscribe på oul-status uppdateringar
 
     Kund ->> handlaggning: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat)
     note over handlaggning: Skapa nytt flöde med nytt yrkandeId
@@ -22,15 +19,11 @@ sequenceDiagram
 
     note over RTF_regel_maskinell: Se exempel ratt_till_forsakring_maskinell.mmd
 
-    RTF_regel_maskinell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=UTREDNING)
-    note over VAH: Ej godkänt. Starta manuell utredning
+    RTF_regel_maskinell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, status=ERROR)
+    note over VAH: Fel från maskinell regel. Ingen manuell utredning initieras.
 
-    VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
+    VAH ->> handlaggning: Kafka: HandlaggningResponseMessage (handlaggningId, resultat=FEL)
 
-    note over RTF_regel_manuell: Se exempel ratt_till_forsakring_manuell.mmd
-
-    RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)
-
-    VAH ->> handlaggning: Kafka: HandlaggningResponseMessage (handlaggningId, resultat)
-
-    handlaggning ->> Kund: Kafka: HandlaggningDoneMessage (handlaggningId)
+    note over handlaggning: Fel mottaget från VAH. Initierar ny handläggningsbegäran med nytt handlaggningId
+    handlaggning ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
+    note over VAH: Nytt handläggningsflöde startas
