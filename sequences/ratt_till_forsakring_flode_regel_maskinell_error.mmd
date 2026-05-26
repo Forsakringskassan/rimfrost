@@ -23,7 +23,3 @@ sequenceDiagram
     note over VAH: Fel från maskinell regel. Ingen manuell utredning initieras.
 
     VAH ->> handlaggning: Kafka: HandlaggningResponseMessage (handlaggningId, resultat=FEL)
-
-    note over handlaggning: Fel mottaget från VAH. Initierar ny handläggningsbegäran med nytt handlaggningId
-    handlaggning ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
-    note over VAH: Nytt handläggningsflöde startas
