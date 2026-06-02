@@ -17,8 +17,7 @@ For a deeper walkthrough of implementation and code examples, see [FAULT_HANDLIN
 The framework (`RegelMaskinellRequestHandler`) orchestrates the full call sequence:
 read from Handläggning → execute regel → write result back to Handläggning.
 
-**Handläggning retries.** The framework wraps both the Handläggning read and the Handläggning
-write in `RetryUtil` with exponential backoff. A regel never sees a transient Handläggning
+**Handläggning retries.** The framework wraps both the Handläggning read and write in `RetryUtil` with exponential backoff. A regel never sees a transient Handläggning
 failure — it either receives the data it needs or the flow is terminated with a specific error
 code (`HANDLAGGNING_READ_FAILURE` / `HANDLAGGNING_WRITE_FAILURE`).
 
