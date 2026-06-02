@@ -52,7 +52,7 @@ directly.
 exponential backoff. The retry schedule is configured per environment — short intervals in
 test, up to several hours in production.
 
-**`Result.of(value)` / `Result.empty()`** are the contract between the regel and `RetryUtil`.
+**`Result.of(value)` / `Result.empty()`** is the contract between the regel and `RetryUtil`.
 Inside the supplier the regel returns `Result.of(value)` on success and `Result.empty()` to
 signal that the call failed transiently and could be retried. When retries
 are exhausted, `RetryUtil` throws `RetriesExhaustedException.
