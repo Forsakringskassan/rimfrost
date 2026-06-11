@@ -64,7 +64,7 @@ lagrum:
   stycke: 2
   punkt: 3
 
-# Optionell sektion för utökad beskrivning
+# Optionell sektion för utökad beskrivning — används endast av manuella regler
 utokadUppgiftsbeskrivning:
   beskrivning: "Maskinell kontroll som kollar om kunden är folkbokförd i sverige samt kollar om personen har en arbetsgivare"
 ```
