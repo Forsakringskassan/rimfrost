@@ -66,7 +66,7 @@ Du behöver sällan röra ramverkskoden direkt — den konsumeras via Maven-bero
 
 Baskod som är gemensam för **alla** regler, oavsett om de är maskinella eller manuella.
 
-- Läser in regelns konfiguration från `config.yaml`
+- Läser in regelns konfiguration från [`config.yaml`](CONFIG_YAML.md)
 - Exponerar Kafka-interface för request/response (regelinitiering och avslut)
 
 ### rimfrost-framework-regel-maskinell
@@ -120,3 +120,4 @@ Beroende på vad du vill skapa finns mer detaljerad information i respektive REA
 - **Skapa en process** — se [processer/README.md](processer/README.md)
 - **Skapa en manuell regel** — se [regler/manuell/README.md](regler/manuell/README.md)
 - **Skapa en maskinell regel** — se [regler/maskinell/README.md](regler/maskinell/README.md)
+- **Konfigurera regelmetadata** — se [CONFIG_YAML.md](CONFIG_YAML.md)
