@@ -10,7 +10,7 @@ Filen ägs av regelteamet och ska versionshanteras tillsammans med regelkoden. F
 
 | Sektion | Ansvar |
 |---|---|
-| `uppgift` | Operativ identitet — path, aktivitetsbenämning och version |
+| `uppgift` | Operativ identitet — aktivitetsbenämning och version; path används endast av manuella regler |
 | `specifikation` | Verksamhetsbeskrivning — namn, beskrivning, roll och applikationsreferens |
 | `regel` | Regellogikens identitet — namn och beskrivning av vad regeln bedömer |
 | `lagrum` | Juridisk grund — författning, kapitel, paragraf och giltighetsdatum |
@@ -23,8 +23,8 @@ uppgift:
   id: d435beb0-c1c1-471a-916f-a111db0ef08d
   # Semantisk version på formen "major.minor"
   version: "1.0"
-  # URL-path som ramverket använder för routing
-  path: /regel/rtf-maskinell
+  # Callback-URL till OUL — obligatorisk för manuella regler, används inte av maskinella
+  path: /regel/manuell-exempel
   # Aktivitetsbenämning som visas i handläggningsgränssnittet
   aktivitet: "Bedömma rätten till"
 
