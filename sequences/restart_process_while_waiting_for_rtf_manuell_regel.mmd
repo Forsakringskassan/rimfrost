@@ -6,6 +6,7 @@ sequenceDiagram
     participant OUL
     participant portal
     participant Workflow
+    participant ErbjudandeTopic
     participant Handlaggning
 
     note over VAH,RTF_regel_manuell: VAH har skickat RegelRequestMessage till RTF_regel_manuell
@@ -14,7 +15,9 @@ sequenceDiagram
     Administrator ->> Workflow: POST /handlaggning/{handlaggningId}/process (utan replyTo)
     Workflow ->> Handlaggning: HandlaggningAdapter: GET /handlaggning/{handlaggningId}
     Handlaggning -->> Workflow: (handläggning inkl. yrkande med erbjudandeId)
-    Workflow ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId)
+    Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
+    ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
+    Workflow ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
     note over VAH: Ny processinstans startas utan att avbryta pågående process
     Workflow -->> Administrator: (handlaggning inkl. yrkande)
 
