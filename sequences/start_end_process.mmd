@@ -1,20 +1,20 @@
 sequenceDiagram
     title Initiering och avslut av process
     participant Kund
-    participant VAH
     participant Workflow
     participant ErbjudandeTopic
     participant Handlaggning
-        Kund ->> Workflow: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat, replyTo, ...)
-        Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
-        ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
-        note over Workflow: Skapa nytt yrkande och handläggning
-        Workflow ->> Handlaggning: HandlaggningAdapter: PUT /handlaggning (handläggning, yrkande)
-        Handlaggning -->> Workflow: (Svar från Handlaggning...)
-        note over Workflow: Spara handläggnings id och replyTo topic till persistent lagring
-        Workflow ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
-        Workflow -->> Kund: (handlaggning inkl. yrkande)
-        note over VAH: (Exekvering av process flöde, regler, etc)
-        VAH ->> Workflow: Kafka: HandlaggningResponseMessage (handlaggningId, resultat)
-        note over Workflow: Läs och ta bort replyTo topic från persistent lagring
-        Workflow ->> Kund: Kafka: HandlaggningDoneMessage(handlaggningId) (till replyTo topic)
+    participant VAH
+    Kund ->> Workflow: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat, replyTo, ...)
+    note over Workflow: Skapa nytt yrkande och handläggning
+    Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
+    ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
+    note over Workflow: Spara replyTo i DB
+    Workflow ->> Handlaggning: HandlaggningAdapter: PUT /handlaggning (handläggning, yrkande)
+    Handlaggning -->> Workflow: (Svar från Handlaggning...)
+    Workflow ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
+    Workflow -->> Kund: (handlaggning inkl. yrkande)
+    note over VAH: (Exekvering av process flöde, regler, etc)
+    VAH ->> Workflow: Kafka: HandlaggningResponseMessage (handlaggningId, resultat)
+    note over Workflow: Läs och ta bort replyTo topic från persistent lagring
+    Workflow ->> Kund: Kafka: HandlaggningDoneMessage(handlaggningId) (till replyTo topic)

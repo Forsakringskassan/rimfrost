@@ -1,17 +1,20 @@
 sequenceDiagram
     title Maskinell regel svarar med fel - handläggning initierar ny begäran till VAH
     participant Kund
+    participant Workflow
+    participant handlaggning
+    participant ErbjudandeTopic
     participant VAH
     participant RTF_regel_maskinell
-    participant handlaggning
 
-    Kund ->> handlaggning: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat)
-    note over handlaggning: Skapa nytt flöde med nytt yrkandeId
-    handlaggning -->> Kund: (handlaggning inkl. yrkande)
-    note over handlaggning: Skapar ny handläggning
-
-    note over handlaggning: Initiera nytt handläggningsärende för erbjudandet
-    handlaggning ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
+    Kund ->> Workflow: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat)
+    Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
+    ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
+    note over Workflow: Spara replyTo i DB
+    Workflow ->> handlaggning: PUT /handlaggning/{handlaggningId} (yrkande data)
+    handlaggning -->> Workflow: (handläggning inkl. yrkande)
+    Workflow ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
+    Workflow -->> Kund: (handlaggning inkl. yrkande)
 
     note over VAH: Initiera maskinell regel
 
@@ -22,4 +25,7 @@ sequenceDiagram
     RTF_regel_maskinell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, status=ERROR)
     note over VAH: Fel från maskinell regel. Ingen manuell utredning initieras.
 
-    VAH ->> handlaggning: Kafka: HandlaggningResponseMessage (handlaggningId, resultat=FEL)
+    VAH ->> Workflow: Kafka: HandlaggningResponseMessage (handlaggningId, resultat=FEL)
+    note over Workflow: Läs och ta bort replyTo topic från persistent lagring
+
+    Workflow ->> Kund: Kafka: HandlaggningDoneMessage (handlaggningId)
