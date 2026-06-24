@@ -11,11 +11,12 @@ sequenceDiagram
     note over RTF_regel_manuell: Subscribe på oul-status uppdateringar
 
     Kund ->> Workflow: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat)
+    Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
+    ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
     note over Workflow: Spara replyTo i DB
     Workflow ->> handlaggning: PUT /handlaggning/{handlaggningId} (yrkande data)
     handlaggning -->> Workflow: (handläggning inkl. yrkande)
-    Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
-    ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
+
     Workflow ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
     Workflow -->> Kund: (handlaggning inkl. yrkande)
 
