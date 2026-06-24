@@ -11,6 +11,8 @@ sequenceDiagram
     note over RTF_regel_manuell: Subscribe på oul-status uppdateringar
 
     Kund ->> Workflow: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat)
+    note over Workflow: Skapa nytt yrkande och handläggning
+
     Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
     ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
     note over Workflow: Spara replyTo i DB

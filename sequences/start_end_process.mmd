@@ -6,10 +6,10 @@ sequenceDiagram
     participant Handlaggning
     participant VAH
     Kund ->> Workflow: POST /yrkande (erbjudandeId, yrkandeFrom/To, individYrkandeRoller, produceradeResultat, replyTo, ...)
+    note over Workflow: Skapa nytt yrkande och handläggning
     Workflow ->> ErbjudandeTopic: GET /topic/{erbjudandeId}
     ErbjudandeTopic -->> Workflow: (Kafka topic associerat med erbjudande id)
     note over Workflow: Spara replyTo i DB
-    note over Workflow: Skapa nytt yrkande och handläggning
     Workflow ->> Handlaggning: HandlaggningAdapter: PUT /handlaggning (handläggning, yrkande)
     Handlaggning -->> Workflow: (Svar från Handlaggning...)
     Workflow ->> VAH: Kafka: HandlaggningRequestMessage(handlaggningId) (till erbjudandets topic)
