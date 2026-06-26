@@ -1,3 +1,11 @@
+## Relaterade repon
+
+## rimfrost-framework-regel-asyncapi
+
+Definierar Kafka-kontraktet för initiering av regler (`regel.requests` / `regel.responses`).
+
+---
+
 # Översikt av rekommenderade tasks vid implementation av ny maskinell regel
 
 NOTE: Se 

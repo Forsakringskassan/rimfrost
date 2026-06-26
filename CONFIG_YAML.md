@@ -21,8 +21,8 @@ Filen ägs av regelteamet och ska versionshanteras tillsammans med regelkoden. F
 uppgift:
   # Stabil UUID som identifierar uppgiften unikt över tid
   id: d435beb0-c1c1-471a-916f-a111db0ef08d
-  # Semantisk version på formen "major.minor"
-  version: "1.0"
+  # Heltal som ökas vid förändring av uppgiftens metadata
+  version: 1
   # Callback-URL till OUL — obligatorisk för manuella regler, används inte av maskinella
   path: /regel/manuell-exempel
   # Aktivitetsbenämning som visas i handläggningsgränssnittet
@@ -30,7 +30,7 @@ uppgift:
 
 specifikation:
   id: 494726b5-5122-4efc-8a5d-578dcd44df0f
-  version: "1.0"
+  version: 1
   # Kortfattat namn på uppgiften, används i listor och loggar
   namn: "Har kunden rätt till VAH?"
   # Längre beskrivning av vad uppgiften innebär för handläggaren
@@ -46,7 +46,7 @@ specifikation:
 
 regel:
   id: caf86a5f-9776-4fce-a854-8d365fa75067
-  version: "1.0"
+  version: 1
   # Regelns kortnamn — syns i spårningsloggar
   namn: "Har kunden arbetsgivare och är folkbokförd"
   # Detaljerad beskrivning av vad regeln kontrollerar
@@ -54,7 +54,7 @@ regel:
 
 lagrum:
   id: 6955bd9b-2019-4589-a460-7bcfd8a43eb5
-  version: "1.0"
+  version: 1
   # Datum från vilket lagrummet gäller (ISO 8601)
   giltigFom: 2010-02-11
   # Namn på författning (lag, förordning etc.)
@@ -73,7 +73,7 @@ utokadUppgiftsbeskrivning:
 
 **UUIDs** — fälten `id` i varje sektion ska vara globalt unika UUID v4. Generera ett nytt UUID per sektion när du skapar en ny regel. Återanvänd aldrig ett UUID från en annan regel.
 
-**Version** — formatet är `"major.minor"` (t.ex. `"1.0"` eller `"2.3"`). Öka versionen när innehållet förändras på ett sätt som påverkar ramverkets beteende.
+**Version** — ett heltal (t.ex. `1`, `2`). Öka versionen när innehållet förändras på ett sätt som påverkar ramverkets beteende.
 
 **Utökning** — varje sektion accepterar ett valfritt `metadata`-objekt med godtyckliga nycklar. Använd det för information som inte ryms i standardfälten, men som behöver följa med regelns definition.
 
