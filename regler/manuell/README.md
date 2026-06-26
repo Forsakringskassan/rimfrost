@@ -1,3 +1,15 @@
+## Relaterade repon
+
+## rimfrost-framework-regel-asyncapi
+
+Definierar Kafka-kontraktet för initiering av regler (`regel.requests` / `regel.responses`).
+
+## rimfrost-framework-regel-manuell-openapi
+
+Definierar det gemensamma REST-API:et för manuella regler, bl.a. hämtning av utökad uppgiftsbeskrivning.
+
+---
+
 # Översikt av rekommenderade tasks vid implementation av ny manuell regel
 
 NOTE: Se 
@@ -40,7 +52,7 @@ Byt namn på template_regel.bpmn till något som passar reglen.
 
 ## Skapa nytt repo baserat på template
 
-Template för maskinell regel: https://github.com/Forsakringskassan/rimfrost-template-regel-manuell
+Template för manuell regel: https://github.com/Forsakringskassan/rimfrost-template-regel-manuell
 
 Replace på förekomster av _Template_ till regelns namn.<br>
 TODOs i template-filerna ger tips om vad som behöver justeras.
@@ -83,7 +95,7 @@ De här metoderna används av ramverket för att producera ett rest-API som port
 
 Generar den micro-frontend som presenteras för handläggaren vid vald uppgift.
 
-### update Data
+### updateData
 
 Hanterar handläggarens uppdatering av information om uppgiften.
 

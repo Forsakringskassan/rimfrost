@@ -1,3 +1,15 @@
+## Relaterade repon
+
+## rimfrost-framework-process
+
+Baskod som är gemensam för alla processer. Hanterar Kafka-kommunikation, Kogito-integration och livscykelhantering för processinstanser.
+
+## rimfrost-process-asyncapi
+
+Definierar Kafka-kontraktet för initiering av processflöden (`handlaggning.requests` / `handlaggning.responses`).
+
+---
+
 # Översikt av rekommenderade steg vid implementation av ny process
 
 NOTE: Se 

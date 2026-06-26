@@ -8,7 +8,7 @@ Det här dokumentet riktar sig till nya utvecklare och ger en övergripande för
 
 Rimfrost är ett ramverk för att bygga beslutsstödjande mikrotjänster hos Försäkringskassan. Det ger en standardiserad, återanvändbar grund för att implementera **processer** och **regler** — de grundläggande byggstenarna i FK:s handläggningsflöden.
 
-Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i sex kategorier:
+Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i nio kategorier:
 
 | Prefix | Syfte |
 |--------|-------|
@@ -18,6 +18,9 @@ Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i sex kategorier
 | `rimfrost-process-*` | Faktiska processimplementationer |
 | `rimfrost-service-*` | Tjänster som regler kommunicerar med |
 | `rimfrost-adapter-*` | REST-klienter för integration mot tjänster |
+| `rimfrost-portal-*` | Portal och micro-frontends för handläggare |
+| `rimfrost-*-openapi` | OpenAPI-specifikationer (REST-kontrakt) |
+| `rimfrost-*-asyncapi` | AsyncAPI-specifikationer (Kafka-kontrakt) |
 
 Teknikstacken är **Java 21, Quarkus** och **Kogito** för processorkestration, med **Kafka** som kommunikationskanal mellan tjänster.
 
