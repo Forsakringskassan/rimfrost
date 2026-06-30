@@ -95,7 +95,7 @@ window.dispatchEvent(
 
 ## Registrering i portalen
 
-Lägg till en rad i `remotes.json` i `rimfrost-portal-bff`:
+Lägg till din nya remote i `remotes.json` i `rimfrost-portal-bff`:
 
 ```json
 {
