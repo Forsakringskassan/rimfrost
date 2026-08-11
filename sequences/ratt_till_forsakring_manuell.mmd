@@ -11,7 +11,7 @@ rect rgb(200, 200, 200)
     handlaggning -->> RTF_regel_manuell: (handlaggning)
 
     note over RTF_regel_manuell: Ny operativ uppgift behövs
-    RTF_regel_manuell ->> OUL: POST /uppgifter (handlaggningId, regel: "VAH_RTF", individer, url, roll, status_topic, ...)
+    RTF_regel_manuell ->> OUL: POST /uppgifter (handlaggningId, regel: "VAH_RTF", url, roll, status_topic, ...)
     note over OUL: Skapa ny operativ uppgift
     OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId, status)
 
@@ -23,27 +23,31 @@ rect rgb(200, 200, 200)
     note over portal: Handläggare listar sina uppgifter
     portal ->> OUL: GET /uppgifter/handlaggare/{handlaggareId}
 
-    loop alla individer kopplade till uppgiften
+alt Handläggare har SID-rättigheter
+    note over OUL: returnerar alla handläggarens uppgifter
+else Handläggare saknar SID-rättigheter
+    loop alla uppgifter kopplade till handläggaren
+        OUL ->> handlaggning: GET /handlaggning/{handlaggningId}
+        handlaggning -->> OUL: (handlaggning inkl. individer)
 
-        OUL ->> individ: GET /individ/{id}
-        individ -->> OUL: (individId, typ, värde)
-        note over OUL: kontrollera ev skyddad identitet
-
+        OUL ->> SID: POST /sid/status (individer)
+        SID -->> OUL: (skyddad identitet: true/false)
     end
+    note over OUL: returnerar uppgifter där ingen individ har skyddad identitet
+end
 
     OUL -->> portal: (uppgifter)
 
     note over portal: Handläggare vill hämta ny uppgift
     portal ->> OUL: POST /uppgifter/handlaggare/{handlaggareId}
 
+    OUL ->> handlaggning: GET /handlaggning/{handlaggningId}
+    handlaggning -->> OUL: (handlaggning inkl. individer)
+
+    OUL ->> SID: POST /sid/status (individer)
+    SID -->> OUL: (skyddad identitet: false)
+
     note over OUL: tilldela uppgift till handläggare
-    loop alla individer kopplade till uppgiften
-
-        OUL ->> individ: GET /individ/{id}
-        individ -->> OUL: (individId, typ, värde)
-        note over OUL: kontrollera ev skyddad identitet
-
-    end
 
     OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftsId, status=Tilldelad)
 
@@ -73,20 +77,28 @@ end
 
 note over RTF_regel_manuell: START Regel (readData)
 note over RTF_regel_manuell: Hämta infon som behövs för regeln
+
 note over RTF_regel_manuell: individId hämtas från handläggningsinformation
 
-RTF_regel_manuell ->> individ: GET /individ/{individId}
-individ -->> RTF_regel_manuell: (individId, typ, värde)
+RTF_regel_manuell ->> SID: POST /sid/status (individer)
+SID -->> RTF_regel_manuell: (skyddad identitet)
 
-RTF_regel_manuell ->> folkbokford: GET /folkbokford/info/{personnummer}
-folkbokford -->> RTF_regel_manuell: person (namn, kön, adress ...)
+alt skyddad identitet: false
 
-RTF_regel_manuell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
-arbetsgivare -->> RTF_regel_manuell: anställningsinfo (period, orgnummer, orgnamn)
+    RTF_regel_manuell ->> folkbokford: GET /folkbokford/info/{personnummer}
+    folkbokford -->> RTF_regel_manuell: person (namn, kön, adress ...)
 
+    RTF_regel_manuell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
+    arbetsgivare -->> RTF_regel_manuell: anställningsinfo (period, orgnummer, orgnamn)
+
+
+    RTF_regel_manuell -->> portal: (all info som frontend_url behöver)
+else skyddad identitet: true
+    RTF_regel_manuell -->> portal: (permission denied)
+end
+
+note over RTF_regel_manuell: TODO hantering av handläggare med SID-permissions ?
 note over RTF_regel_manuell: Uppdatera handläggningsinformation
-
-RTF_regel_manuell -->> portal: (all info som frontend_url behöver)
 note over RTF_regel_manuell: END Regel
 
 rect rgb(200, 200, 200)
