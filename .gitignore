@@ -1,2 +1,7 @@
 target
 .idea
+
+# Override global gitignore so team .claude commands are tracked
+!.claude/
+!.claude/**
+.claude/settings.local.json
