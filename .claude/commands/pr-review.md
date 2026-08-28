@@ -4,9 +4,11 @@ Checks out a PR branch locally, runs a full code quality and spec compliance rev
 
 ## Input
 
-$ARGUMENTS should be in the form `<repo-name>#<pr-number>` (e.g. `rimfrost-handlaggning-regel#42`) or a full GitHub PR URL.
+$ARGUMENTS should be in the form `<repo-name>#<pr-number>` (e.g. `rimfrost-handlaggning-regel#42`) or a full GitHub PR URL, optionally followed by `--model <model-name>`.
 
 If no repo is specified and a PR number is given alone, assume the current directory's repo.
+
+The `--model <model-name>` flag delegates the entire code quality review to a sub-agent running the specified model (e.g. `--model opus`, `--model sonnet`). Without this flag, the review runs inline with the current model.
 
 ## Examples
 
@@ -14,6 +16,8 @@ If no repo is specified and a PR number is given alone, assume the current direc
 /pr-review 42
 /pr-review rimfrost-handlaggning-regel#42
 /pr-review https://github.com/Forsakringskassan/rimfrost-handlaggning-regel/pull/42
+/pr-review 42 --model opus
+/pr-review 42 --model sonnet
 ```
 
 ## Steps
@@ -32,6 +36,7 @@ If no repo is specified and a PR number is given alone, assume the current direc
 
 6. Run a full review following the rules in `~/.claude/commands/_reviewer-base.md` and any project-level reviewer role file found at `.claude/commands/_reviewer-role.md` in the repo.
    - Also check the repo's CLAUDE.md for a `Spec reviewer agent:` entry under `## Review`. If found, spawn that agent using the Agent tool in parallel with your own code quality review. Combine both outputs — code quality first, then spec compliance.
+   - If `--model <model-name>` was passed, delegate the entire code quality review to a sub-agent via the Agent tool using the specified model. Pass the full reviewer rules and any project-level role file content to the sub-agent prompt. Run the spec reviewer agent (if applicable) in parallel.
 
 7. After the review is complete, return to the original branch: `git -C <repo-path> checkout <original-branch>`
 
