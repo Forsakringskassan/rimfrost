@@ -31,6 +31,16 @@ sequenceDiagram
     RTF_regel_maskinell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=UTREDNING)
     note over VAH: Ej godkänt. Starta manuell utredning
 
+    note over VAH: Initiera komplettering för manuell utredning
+
+    opt Komplettering krävs
+        VAH ->> RTF_regel_komplettering: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
+
+        note over RTF_regel_komplettering: Se exempel ratt_till_forsakring_manuell.mmd
+
+        RTF_regel_komplettering ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=UTREDNING)
+    end
+
     VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
 
     note over RTF_regel_manuell: Se exempel ratt_till_forsakring_manuell.mmd
