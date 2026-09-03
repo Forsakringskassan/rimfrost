@@ -36,7 +36,7 @@ sequenceDiagram
     opt Komplettering krävs
         VAH ->> RTF_regel_komplettering: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
 
-        note over RTF_regel_komplettering: Se exempel ratt_till_forsakring_manuell.mmd
+        note over RTF_regel_komplettering: Se exempel ratt_till_forsakring_komplettering.mmd
 
         RTF_regel_komplettering ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=UTREDNING)
     end
