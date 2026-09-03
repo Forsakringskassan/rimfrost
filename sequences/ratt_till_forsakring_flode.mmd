@@ -38,14 +38,14 @@ sequenceDiagram
 
         note over RTF_regel_komplettering: Se exempel ratt_till_forsakring_komplettering.mmd
 
-        RTF_regel_komplettering ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=UTREDNING)
+        RTF_regel_komplettering ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=JA)
     end
 
     VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
 
     note over RTF_regel_manuell: Se exempel ratt_till_forsakring_manuell.mmd
 
-    RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)
+    RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, Utfall=JA)
 
     VAH ->> Workflow: Kafka: HandlaggningResponseMessage (handlaggningId, resultat)
     note over Workflow: Läs och ta bort replyTo topic från persistent lagring
