@@ -1,5 +1,7 @@
 ## Relaterade repon
 
+Se även [regler/VERSIONING.md](../VERSIONING.md) för hur `HandlaggningUpdate.version` och `ProduceratResultat.version` ska hanteras i en regelimplementation.
+
 ## rimfrost-framework-regel-asyncapi
 
 Definierar Kafka-kontraktet för initiering av regler (`regel.requests` / `regel.responses`).

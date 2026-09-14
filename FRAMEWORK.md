@@ -1,15 +1,17 @@
 ```mermaid
 graph TD
 
-    rimfrost-template-regel-manuell -->|inherits| rimfrost-framework-regel-manuell
+    rimfrost-template-regel-manuell -->|uses| rimfrost-framework-regel-manuell
+    rimfrost-template-regel-komplettering -->|uses| rimfrost-framework-regel-komplettering
 
-    rimfrost-template-regel-maskinell -->|inherits| rimfrost-framework-regel-maskinell
-    rimfrost-framework-regel-maskinell -->|inherits| rimfrost-framework-regel
+    rimfrost-template-regel-maskinell -->|uses| rimfrost-framework-regel-maskinell
+    rimfrost-framework-regel-maskinell -->|uses| rimfrost-framework-regel
 
-    rimfrost-framework-regel-manuell -->|inherits| rimfrost-framework-oul
-    rimfrost-framework-regel-manuell -->|inherits| rimfrost-framework-regel
+    rimfrost-framework-regel-manuell -->|uses| rimfrost-framework-regel-oul
+    rimfrost-framework-regel-komplettering -->|uses| rimfrost-framework-regel-oul
+    rimfrost-framework-regel-oul -->|uses| rimfrost-framework-regel
+    rimfrost-framework-regel-oul -->|uses| rimfrost-framework-oul
 
-    
 ```
 
 ## Repositories
@@ -29,6 +31,24 @@ Hantering av reglers kommunikation med Operativt uppgiftslager
 - Kafka-interface request/response för operativa uppgifter 
 - Rest-interface hanterar Done-operation för operativa uppgifter
 
+### rimfrost-framework-regel-oul
+
+Bygger på `rimfrost-framework-regel` och `rimfrost-framework-oul` och ansvarar för den OUL-integration och korrelationslagring som krävs för regelkörningar som avslutas i ett separat anrop.
+
+- Skapar och avslutar OUL-uppgifter (`createOulUppgift`, `tryEndOperativUppgift`, `endOperativUppgift`)
+- Prenumererar på OUL:s statusnotifieringar via Kafka och synkroniserar till handläggningstjänsten
+- Persisterar korrelationsdata (CloudEvent-attribut, `replyTo`, `ProcessTopicInfo`) per handläggning
+
+Konsumeras av `rimfrost-framework-regel-manuell` och `rimfrost-framework-regel-komplettering`.
+
+### rimfrost-framework-regel-komplettering
+
+Exponerar komplettering som en Kafka-anropbar regel. Tar emot en kompletteringsförfrågan, utför en fullständighetskontroll via `isKompletteringRequired()`, och antingen skickar svar direkt (om komplettering inte behövs) eller skapar en OUL-uppgift för handläggare och inväntar kvittens. Båda vägarna resulterar i `utfall = JA`.
+
+- Kafka request/response för kompletteringsförfrågningar med dynamisk `replyTo`-routing
+- REST-gränssnitt (`GET/PATCH/POST /{handlaggningId}`) via abstrakt basklass `RegelKompletteringController<T>` för handläggarportalen
+- Timeout-hantering som garanterar att svar alltid skickas
+
 ### rimfrost-framework-regel-maskinell
 
 Komponenter gemensamma för alla maskinella regler
@@ -38,8 +58,6 @@ Komponenter gemensamma för alla maskinella regler
 Komponenter gemensamma för alla manuella regler
 
 - Hantering av initiering av ny regel
-- Hantering av Operativt uppfiftslager response
-- Hantering av Operativt uppgiftslager status
 
 ### rimfrost-template-regel-maskinell
 
@@ -52,6 +70,12 @@ Template för implementation av maskinella regler.
 Template för implementation av manuella regler.
 
 - Implementation av handleRegelrequest för alla manuella regler
+
+### rimfrost-template-regel-komplettering
+
+Template för implementation av kompletteringsregler.
+
+- Template för implementation av `RegelKompletteringService` (`isKompletteringRequired`, `readSvarData`, `registerSvar`) och `RegelKompletteringController`
 
 ---
 

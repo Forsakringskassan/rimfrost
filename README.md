@@ -85,7 +85,7 @@ Du som implementatör behöver bara implementera `processRegel`.
 
 ### rimfrost-framework-regel-manuell
 
-Bygger på `rimfrost-framework-regel` och `rimfrost-framework-oul` och lägger till det som krävs för manuella regler:
+Bygger på `rimfrost-framework-regel-oul` och lägger till det som krävs för manuella regler:
 
 - Initierar ny regel och skapar uppgift i OUL
 - Lyssnar på OUL-svar och statusuppdateringar
@@ -101,6 +101,24 @@ Hanterar kommunikationen med **Operativt uppgiftslager** — det system där han
 - Kafka request/response för skapande av operativa uppgifter
 - REST-interface för Done-operationer
 
+### rimfrost-framework-regel-oul
+
+Bygger på `rimfrost-framework-regel` och `rimfrost-framework-oul` och ansvarar för den OUL-integration och korrelationslagring som krävs för regelkörningar som avslutas i ett separat anrop — typiskt manuella regler där en handläggare markerar en OUL-uppgift som klar.
+
+- Skapar och avslutar OUL-uppgifter (`createOulUppgift`, `tryEndOperativUppgift`, `endOperativUppgift`)
+- Prenumererar på OUL:s statusnotifieringar via Kafka och synkroniserar till handläggningstjänsten
+- Persisterar korrelationsdata (CloudEvent-attribut, `replyTo`, `ProcessTopicInfo`) i tre tabeller per regelimplementation, med prefix konfigurerat via `regel.persistence.table-prefix`
+
+Konsumeras av `rimfrost-framework-regel-manuell` och `rimfrost-framework-regel-komplettering`.
+
+### rimfrost-framework-regel-komplettering
+
+Bygger på `rimfrost-framework-regel-oul` och exponerar komplettering som en Kafka-anropbar regel. Tar emot en kompletteringsförfrågan, utför en fullständighetskontroll via `isKompletteringRequired()`, och antingen skickar svar direkt (om komplettering inte behövs) eller skapar en OUL-uppgift för handläggare och inväntar kvittens. Båda vägarna resulterar i `utfall = JA`.
+
+- Kafka request/response för kompletteringsförfrågningar med dynamisk `replyTo`-routing
+- REST-gränssnitt (`GET/PATCH/POST /{handlaggningId}`) via abstrakt basklass `RegelKompletteringController<T>` för handläggarportalen
+- Timeout-hantering som garanterar att svar alltid skickas
+
 ### Arvsträd
 
 ```
@@ -110,8 +128,15 @@ rimfrost-template-regel-maskinell
 
 rimfrost-template-regel-manuell
     └── rimfrost-framework-regel-manuell
-            ├── rimfrost-framework-regel
-            └── rimfrost-framework-oul
+            └── rimfrost-framework-regel-oul
+                    ├── rimfrost-framework-regel
+                    └── rimfrost-framework-oul
+
+rimfrost-template-regel-komplettering
+    └── rimfrost-framework-regel-komplettering
+            └── rimfrost-framework-regel-oul
+                    ├── rimfrost-framework-regel
+                    └── rimfrost-framework-oul
 ```
 
 ---
@@ -123,4 +148,5 @@ Beroende på vad du vill skapa finns mer detaljerad information i respektive REA
 - **Skapa en process** — se [processer/README.md](processer/README.md)
 - **Skapa en manuell regel** — se [regler/manuell/README.md](regler/manuell/README.md)
 - **Skapa en maskinell regel** — se [regler/maskinell/README.md](regler/maskinell/README.md)
+- **Skapa en kompletteringsregel** — se [regler/komplettering/README.md](regler/komplettering/README.md)
 - **Konfigurera regelmetadata** — se [CONFIG_YAML.md](CONFIG_YAML.md)
