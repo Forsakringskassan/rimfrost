@@ -24,14 +24,6 @@ Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i nio kategorier
 
 Teknikstacken är **Java 21, Quarkus** och **Kogito** för processorkestration, med **Kafka** som kommunikationskanal mellan tjänster.
 
-### Tjänster (rimfrost-service-*)
-
-Tjänsterna är de bakgrundssystem som regler hämtar data från eller interagerar med. De exponerar REST- och/eller Kafka-API:er och har egna specifikationer i tillhörande `-openapi`- och `-asyncapi`-repon.
-
-### Adaptrar (rimfrost-framework-*-adapter)
-
-Adaptrarna är återanvändbara REST-klienter paketerade som Maven-bibliotek. En regel lägger till en adapter som beroende för att prata med en tjänst — utan att behöva implementera HTTP-kommunikationen själv.
-
 ---
 
 ## Arkitektur — den stora bilden
@@ -54,10 +46,11 @@ Grundidén är att en **process** orkesterar ett flöde där den ropar på en el
     └───────────┘   └────────────┘
 ```
 
-**Regler** finns i två varianter:
+**Regler** finns i tre varianter:
 
 - **Maskinell** — helt automatiserad, inga mänskliga beslut. Ramverket tar emot en förfrågan, kör regellogiken, och returnerar ett svar.
 - **Manuell** — kräver att en handläggare agerar via en portal (micro-frontend). Ramverket skapar en uppgift i Operativt uppgiftslager (OUL) och väntar på att handläggaren kvitterar den.
+- **Komplettering** — hanterar insamling av kompletterande uppgifter från handläggare. Ramverket kontrollerar om komplettering behövs, skapar i så fall en OUL-uppgift och inväntar kvittens.
 
 ---
 
@@ -65,59 +58,14 @@ Grundidén är att en **process** orkesterar ett flöde där den ropar på en el
 
 Du behöver sällan röra ramverkskoden direkt — den konsumeras via Maven-beroenden. Men det är bra att förstå vad varje del gör:
 
-### rimfrost-framework-regel
-
-Baskod som är gemensam för **alla** regler, oavsett om de är maskinella eller manuella.
-
-- Läser in regelns konfiguration från [`config.yaml`](CONFIG_YAML.md)
-- Exponerar Kafka-interface för request/response (regelinitiering och avslut)
-
-### rimfrost-framework-regel-maskinell
-
-Bygger på `rimfrost-framework-regel` och lägger till det som är specifikt för maskinella regler:
-
-- Hanterar inkommande regelförfrågan från Kafka
-- Hämtar handläggningsdata
-- Anropar din regellogik via den abstrakta metoden `processRegel`
-- Sparar resultat och skickar tillbaka svar på Kafka
-
-Du som implementatör behöver bara implementera `processRegel`.
-
-### rimfrost-framework-regel-manuell
-
-Bygger på `rimfrost-framework-regel-oul` och lägger till det som krävs för manuella regler:
-
-- Initierar ny regel och skapar uppgift i OUL
-- Lyssnar på OUL-svar och statusuppdateringar
-- Hämtar handläggningsdata
-- Exponerar REST-API som portalen (micro-frontend) anropar
-
-Du som implementatör behöver implementera `readData`, `updateData` och `done`.
-
-### rimfrost-framework-oul
-
-Hanterar kommunikationen med **Operativt uppgiftslager** — det system där handläggarnas uppgifter lever.
-
-- Kafka request/response för skapande av operativa uppgifter
-- REST-interface för Done-operationer
-
-### rimfrost-framework-regel-oul
-
-Bygger på `rimfrost-framework-regel` och `rimfrost-framework-oul` och ansvarar för den OUL-integration och korrelationslagring som krävs för regelkörningar som avslutas i ett separat anrop — typiskt manuella regler där en handläggare markerar en OUL-uppgift som klar.
-
-- Skapar och avslutar OUL-uppgifter (`createOulUppgift`, `tryEndOperativUppgift`, `endOperativUppgift`)
-- Prenumererar på OUL:s statusnotifieringar via Kafka och synkroniserar till handläggningstjänsten
-- Persisterar korrelationsdata (CloudEvent-attribut, `replyTo`, `ProcessTopicInfo`) i tre tabeller per regelimplementation, med prefix konfigurerat via `regel.persistence.table-prefix`
-
-Konsumeras av `rimfrost-framework-regel-manuell` och `rimfrost-framework-regel-komplettering`.
-
-### rimfrost-framework-regel-komplettering
-
-Bygger på `rimfrost-framework-regel-oul` och exponerar komplettering som en Kafka-anropbar regel. Tar emot en kompletteringsförfrågan, utför en fullständighetskontroll via `isKompletteringRequired()`, och antingen skickar svar direkt (om komplettering inte behövs) eller skapar en OUL-uppgift för handläggare och inväntar kvittens. Båda vägarna resulterar i `utfall = JA`.
-
-- Kafka request/response för kompletteringsförfrågningar med dynamisk `replyTo`-routing
-- REST-gränssnitt (`GET/PATCH/POST /{handlaggningId}`) via abstrakt basklass `RegelKompletteringController<T>` för handläggarportalen
-- Timeout-hantering som garanterar att svar alltid skickas
+| Repo | Syfte |
+|------|-------|
+| [`rimfrost-framework-regel`](https://github.com/Forsakringskassan/rimfrost-framework-regel) | Gemensam baskod för alla regeltyper — konfiguration och Kafka-interface |
+| [`rimfrost-framework-regel-maskinell`](https://github.com/Forsakringskassan/rimfrost-framework-regel-maskinell) | Ramverk för maskinella (automatiserade) regler |
+| [`rimfrost-framework-regel-manuell`](https://github.com/Forsakringskassan/rimfrost-framework-regel-manuell) | Ramverk för manuella regler som kräver handläggainteraktion via portal |
+| [`rimfrost-framework-oul`](https://github.com/Forsakringskassan/rimfrost-framework-oul) | Kommunikation med Operativt uppgiftslager (OUL) |
+| [`rimfrost-framework-regel-oul`](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul) | OUL-integration och korrelationslagring för regelkörningar som avslutas i ett separat anrop |
+| [`rimfrost-framework-regel-komplettering`](https://github.com/Forsakringskassan/rimfrost-framework-regel-komplettering) | Ramverk för kompletteringsregler — Kafka-anrop, OUL-uppgift och REST-gränssnitt mot portal |
 
 ### Arvsträd
 
@@ -150,3 +98,4 @@ Beroende på vad du vill skapa finns mer detaljerad information i respektive REA
 - **Skapa en maskinell regel** — se [regler/maskinell/README.md](regler/maskinell/README.md)
 - **Skapa en kompletteringsregel** — se [regler/komplettering/README.md](regler/komplettering/README.md)
 - **Konfigurera regelmetadata** — se [CONFIG_YAML.md](CONFIG_YAML.md)
+- **Versionshantering i regelimplementationer** — se [regler/VERSIONING.md](regler/VERSIONING.md)

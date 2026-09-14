@@ -1,3 +1,5 @@
+## Regelramverk — beroenden
+
 ```mermaid
 graph TD
 
@@ -13,71 +15,6 @@ graph TD
     rimfrost-framework-regel-oul -->|uses| rimfrost-framework-oul
 
 ```
-
-## Repositories
-
-### rimfrost-framework-regel
-
-Komponenter gemensamma för alla typer av regler (både maskinella och manuella).
-
-- Inläsning av regel-konfiguration
-- Kafka-interface request/response för regel initiering/avslut
-- Rest-interface för hantering av Yrkande och Handläggning
-
-### rimfrost-framework-oul
-
-Hantering av reglers kommunikation med Operativt uppgiftslager
-
-- Kafka-interface request/response för operativa uppgifter 
-- Rest-interface hanterar Done-operation för operativa uppgifter
-
-### rimfrost-framework-regel-oul
-
-Bygger på `rimfrost-framework-regel` och `rimfrost-framework-oul` och ansvarar för den OUL-integration och korrelationslagring som krävs för regelkörningar som avslutas i ett separat anrop.
-
-- Skapar och avslutar OUL-uppgifter (`createOulUppgift`, `tryEndOperativUppgift`, `endOperativUppgift`)
-- Prenumererar på OUL:s statusnotifieringar via Kafka och synkroniserar till handläggningstjänsten
-- Persisterar korrelationsdata (CloudEvent-attribut, `replyTo`, `ProcessTopicInfo`) per handläggning
-
-Konsumeras av `rimfrost-framework-regel-manuell` och `rimfrost-framework-regel-komplettering`.
-
-### rimfrost-framework-regel-komplettering
-
-Exponerar komplettering som en Kafka-anropbar regel. Tar emot en kompletteringsförfrågan, utför en fullständighetskontroll via `isKompletteringRequired()`, och antingen skickar svar direkt (om komplettering inte behövs) eller skapar en OUL-uppgift för handläggare och inväntar kvittens. Båda vägarna resulterar i `utfall = JA`.
-
-- Kafka request/response för kompletteringsförfrågningar med dynamisk `replyTo`-routing
-- REST-gränssnitt (`GET/PATCH/POST /{handlaggningId}`) via abstrakt basklass `RegelKompletteringController<T>` för handläggarportalen
-- Timeout-hantering som garanterar att svar alltid skickas
-
-### rimfrost-framework-regel-maskinell
-
-Komponenter gemensamma för alla maskinella regler
-
-### rimfrost-framework-regel-manuell
-
-Komponenter gemensamma för alla manuella regler
-
-- Hantering av initiering av ny regel
-
-### rimfrost-template-regel-maskinell
-
-Template för implementation av maskinella regler.
-
-- Template för implementation av handleRegelRequest
-
-### rimfrost-template-regel-manuell
-
-Template för implementation av manuella regler.
-
-- Implementation av handleRegelrequest för alla manuella regler
-
-### rimfrost-template-regel-komplettering
-
-Template för implementation av kompletteringsregler.
-
-- Template för implementation av `RegelKompletteringService` (`isKompletteringRequired`, `readSvarData`, `registerSvar`) och `RegelKompletteringController`
-
----
 
 ## Portal och micro-frontends
 

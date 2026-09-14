@@ -4,8 +4,8 @@ Gäller alla regelimplementationer i rimfrost-ramverket.
 
 ## Översikt
 
-Det finns två oberoende versionsfält i systemet. De lever på olika objekt, fyller olika syften
-och steppas av olika parter.
+Domänobjekten i systemet har version-fält, men det är bara två av dem som regelimplementationer
+aktivt ansvarar för. Det är dessa som beskrivs i det här dokumentet.
 
 | Fält | Objekt | Granularitet | Stegningsansvar |
 |------|--------|--------------|-----------------|
@@ -13,6 +13,10 @@ och steppas av olika parter.
 | `ProduceratResultat.version` | Ett enskilt resultat i yrkandet | En per resultatobjekt | Regeln (förmånen) |
 
 De är ortogonala — att steppa det ena har ingen automatisk effekt på det andra.
+
+Flera andra domänobjekt har `version`-fält — `Yrkande`, `Uppgift`, `Underlag`, `Beslut`,
+`Beslutsrad` m.fl. Dessa ägs av backend (`rimfrost-service-handlaggning`) och sätts vid
+skapande. Regler läser dem men stegar dem aldrig.
 
 ---
 
@@ -128,3 +132,4 @@ kan konsumenter inte avgöra att resultatet har förändrats.
 **Behandla de två versionerna som samma sak.**
 Det är de inte. Ett enda `update()`-anrop steppar `ProduceratResultat.version` men lämnar
 `HandlaggningUpdate.version` på det värde som skrevs av senaste `read()`-anropet.
+
