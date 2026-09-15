@@ -103,21 +103,4 @@ När en regel returnerar uppdaterade resultat slår ramverket ihop den nya lista
 med den befintliga enligt en enkel regel: **samma id → det nya vinner, det gamla kastas**. Resultat
 vars id inte berörs förs över oförändrade till det nya yrkandet.
 
----
-
-## Vanliga misstag
-
-**Antagande att ramverket stegar `HandlaggningUpdate.version` automatiskt.**
-Ramverket skickar alltid `handlaggning.version()` oförändrat — versionen steppas aldrig av
-ramverket på regelns vägnar. En regel som förväntar sig att ramverket hanterar
-versionsstegning kommer inte att steppa versionen alls, och konsumenter kan inte avgöra om
-handläggningen har förändrats.
-
-**Glömma att steppa `ProduceratResultat.version` när ett resultat uppdateras.**
-Om skrivningen accepteras av backend lagras den version som skickas in. Om versionen inte steppas
-kan konsumenter inte avgöra att resultatet har förändrats.
-
-**Behandla de två versionerna som samma sak.**
-Det är de inte. En regel kan steppa `ProduceratResultat.version` på ett enskilt resultat utan
-att för den skull steppa `HandlaggningUpdate.version` — och vice versa.
 
