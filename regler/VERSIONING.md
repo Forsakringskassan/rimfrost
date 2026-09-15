@@ -103,15 +103,6 @@ När en regel returnerar uppdaterade resultat slår ramverket ihop den nya lista
 med den befintliga enligt en enkel regel: **samma id → det nya vinner, det gamla kastas**. Resultat
 vars id inte berörs förs över oförändrade till det nya yrkandet.
 
-### Konsekvenser för regelutvecklare
-
-- Hitta rätt resultat via `id`, bygg en ny immutable kopia med `version + 1` och returnera den —
-  ramverket ersätter det gamla automatiskt via merge-logiken.
-- Det finns ingen tillgång till tidigare versioners innehåll. Om historik behövs måste det hanteras
-  på annat sätt, t.ex. i `data`-fältet eller via en separat mekanism utanför ramverket.
-- `ProduceratResultat.version` är en ändringsräknare som konsumenter kan jämföra med vad de senast
-  läste — inte ett historiknummer som ger åtkomst till äldre tillstånd.
-
 ---
 
 ## Vanliga misstag
