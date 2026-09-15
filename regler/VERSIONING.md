@@ -14,8 +14,6 @@ Nedan beskrivs exempel på två version-fält som regelimplementationer hanterar
 | `HandlaggningUpdate.version` | Handläggnings-objektet | En per handläggning | Regeln (vid behov) |
 | `ProduceratResultat.version` | Ett enskilt resultat i yrkandet | En per resultatobjekt | Regeln (förmånen) |
 
-De är ortogonala — att steppa det ena har ingen automatisk effekt på det andra.
-
 ---
 
 ## 1. `HandlaggningUpdate.version` — versionshantering av handläggningsobjektet
