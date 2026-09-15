@@ -39,16 +39,6 @@ tillståndsändring till konsumenter ansvarar regeln själv för att steppa vers
 Versionskonflikt-fel från backend propageras som explicita fel till anroparen. Ramverket
 försöker inte automatiskt göra om en skrivning som avvisats på grund av versionskonflikt.
 
-### Alla regeltyper
-
-| Regeltyp | Skrivsteg | Version i HandlaggningUpdate |
-|----------|-----------|------------------------------|
-| Manuell (`read()`-flödet) | Middleware skriver underlag | `handlaggning.version()` — oförändrat |
-| Manuell (`update()`-flödet) | Regel returnerar HandlaggningUpdate | `handlaggning.version()` — oförändrat |
-| Maskinell | Regel returnerar HandlaggningUpdate | `handlaggning.version()` — oförändrat |
-| Komplettering (`registerSvar()`) | Regel returnerar HandlaggningUpdate | `handlaggning.version()` — oförändrat |
-| Komplettering (`/done`) | Ramverket bygger HandlaggningUpdate | `handlaggning.version()` — oförändrat |
-
 ---
 
 ## 2. `ProduceratResultat.version` — versionshantering på resultats-nivå
