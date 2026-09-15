@@ -4,8 +4,10 @@ Gäller alla regelimplementationer i rimfrost-ramverket.
 
 ## Översikt
 
-Domänobjekten i systemet har version-fält, men det är bara två av dem som regelimplementationer
-aktivt ansvarar för. Det är dessa som beskrivs i det här dokumentet.
+Regler ansvarar för att steppa version-fältet på alla objekt de modifierar.
+Ramverket stegar aldrig version-fält automatiskt.
+
+Nedan beskrivs exempel på två version-fält som regelimplementationer hanterar:
 
 | Fält | Objekt | Granularitet | Stegningsansvar |
 |------|--------|--------------|-----------------|
@@ -13,10 +15,6 @@ aktivt ansvarar för. Det är dessa som beskrivs i det här dokumentet.
 | `ProduceratResultat.version` | Ett enskilt resultat i yrkandet | En per resultatobjekt | Regeln (förmånen) |
 
 De är ortogonala — att steppa det ena har ingen automatisk effekt på det andra.
-
-Flera andra domänobjekt har `version`-fält — `Yrkande`, `Uppgift`, `Underlag`, `Beslut`,
-`Beslutsrad` m.fl. Dessa ägs av backend (`rimfrost-service-handlaggning`) och sätts vid
-skapande. Regler läser dem men stegar dem aldrig.
 
 ---
 
@@ -39,6 +37,21 @@ tillståndsändring till konsumenter ansvarar regeln själv för att steppa vers
 Versionskonflikt-fel från backend propageras som explicita fel till anroparen. Ramverket
 försöker inte automatiskt göra om en skrivning som avvisats på grund av versionskonflikt.
 
+### Hur regler bumpar HandlaggningUpdate.version
+
+När en regel vill signalera en meningsfull tillståndsändring bygger den sin `HandlaggningUpdate`
+med `handlaggning.version() + 1`:
+
+```java
+return ImmutableHandlaggningUpdate.builder()
+      .from(handlaggning)
+      .version(handlaggning.version() + 1)   // regeln steppar
+      // övriga fält...
+      .build();
+```
+
+Skrivningar som inte kräver versionsstegning skickar `handlaggning.version()` oförändrat.
+
 ---
 
 ## 2. `ProduceratResultat.version` — versionshantering på resultats-nivå
@@ -49,16 +62,11 @@ Hanterar versionen av ett enskilt resultatobjekt (ersättning, beslut m.m.) i yr
 `produceradeResultat`-lista. Gör det möjligt för konsumenter att upptäcka om ett specifikt
 resultat har förändrats sedan de senast läste det, oberoende av handläggningens övergripande version.
 
-### Vem steppar det
-
-Regeln (förmånen) — i `updateData()` för manuella regler, i `processRegel()` för maskinella
-regler, i `registerSvar()` för kompletteringsregler, när ett enskilt resultat uppdateras.
-
-### När det steppas
+### Hur regler bumpar ProduceratResultat.version
 
 När data som tillhör ett specifikt `ProduceratResultat` ändras — till exempel uppdaterat
-`beslutsutfall` eller `avslagsanledning` på en ersättning. Regeln hittar det berörda
-resultatet, bygger en ny immutable kopia med ändrade fält och `version + 1`:
+`beslutsutfall` eller `avslagsanledning` på en ersättning — hittar regeln det berörda
+resultatet, och bygger en ny immutable kopia med ändrade fält och `version + 1`:
 
 ```java
 // Exempel från RtfService.java
@@ -82,7 +90,7 @@ En regel som inte muterar något enskilt resultat lämnar likaså alla
 
 ---
 
-## 3. Vad regeln ser — alltid senaste versionen, aldrig historik
+## 3. Vad regeln ser i `produceradeResultat` — alltid senaste versionen, aldrig historik
 
 `produceradeResultat`-listan på `Handlaggning` innehåller **en post per resultat-id** — den
 senaste versionen. Ingen historik sparas i listan.
@@ -111,15 +119,16 @@ vars id inte berörs förs över oförändrade till det nya yrkandet.
 ## Vanliga misstag
 
 **Antagande att ramverket stegar `HandlaggningUpdate.version` automatiskt.**
-Ramverket stegar aldrig versionen — den passeras alltid oförändrad. En regel som förväntar sig
-att ramverket hanterar versionsstegning kommer inte att steppa versionen alls, och konsumenter
-kan inte avgöra om handläggningen har förändrats.
+Ramverket skickar alltid `handlaggning.version()` oförändrat — versionen steppas aldrig av
+ramverket på regelns vägnar. En regel som förväntar sig att ramverket hanterar
+versionsstegning kommer inte att steppa versionen alls, och konsumenter kan inte avgöra om
+handläggningen har förändrats.
 
 **Glömma att steppa `ProduceratResultat.version` när ett resultat uppdateras.**
 Om skrivningen accepteras av backend lagras den version som skickas in. Om versionen inte steppas
 kan konsumenter inte avgöra att resultatet har förändrats.
 
 **Behandla de två versionerna som samma sak.**
-Det är de inte. Ett enda `update()`-anrop steppar `ProduceratResultat.version` men lämnar
-`HandlaggningUpdate.version` på det värde som skrevs av senaste `read()`-anropet.
+Det är de inte. En regel kan steppa `ProduceratResultat.version` på ett enskilt resultat utan
+att för den skull steppa `HandlaggningUpdate.version` — och vice versa.
 
