@@ -24,24 +24,16 @@ Alla repon i ekosystemet har prefixet `rimfrost-`. De delas upp i nio kategorier
 
 Teknikstacken är **Java 21, Quarkus** och **Kogito** för processorkestration, med **Kafka** som kommunikationskanal mellan tjänster.
 
-### Tjänster (rimfrost-service-*)
-
-Tjänsterna är de bakgrundssystem som regler hämtar data från eller interagerar med. De exponerar REST- och/eller Kafka-API:er och har egna specifikationer i tillhörande `-openapi`- och `-asyncapi`-repon.
-
-### Adaptrar (rimfrost-framework-*-adapter)
-
-Adaptrarna är återanvändbara REST-klienter paketerade som Maven-bibliotek. En regel lägger till en adapter som beroende för att prata med en tjänst — utan att behöva implementera HTTP-kommunikationen själv.
-
 ---
 
 ## Arkitektur — den stora bilden
 
-Grundidén är att en **process** orkesterar ett flöde där den ropar på en eller flera **regler**. Reglerna är fristående mikrotjänster som kommunicerar asynkront via Kafka. Varje regel returnerar ett utfall som processen sedan går vidare med.
+Grundidén är att en **process** orkestrerar ett flöde där den ropar på en eller flera **regler**. Reglerna är fristående mikrotjänster som kommunicerar asynkront via Kafka. Varje regel returnerar ett utfall som processen sedan går vidare med.
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                  Process (Kogito BPMN)           │
-│                                                  │
+│                  Process (Kogito BPMN)          │
+│                                                 │
 │   START ──► [Subprocess: Regel A] ──►           │
 │             [Subprocess: Regel B] ──► SLUT      │
 └─────────┬───────────────┬───────────────────────┘
@@ -54,52 +46,20 @@ Grundidén är att en **process** orkesterar ett flöde där den ropar på en el
     └───────────┘   └────────────┘
 ```
 
-**Regler** finns i två varianter:
-
-- **Maskinell** — helt automatiserad, inga mänskliga beslut. Ramverket tar emot en förfrågan, kör regellogiken, och returnerar ett svar.
-- **Manuell** — kräver att en handläggare agerar via en portal (micro-frontend). Ramverket skapar en uppgift i Operativt uppgiftslager (OUL) och väntar på att handläggaren kvitterar den.
-
 ---
 
 ## Ramverket (rimfrost-framework-*)
 
 Du behöver sällan röra ramverkskoden direkt — den konsumeras via Maven-beroenden. Men det är bra att förstå vad varje del gör:
 
-### rimfrost-framework-regel
-
-Baskod som är gemensam för **alla** regler, oavsett om de är maskinella eller manuella.
-
-- Läser in regelns konfiguration från [`config.yaml`](CONFIG_YAML.md)
-- Exponerar Kafka-interface för request/response (regelinitiering och avslut)
-
-### rimfrost-framework-regel-maskinell
-
-Bygger på `rimfrost-framework-regel` och lägger till det som är specifikt för maskinella regler:
-
-- Hanterar inkommande regelförfrågan från Kafka
-- Hämtar handläggningsdata
-- Anropar din regellogik via den abstrakta metoden `processRegel`
-- Sparar resultat och skickar tillbaka svar på Kafka
-
-Du som implementatör behöver bara implementera `processRegel`.
-
-### rimfrost-framework-regel-manuell
-
-Bygger på `rimfrost-framework-regel` och `rimfrost-framework-oul` och lägger till det som krävs för manuella regler:
-
-- Initierar ny regel och skapar uppgift i OUL
-- Lyssnar på OUL-svar och statusuppdateringar
-- Hämtar handläggningsdata
-- Exponerar REST-API som portalen (micro-frontend) anropar
-
-Du som implementatör behöver implementera `readData`, `updateData` och `done`.
-
-### rimfrost-framework-oul
-
-Hanterar kommunikationen med **Operativt uppgiftslager** — det system där handläggarnas uppgifter lever.
-
-- Kafka request/response för skapande av operativa uppgifter
-- REST-interface för Done-operationer
+| Repo | Syfte |
+|------|-------|
+| [`rimfrost-framework-regel`](https://github.com/Forsakringskassan/rimfrost-framework-regel) | Gemensam baskod för alla regeltyper — konfiguration och Kafka-interface |
+| [`rimfrost-framework-oul`](https://github.com/Forsakringskassan/rimfrost-framework-oul) | Kommunikation med Operativt uppgiftslager (OUL) |
+| [`rimfrost-framework-regel-oul`](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul) | OUL-integration och korrelationslagring för regelkörningar som avslutas i ett separat anrop |
+| [`rimfrost-framework-regel-maskinell`](https://github.com/Forsakringskassan/rimfrost-framework-regel-maskinell) | Ramverk för maskinella (automatiserade) regler |
+| [`rimfrost-framework-regel-manuell`](https://github.com/Forsakringskassan/rimfrost-framework-regel-manuell) | Ramverk för manuella regler som kräver handläggainteraktion via portal |
+| [`rimfrost-framework-regel-komplettering`](https://github.com/Forsakringskassan/rimfrost-framework-regel-komplettering) | Ramverk för kompletteringsregler — Kafka-anrop, OUL-uppgift och REST-gränssnitt mot portal |
 
 ### Arvsträd
 
@@ -110,9 +70,30 @@ rimfrost-template-regel-maskinell
 
 rimfrost-template-regel-manuell
     └── rimfrost-framework-regel-manuell
-            ├── rimfrost-framework-regel
-            └── rimfrost-framework-oul
+            └── rimfrost-framework-regel-oul
+                    ├── rimfrost-framework-regel
+                    └── rimfrost-framework-oul
+
+rimfrost-template-regel-komplettering
+    └── rimfrost-framework-regel-komplettering
+            └── rimfrost-framework-regel-oul
+                    ├── rimfrost-framework-regel
+                    └── rimfrost-framework-oul
 ```
+
+---
+
+## Regler
+
+Det finns tre typer av regler:
+
+- **Maskinell** — helt automatiserad, inga mänskliga beslut. Ramverket tar emot en förfrågan, kör regellogiken, och returnerar ett svar.
+- **Manuell** — kräver att en handläggare agerar via en portal (micro-frontend). Ramverket skapar en uppgift i Operativt uppgiftslager (OUL) och väntar på att handläggaren kvitterar den.
+- **Komplettering** — hanterar insamling av kompletterande uppgifter från handläggare. Ramverket kontrollerar om komplettering behövs, skapar i så fall en OUL-uppgift och inväntar kvittens.
+
+**Se även:**
+- [regler/CONFIG_YAML.md](regler/CONFIG_YAML.md) — konfiguration av regler
+- [regler/VERSIONING.md](regler/VERSIONING.md) — versionshantering i regelimplementationer
 
 ---
 
@@ -123,4 +104,4 @@ Beroende på vad du vill skapa finns mer detaljerad information i respektive REA
 - **Skapa en process** — se [processer/README.md](processer/README.md)
 - **Skapa en manuell regel** — se [regler/manuell/README.md](regler/manuell/README.md)
 - **Skapa en maskinell regel** — se [regler/maskinell/README.md](regler/maskinell/README.md)
-- **Konfigurera regelmetadata** — se [CONFIG_YAML.md](CONFIG_YAML.md)
+- **Skapa en kompletteringsregel** — se [regler/komplettering/README.md](regler/komplettering/README.md)
