@@ -28,8 +28,8 @@ med ett versionskonflikt-fel.
 
 ### Ramverkets ansvar
 
-Ramverket stegar aldrig `HandlaggningUpdate.version`. Alla skrivningar skickar
-`handlaggning.version()` oförändrat till backend. Om en regel behöver signalera en meningsfull
+Ramverket stegar aldrig `HandlaggningUpdate.version` — värdet kopieras alltid oförändrat från
+det mottagna `Handlaggning`-objektet. Om en regel behöver signalera en meningsfull
 tillståndsändring till konsumenter ansvarar regeln själv för att steppa versionen.
 
 Versionskonflikt-fel från backend propageras som explicita fel till anroparen. Ramverket
