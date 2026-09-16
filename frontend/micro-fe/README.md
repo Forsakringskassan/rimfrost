@@ -93,6 +93,8 @@ window.dispatchEvent(
 | BFF-URL | `VITE_BFF_URL` | `RUNTIME_BFF_URL` | Bas-URL till micro-frontendens BFF |
 | Dev-ID | `VITE_DEV_HANDLAGGNING_ID` | — | Fallback `handlaggningId` för lokal testning utan portalen |
 
+`runtime-config.js` sätter en global på `window`, namnrymd per app (t.ex. `window.__DIN_REGEL_ENV__`), **inte en delad `window._env_`**. Portalen och varje remote den laddar delar samma webbläsarfönster via Module Federation, så en gemensam global skulle göra att appar skriver över varandras runtime-konfiguration — se motsvarande avsnitt i [portal/README.md](../portal/README.md).
+
 ## Registrering i portalen
 
 Lägg till din nya remote i `remotes.json` i `rimfrost-portal-bff`:
@@ -115,6 +117,12 @@ Lägg till din nya remote i `remotes.json` i `rimfrost-portal-bff`:
 - **devEntry/prodEntry**: URL till micro-frontendens `mf-manifest.json`
 
 Portalen laddar rätt micro-frontend baserat på uppgiftens `url`-fält, som sätts av regelns backend via `config.yaml` (nyckel: `uppgift.path`). Ingen ombyggnad av portalen krävs.
+
+Det inbyggda `remotes.json` i `rimfrost-portal-bff` har bara platshållar-URL:er (`https://*.intern.example.com/...`) i `prodEntry` — dessa är inte riktiga URL:er. För att testa en ny remote mot en verklig `prodEntry` (t.ex. en port-forwardad tjänst i ett lokalt Kubernetes-kluster, se [portal/README.md](../portal/README.md)) utan att ändra det incheckade `remotes.json`, montera en override-fil och sätt `PORTAL_REMOTES_CONFIG_PATH` till dess sökväg — se `rimfrost-portal-bff`s egen README för detaljer.
+
+## CORS
+
+Micro-frontenden laddas cross-origin av portalens skal (olika ursprung/port), så webbservern som serverar de byggda filerna måste skicka `Access-Control-Allow-Origin` för att browsern ska tillåta att portalen hämtar `mf-manifest.json` och tillhörande JS-chunks. **Detta görs inte av micro-fe-templatets Apache-konfiguration idag** — den saknar CORS-headers helt. Håll koll på om templatet uppdaterats med detta innan du bygger en ny micro-frontend; annars behöver du lägga till motsvarande `Header set Access-Control-Allow-Origin`-direktiv själv.
 
 ## Testa
 

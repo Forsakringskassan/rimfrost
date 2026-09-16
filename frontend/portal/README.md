@@ -34,6 +34,12 @@ Portalen körs på http://localhost:3030.
 
 Konfigurationen läses via `src/config/env.ts` — använd aldrig `import.meta.env` direkt i källkoden.
 
+`runtime-config.js` sätter en global på `window`, t.ex. `window.__PORTAL_HANDLAGGARE_ENV__ = { RUNTIME_BFF_URL: "..." }`. **Denna global är namnrymd per app, inte en delad `window._env_`** — portalen och varje micro-frontend den laddar via Module Federation delar samma webbläsarfönster, så en gemensam global skulle göra att portalens och en remotes runtime-konfiguration skriver över varandra. Se motsvarande avsnitt i [micro-fe/README.md](../micro-fe/README.md).
+
+## Köra mot ett Kubernetes-kluster
+
+Portalen och Portal BFF kan köras i ett lokalt Kubernetes-kluster (Helm-chartet i [`rimfrost-kubernetes`](https://github.com/Forsakringskassan/rimfrost-kubernetes)) för att testa hela kedjan — portal, BFF:er och backend-tjänster — tillsammans. `port-forward.sh` i det repot exponerar varje tjänst på en fast `localhost`-port; portalen når då sin BFF via samma `RUNTIME_BFF_URL`-mekanism som beskrivs ovan, satt till BFF:ens port-forwardade port.
+
 ## Testa
 
 ```bash
