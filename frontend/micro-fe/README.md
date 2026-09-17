@@ -95,6 +95,8 @@ window.dispatchEvent(
 
 `runtime-config.js` sätter en global på `window`, namnrymd per app (t.ex. `window.__DIN_REGEL_ENV__`), **inte en delad `window._env_`**. Portalen och varje remote den laddar delar samma webbläsarfönster via Module Federation, så en gemensam global skulle göra att appar skriver över varandras runtime-konfiguration — se motsvarande avsnitt i [portal/README.md](../portal/README.md).
 
+**Viktigt för remote-appar:** din micro-frontend laddas av portalen som en Module Federation-remote — webbläsaren hämtar bara din exponerade JS-chunk, aldrig din egen `index.html`. Det innebär att en `<script src="/runtime-config.js">`-tagg i `index.html` **aldrig körs** när appen körs som remote, och `window.__DIN_REGEL_ENV__` blir `undefined` oavsett vad ConfigMap:en innehåller. `env.ts` behöver därför själv hämta `runtime-config.js`, från appens eget ursprung (`new URL(import.meta.url).origin` — pekar alltid på appens egen deployade URL, oavsett vilken shell som laddat den), istället för att förlita sig på att `index.html` redan laddat den. Se `src/config/env.ts` i `rtf-manuell-fe` eller `bekraftabeslut-fe` för det mönstret, och motsvarande avsnitt i [deployment/README.md](../deployment/README.md) för bakgrunden. Symptom om detta missas: komponenten laddas och renderas fint, men alla API-anrop 404:ar mot **portalens** egen adress istället för din BFF.
+
 ## Registrering i portalen
 
 Lägg till din nya remote i `remotes.json` i `rimfrost-portal-bff`:
@@ -123,6 +125,8 @@ Det inbyggda `remotes.json` i `rimfrost-portal-bff` har bara platshållar-URL:er
 ## CORS
 
 Micro-frontenden laddas cross-origin av portalens skal (olika ursprung/port), så webbservern som serverar de byggda filerna måste skicka `Access-Control-Allow-Origin` för att browsern ska tillåta att portalen hämtar `mf-manifest.json` och tillhörande JS-chunks. **Detta görs inte av micro-fe-templatets Apache-konfiguration idag** — den saknar CORS-headers helt. Håll koll på om templatet uppdaterats med detta innan du bygger en ny micro-frontend; annars behöver du lägga till motsvarande `Header set Access-Control-Allow-Origin`-direktiv själv.
+
+Din micro-frontends egen BFF behöver **också** CORS konfigurerat (dess `CORS_ORIGINS`), och där är det lätt att missa rätt värde: webbläsarens `Origin`-header på anrop från din komponent speglar alltid **portalens** origin (sidan som faktiskt är öppen), inte din micro-frontends egen port — oavsett att koden som gör anropet är din. Se fallgropen i [deployment/README.md](../deployment/README.md) (avsnittet om CORS) för ett konkret exempel.
 
 ## Testa
 
