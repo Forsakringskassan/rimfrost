@@ -97,6 +97,41 @@ Det finns tre typer av regler:
 
 ---
 
+## Externa integrationer
+
+### Team
+
+Kontraktet definieras i `rimfrost-service-team-openapi`.<br>
+Ger regler tillgång till:
+- teamtillhörighet — vilka team en individ tillhör
+- vilka individer som ingår i ett givet team
+- om en handläggare har behörighet att hantera ärenden med skyddad identitet
+
+### Skyddad identitet (SID)
+
+Kontraktet definieras i `rimfrost-service-sid-openapi`.<br>
+Ger regler möjlighet att:
+- kontrollera om en eller flera individer i ett ärende har skyddad identitet
+
+Informationen styr hur ärendet får hanteras och visas för handläggare.
+
+### Arbetsgivare
+
+Kontraktet definieras i `rimfrost-service-arbetsgivare-openapi`.<br>
+Ger regler tillgång till t.ex.:
+- en persons anställningsinformation
+- vilka arbetsgivare personen har eller har haft
+- anställningsgrad och period
+- specificerad löneinformation för en given tidsperiod
+
+### Folkbokföring
+
+Kontraktet definieras i `rimfrost-service-folkbokforing-openapi`.<br>
+Ger regler tillgång till:
+- grundläggande personuppgifter för ett personnummer — namn, kön och folkbokföringsadress.
+
+---
+
 ## Nästa steg
 
 Beroende på vad du vill skapa finns mer detaljerad information i respektive README:
