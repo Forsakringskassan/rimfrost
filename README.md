@@ -99,6 +99,22 @@ Det finns tre typer av regler:
 
 ## Externa integrationer
 
+### Erbjudande-topic
+
+Kontraktet definieras i `rimfrost-service-erbjudande-topic-openapi`.<br>
+Ger ramverket möjlighet att:
+- slå upp vilket Kafka-topic som är associerat med ett givet erbjudande
+
+Används av workflow-servicen för att veta vart ett nystartat flöde ska dirigeras.
+
+### Referensdata
+
+Kontraktet definieras i `rimfrost-service-referensdata-openapi`.<br>
+Ger regler tillgång till:
+- domänens uppslagsvärden — idtyper, yrkanderoller, erbjudanden, beslutstyper och liknande
+
+Används för att översätta råa referensdata-ID:n till läsbara koder och namn.
+
 ### Team
 
 Kontraktet definieras i `rimfrost-service-team-openapi`.<br>
@@ -114,21 +130,6 @@ Ger regler möjlighet att:
 - kontrollera om en eller flera individer i ett ärende har skyddad identitet
 
 Informationen styr hur ärendet får hanteras och visas för handläggare.
-
-### Arbetsgivare
-
-Kontraktet definieras i `rimfrost-service-arbetsgivare-openapi`.<br>
-Ger regler tillgång till t.ex.:
-- en persons anställningsinformation
-- vilka arbetsgivare personen har eller har haft
-- anställningsgrad och period
-- specificerad löneinformation för en given tidsperiod
-
-### Folkbokföring
-
-Kontraktet definieras i `rimfrost-service-folkbokforing-openapi`.<br>
-Ger regler tillgång till:
-- grundläggande personuppgifter för ett personnummer — namn, kön och folkbokföringsadress.
 
 ---
 
