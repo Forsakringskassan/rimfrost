@@ -107,14 +107,6 @@ Ger ramverket möjlighet att:
 
 Används av workflow-servicen för att veta vart ett nystartat flöde ska dirigeras.
 
-### Referensdata
-
-Kontraktet definieras i `rimfrost-service-referensdata-openapi`.<br>
-Ger regler tillgång till:
-- domänens uppslagsvärden — idtyper, yrkanderoller, erbjudanden, beslutstyper och liknande
-
-Används för att översätta råa referensdata-ID:n till läsbara koder och namn.
-
 ### Team
 
 Kontraktet definieras i `rimfrost-service-team-openapi`.<br>
