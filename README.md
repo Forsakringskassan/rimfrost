@@ -121,8 +121,6 @@ Kontraktet definieras i `rimfrost-service-sid-openapi`.<br>
 Ger regler möjlighet att:
 - kontrollera om en eller flera individer i ett ärende har skyddad identitet
 
-Informationen styr hur ärendet får hanteras och visas för handläggare.
-
 ---
 
 ## Nästa steg

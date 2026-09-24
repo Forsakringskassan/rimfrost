@@ -94,7 +94,9 @@ alt skyddad identitet: false
 
     RTF_regel_komplettering -->> portal: (all info som frontend_url behöver)
 else skyddad identitet: true
-    RTF_regel_komplettering -->> portal: (permission denied)
+    RTF_regel_komplettering ->> OUL: POST /uppgifter/{uppgiftId}/unassign
+    OUL -->> RTF_regel_komplettering: (status)
+    RTF_regel_komplettering -->> portal: denied
 end
 
 note over RTF_regel_komplettering: TODO hantering av handläggare med SID-permissions ?
