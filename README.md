@@ -94,6 +94,7 @@ Det finns tre typer av regler:
 **Se även:**
 - [regler/CONFIG_YAML.md](regler/CONFIG_YAML.md) — konfiguration av regler
 - [regler/VERSIONING.md](regler/VERSIONING.md) — versionshantering i regelimplementationer
+- [ASYNC_ROUTING.md](ASYNC_ROUTING.md) — hur svarsdestinationen (`replyTo`) deklareras och propageras genom ramverket
 
 ---
 
@@ -131,3 +132,4 @@ Beroende på vad du vill skapa finns mer detaljerad information i respektive REA
 - **Skapa en manuell regel** — se [regler/manuell/README.md](regler/manuell/README.md)
 - **Skapa en maskinell regel** — se [regler/maskinell/README.md](regler/maskinell/README.md)
 - **Skapa en kompletteringsregel** — se [regler/komplettering/README.md](regler/komplettering/README.md)
+- **Förstå asynkron svarsroutning** — se [ASYNC_ROUTING.md](ASYNC_ROUTING.md)

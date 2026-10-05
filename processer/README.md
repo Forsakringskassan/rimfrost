@@ -1,3 +1,11 @@
+## Asynkron svarsroutning
+
+Top-level processer som triggas via `rimfrost-service-workflow` hanterar `replyTo` via DB-persistering — inte som ett fält i Kafka-meddelandet.
+
+Se [ASYNC_ROUTING.md](../ASYNC_ROUTING.md) för en fullständig beskrivning, inklusive Scenario 4 som täcker workflow-mönstret.
+
+---
+
 ## Relaterade repon
 
 ## rimfrost-framework-process
