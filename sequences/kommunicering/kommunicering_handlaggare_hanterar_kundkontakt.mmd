@@ -1,0 +1,127 @@
+sequenceDiagram
+    title Kommunicering — handläggare hanterar kundkontakt
+
+    participant Process
+    participant regel_kommunicering
+    participant handlaggning
+    participant OUL
+    participant portal
+
+    Process ->> regel_kommunicering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
+
+rect rgb(200, 200, 200)
+
+    note over regel_kommunicering: START Framework
+
+    note over regel_kommunicering: Hämta handläggningsinformation
+    regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over regel_kommunicering: Skapa kommuniceringsuppgift (ej tilldelningsbar)
+    regel_kommunicering ->> OUL: POST /uppgifter (handlaggningId, assignable=false, url, roll, status_topic, ...)
+    OUL -->> regel_kommunicering: (uppgiftId, handlaggningId, status)
+
+    note over regel_kommunicering: Uppdatera handläggningsinformation med uppgiftsinformation
+    regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over regel_kommunicering: END Framework
+
+end
+
+    note over portal: Initierad av kundinitierad kontakt
+
+    note over portal: Handläggare söker kommuniceringsuppgifter för yrkandeindivid
+    portal ->> OUL: GET /uppgifter/individ/{idTyp}/{idVarde}?assignable=false
+
+    note over OUL: individ ej SIDad — returnerar kommuniceringsuppgifter
+    OUL -->> portal: (kommuniceringsuppgifter)
+
+    note over portal: Handläggare tilldelar sig uppgiften
+    portal ->> OUL: POST /uppgifter/{uppgiftId}/handlaggare
+    OUL -->> portal: (uppgift inkl url)
+
+    OUL ->> regel_kommunicering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, status=Tilldelad)
+
+rect rgb(200, 200, 200)
+
+    note over regel_kommunicering: START Framework
+
+    note over regel_kommunicering: Spara uppdaterad uppgift i handläggningsinformation
+    regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over regel_kommunicering: END Framework
+
+end
+
+    note over portal: Tilldelad uppgift visas för handläggare
+    note over portal: url renderar kommuniceringsuppgiften
+
+    portal ->> regel_kommunicering: GET /regel/kommunicering/{handlaggningId}
+
+rect rgb(200, 200, 200)
+
+    note over regel_kommunicering: START Framework
+
+    regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over regel_kommunicering: END Framework
+
+end
+
+note over regel_kommunicering: START Regel (readData)
+note over regel_kommunicering: Hämta data som behövs för kommuniceringsuppgiften
+note over regel_kommunicering: END Regel
+
+    regel_kommunicering -->> portal: (data för kommuniceringsuppgiften)
+
+alt Handläggare nekar bestridande
+    note over portal: Handläggare nekar bestridande och anger motivering
+    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=JA, motivering)
+else Handläggare accepterar bestridande
+    note over portal: Handläggare accepterar bestridande
+    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=NEJ)
+else Handläggare registrerar kundens godkännande
+    note over portal: Kunden har hört av sig och godkänt
+    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=JA)
+end
+
+note over regel_kommunicering: START Regel (updateData)
+note over regel_kommunicering: Uppdatera handläggningsinformation
+note over regel_kommunicering: END Regel
+
+rect rgb(200, 200, 200)
+
+    note over regel_kommunicering: START Framework
+
+    regel_kommunicering -->> portal: OK
+
+    regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over portal: Handläggare avslutar uppgiften
+    portal ->> regel_kommunicering: POST /regel/kommunicering/{handlaggningId}/done
+    regel_kommunicering -->> portal: OK
+
+    regel_kommunicering ->> OUL: POST /uppgifter/{uppgiftId}/end (reason=Avslutad)
+    OUL -->> regel_kommunicering: (status)
+
+    regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over regel_kommunicering: END Framework
+
+end
+
+note over regel_kommunicering: START Regel (done)
+note over regel_kommunicering: Eventuell cleanup
+note over regel_kommunicering: framework-metod: sendRegelResponse(handlaggningId, utfall)
+
+rect rgb(200, 200, 200)
+    note over regel_kommunicering: framework sendRegelResponse skickar:
+    regel_kommunicering ->> Process: Kafka: RegelResponseMessage (handlaggningId, utfall=JA|NEJ)
+end
+
+note over regel_kommunicering: END Regel
