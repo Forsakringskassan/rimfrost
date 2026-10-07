@@ -38,7 +38,7 @@ end
     OUL -->> portal: (kommuniceringsuppgifter)
 
     note over portal: Handläggare tilldelar sig uppgiften
-    portal ->> OUL: POST /uppgifter/{uppgiftId}/assign/{handlaggareId}
+    portal ->> OUL: POST /uppgifter/{uppgiftId}/handlaggare
     OUL -->> portal: (uppgift inkl url)
 
     OUL ->> regel_kommunicering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, status=Tilldelad)
