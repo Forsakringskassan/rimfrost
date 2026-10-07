@@ -6,12 +6,16 @@ sequenceDiagram
     participant handlaggning
     participant OUL
 
+rect rgb(70, 120, 160)
+    note over Process,OUL: Ramverkslogik
+end
+rect rgb(180, 130, 50)
+    note over Process,OUL: Regelspecifik logik
+end
+
     Process ->> regel_kommunicering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
 
-rect rgb(200, 200, 200)
-
-    note over regel_kommunicering: START Framework
-
+rect rgb(70, 120, 160)
     note over regel_kommunicering: Hämta handläggningsinformation
     regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
@@ -23,25 +27,17 @@ rect rgb(200, 200, 200)
     note over regel_kommunicering: Uppdatera handläggningsinformation med uppgiftsinformation
     regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
-
-    note over regel_kommunicering: END Framework
-
 end
 
     note over Process: BPMN-timer löper ut
 
     Process ->> regel_kommunicering: Kafka: RegelOulCancelledMessage (handlaggningId)
 
-rect rgb(200, 200, 200)
-
-    note over regel_kommunicering: START Framework
-
+rect rgb(70, 120, 160)
     regel_kommunicering ->> OUL: POST /uppgifter/{uppgiftId}/end (reason=Avbruten)
     OUL -->> regel_kommunicering: (status)
 
     note over regel_kommunicering: Rensa korrelationsdata
-    note over regel_kommunicering: END Framework
-
 end
 
     note over Process: Flödet fortsätter via BPMN-timerns utgångssteg (inget RegelResponseMessage skickas)
