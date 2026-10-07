@@ -44,7 +44,4 @@ rect rgb(200, 200, 200)
 
 end
 
-    OUL ->> regel_kommunicering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, status=Avslutad)
-    note over regel_kommunicering: Korrelationsdata saknas — meddelande ignoreras
-
     note over Process: Flödet fortsätter via BPMN-timerns utgångssteg (inget RegelResponseMessage skickas)
