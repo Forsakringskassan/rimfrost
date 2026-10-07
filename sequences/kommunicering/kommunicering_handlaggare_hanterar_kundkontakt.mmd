@@ -14,9 +14,9 @@ rect rgb(180, 130, 50)
     note over Process,portal: Regelspecifik logik
 end
 
+rect rgb(70, 120, 160)
     Process ->> regel_kommunicering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
 
-rect rgb(70, 120, 160)
     note over regel_kommunicering: Hämta handläggningsinformation
     regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
@@ -42,9 +42,9 @@ end
     portal ->> OUL: POST /uppgifter/{uppgiftId}/handlaggare
     OUL -->> portal: (uppgift inkl url)
 
+rect rgb(70, 120, 160)
     OUL ->> regel_kommunicering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, status=Tilldelad)
 
-rect rgb(70, 120, 160)
     note over regel_kommunicering: Spara uppdaterad uppgift i handläggningsinformation
     regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
