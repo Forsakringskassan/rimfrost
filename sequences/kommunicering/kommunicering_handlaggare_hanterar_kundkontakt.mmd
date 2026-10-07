@@ -78,14 +78,14 @@ note over regel_kommunicering: END Regel
     regel_kommunicering -->> portal: (data för kommuniceringsuppgiften)
 
 alt Handläggare nekar bestridande
-    note over portal: Handläggare nekar bestridande och anger motivering
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=JA, motivering)
+    note over portal: Handläggare nekar bestridande och anger kommentar
+    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=NekatBestridande, kommentar)
 else Handläggare accepterar bestridande
     note over portal: Handläggare accepterar bestridande
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=NEJ)
+    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=AccepteratBestridande)
 else Handläggare registrerar kundens godkännande
     note over portal: Kunden har hört av sig och godkänt
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=JA)
+    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=KundAccepterat)
 end
 
 note over regel_kommunicering: START Regel (updateData)
@@ -117,11 +117,13 @@ end
 
 note over regel_kommunicering: START Regel (done)
 note over regel_kommunicering: Eventuell cleanup
-note over regel_kommunicering: framework-metod: sendRegelResponse(handlaggningId, utfall)
+note over regel_kommunicering: Framework mappar kommuniceringsutfall → regelutfall
 
 rect rgb(200, 200, 200)
-    note over regel_kommunicering: framework sendRegelResponse skickar:
-    regel_kommunicering ->> Process: Kafka: RegelResponseMessage (handlaggningId, utfall=JA|NEJ)
+    note over regel_kommunicering: NekatBestridande → Ja
+    note over regel_kommunicering: AccepteratBestridande → Nej
+    note over regel_kommunicering: KundAccepterat → Ja
+    regel_kommunicering ->> Process: Kafka: RegelResponseMessage (handlaggningId, utfall=Ja|Nej)
 end
 
 note over regel_kommunicering: END Regel
