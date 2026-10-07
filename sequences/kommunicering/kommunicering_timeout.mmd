@@ -1,0 +1,50 @@
+sequenceDiagram
+    title Kommunicering — timeout
+
+    participant Process
+    participant regel_kommunicering
+    participant handlaggning
+    participant OUL
+
+    Process ->> regel_kommunicering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
+
+rect rgb(200, 200, 200)
+
+    note over regel_kommunicering: START Framework
+
+    note over regel_kommunicering: Hämta handläggningsinformation
+    regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over regel_kommunicering: Skapa kommuniceringsuppgift (ej tilldelningsbar)
+    regel_kommunicering ->> OUL: POST /uppgifter (handlaggningId, assignable=false, url, roll, status_topic, ...)
+    OUL -->> regel_kommunicering: (uppgiftId, handlaggningId, status)
+
+    note over regel_kommunicering: Uppdatera handläggningsinformation med uppgiftsinformation
+    regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+
+    note over regel_kommunicering: END Framework
+
+end
+
+    note over Process: BPMN-timer löper ut
+
+    Process ->> regel_kommunicering: Kafka: RegelOulCancelledMessage (handlaggningId)
+
+rect rgb(200, 200, 200)
+
+    note over regel_kommunicering: START Framework
+
+    regel_kommunicering ->> OUL: POST /uppgifter/{uppgiftId}/end (reason=Avbruten)
+    OUL -->> regel_kommunicering: (status)
+
+    note over regel_kommunicering: Rensa korrelationsdata
+    note over regel_kommunicering: END Framework
+
+end
+
+    OUL ->> regel_kommunicering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, status=Avslutad)
+    note over regel_kommunicering: Korrelationsdata saknas — meddelande ignoreras
+
+    note over Process: Flödet fortsätter via BPMN-timerns utgångssteg (inget RegelResponseMessage skickas)
