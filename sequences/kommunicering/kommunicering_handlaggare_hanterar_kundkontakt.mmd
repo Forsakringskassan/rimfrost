@@ -67,12 +67,15 @@ alt Handläggare nekar bestridande
         note over regel_kommunicering: utfall: Ja
     end
 else Handläggare accepterar bestridande
-    note over portal: Handläggare accepterar bestridande
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=AccepteratBestridande)
+    note over portal: Handläggare accepterar bestridande och uppdaterar regelspecifik kommuniceringsinformation
+
+    portal ->> regel_kommunicering: PATCH /regel/rtf-kommunicering/{handlaggningId} (regelspecifik kommuniceringsinformation)
 
     note over regel_kommunicering: uppdatera handläggningsunderlag med regelspecifik kommuniceringsinformation
     regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
+    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=AccepteratBestridande)
+
     rect rgb(70, 120, 160)
         note over regel_kommunicering: utfall: Nej
     end
