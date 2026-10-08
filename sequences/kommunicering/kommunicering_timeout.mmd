@@ -10,9 +10,9 @@ rect rgb(70, 120, 160)
     note over Process,OUL: Ramverkslogik
 end
 
-rect rgb(70, 120, 160)
     Process ->> regel_kommunicering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
 
+rect rgb(70, 120, 160)
     note over regel_kommunicering: Hämta handläggningsinformation
     regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
@@ -28,9 +28,9 @@ end
 
     note over Process: BPMN-timer löper ut
 
-rect rgb(70, 120, 160)
     Process ->> regel_kommunicering: Kafka: RegelOulCancelledMessage (handlaggningId)
 
+rect rgb(70, 120, 160)
     regel_kommunicering ->> OUL: POST /uppgifter/{uppgiftId}/end (reason=Avbruten)
     OUL -->> regel_kommunicering: (status)
 

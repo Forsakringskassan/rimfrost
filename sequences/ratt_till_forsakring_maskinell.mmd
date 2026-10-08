@@ -12,9 +12,9 @@ rect rgb(70, 120, 160)
     note over VAH,handlaggning: Ramverkslogik
 end
 
-rect rgb(70, 120, 160)
     VAH ->> RTF_regel_maskinell: Kafka: RegelRequestMessage (handlaggningId, aktivitetsId)
 
+rect rgb(70, 120, 160)
     note over RTF_regel_maskinell: Hämta handläggningsinformation
     RTF_regel_maskinell ->> handlaggning: GET /handlaggning/handlaggningId}
     handlaggning -->> RTF_regel_maskinell: (handlaggning)

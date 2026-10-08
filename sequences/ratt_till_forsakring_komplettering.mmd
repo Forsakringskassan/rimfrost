@@ -13,9 +13,9 @@ rect rgb(70, 120, 160)
     note over VAH,arbetsgivare: Ramverkslogik
 end
 
-rect rgb(70, 120, 160)
     VAH ->> RTF_regel_komplettering: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
 
+rect rgb(70, 120, 160)
     note over RTF_regel_komplettering: Hämta handläggningsinformation
     RTF_regel_komplettering ->> handlaggning: GET /handlaggning/handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
@@ -59,20 +59,22 @@ end
 
     note over OUL: tilldela uppgift till handläggare
 
-rect rgb(70, 120, 160)
     OUL ->> RTF_regel_komplettering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftsId, status=Tilldelad)
 
+rect rgb(70, 120, 160)
     note over RTF_regel_komplettering: Spara uppdaterad uppgift i handläggningsinformation
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}/
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
 
     OUL -->> portal: (operativUppgift inkl url)
+end
 
     note over portal: Tilldelad uppgift visas för handläggare
     note over portal: url renderar tilldelad uppgift
 
     portal ->> RTF_regel_komplettering: GET /regel/rtf-komplettering/{handlaggningId}
 
+rect rgb(70, 120, 160)
     note over RTF_regel_komplettering: Hämta handläggningsinformation
     RTF_regel_komplettering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
@@ -112,13 +114,10 @@ end
 
     note over portal: Handläggare utför manuell uppgift
 
-rect rgb(70, 120, 160)
     portal ->> RTF_regel_komplettering: PATCH /regel/rtf-komplettering/{handlaggningId} (info om uppgift och resultat)
-end
-
-    note over RTF_regel_komplettering: Uppdatera handläggningsinformation
 
 rect rgb(70, 120, 160)
+    note over RTF_regel_komplettering: Uppdatera handläggningsinformation
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
 
@@ -127,8 +126,9 @@ end
 
     note over portal: Handläggare avslutar uppgift
 
-rect rgb(70, 120, 160)
     portal ->> RTF_regel_komplettering: POST /regel/rtf-komplettering/{handlaggningId}/done
+
+rect rgb(70, 120, 160)
     RTF_regel_komplettering -->> portal: OK
     RTF_regel_komplettering ->> OUL: POST /uppgifter/{uppgiftId}/close (anledning=Avslutad)
     OUL -->> RTF_regel_komplettering: (status)
