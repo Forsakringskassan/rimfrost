@@ -62,10 +62,24 @@ end
 
 alt Handläggare nekar bestridande
     note over portal: Handläggare nekar bestridande och anger kommentar
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=NekatBestridande, kommentar)
     rect rgb(70, 120, 160)
-        note over regel_kommunicering: utfall: Ja
+
+        portal ->> regel_kommunicering: PATCH /regel/uppgiftskommentar/{handlaggningId} (kommentar)
+        note over regel_kommunicering: uppdatera handläggningsunderlag med uppgiftskommentar
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
     end
+    rect rgb(70, 120, 160)
+        portal ->> regel_kommunicering: PATCH /regel/kommuniceringsutfall/{handlaggningId} (utfall=NekatBestridande)
+        note over regel_kommunicering: utfall: Ja
+        note over regel_kommunicering: Uppdatera handläggningsinformation med regelutfall
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+        regel_kommunicering -->> portal: OK
+    end
+
+
+
 else Handläggare accepterar bestridande
     note over portal: Handläggare accepterar bestridande och uppdaterar regelspecifik kommuniceringsinformation
 
@@ -74,25 +88,25 @@ else Handläggare accepterar bestridande
     note over regel_kommunicering: uppdatera handläggningsunderlag med regelspecifik kommuniceringsinformation
     regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=AccepteratBestridande)
 
     rect rgb(70, 120, 160)
+        portal ->> regel_kommunicering: PATCH /regel/kommuniceringsutfall/{handlaggningId} (utfall=AccepteratBestridande)
         note over regel_kommunicering: utfall: Nej
+        note over regel_kommunicering: Uppdatera handläggningsinformation med regelutfall
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+        regel_kommunicering -->> portal: OK
     end
 else Handläggare registrerar kundens godkännande
     note over portal: Kunden har hört av sig och godkänt
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId}/kommuniceringsutfall (utfall=KundAccepterat)
     rect rgb(70, 120, 160)
+        portal ->> regel_kommunicering: PATCH /regel/kommuniceringsutfall/{handlaggningId} (utfall=KundAccepterat)
         note over regel_kommunicering: utfall: Ja
+        note over regel_kommunicering: Uppdatera handläggningsinformation med regelutfall
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+        regel_kommunicering -->> portal: OK
     end
-end
-
-rect rgb(70, 120, 160)
-    note over regel_kommunicering: Uppdatera handläggningsinformation med regelutfall
-    regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
-    handlaggning -->> regel_kommunicering: (handlaggning)
-
-    regel_kommunicering -->> portal: OK
 end
 
     note over portal: Handläggare avslutar uppgiften
