@@ -12,9 +12,6 @@ sequenceDiagram
 rect rgb(70, 120, 160)
     note over VAH,arbetsgivare: Ramverkslogik
 end
-rect rgb(180, 130, 50)
-    note over VAH,arbetsgivare: Regelspecifik logik
-end
 
 rect rgb(70, 120, 160)
     VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
@@ -85,7 +82,6 @@ rect rgb(70, 120, 160)
     handlaggning -->> RTF_regel_manuell: (handlaggning)
 end
 
-rect rgb(180, 130, 50)
     note over RTF_regel_manuell: Hämta infon som behövs för regeln
     note over RTF_regel_manuell: individId hämtas från handläggningsinformation
 
@@ -108,7 +104,6 @@ end
 
     note over RTF_regel_manuell: TODO hantering av handläggare med SID-permissions ?
     note over RTF_regel_manuell: Uppdatera handläggningsinformation
-end
 
 rect rgb(70, 120, 160)
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
@@ -121,9 +116,7 @@ rect rgb(70, 120, 160)
     portal ->> RTF_regel_manuell: PATCH /regel/rtf-manuell/{handlaggningId} (info om uppgift och resultat)
 end
 
-rect rgb(180, 130, 50)
     note over RTF_regel_manuell: Uppdatera handläggningsinformation
-end
 
 rect rgb(70, 120, 160)
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
@@ -145,10 +138,8 @@ rect rgb(70, 120, 160)
     handlaggning -->> RTF_regel_manuell: (handlaggning)
 end
 
-rect rgb(180, 130, 50)
     note over RTF_regel_manuell: Eventuell cleanup som regeln kräver
     note over RTF_regel_manuell: sendRegelResponse(handlaggningId, Utfall=JA)
-end
 
 rect rgb(70, 120, 160)
     RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)

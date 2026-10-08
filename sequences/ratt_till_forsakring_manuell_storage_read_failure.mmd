@@ -8,9 +8,6 @@ sequenceDiagram
 rect rgb(70, 120, 160)
     note over VAH,OUL: Ramverkslogik
 end
-rect rgb(180, 130, 50)
-    note over VAH,OUL: Regelspecifik logik
-end
 
 rect rgb(70, 120, 160)
     VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
@@ -30,10 +27,8 @@ rect rgb(70, 120, 160)
     OUL -->> RTF_regel_manuell: (status)
 end
 
-rect rgb(180, 130, 50)
     note over RTF_regel_manuell: Eventuell cleanup som regeln kräver vid abort
     note over RTF_regel_manuell: sendRegelResponse(handlaggningId, Utfall=ABORTED)
-end
 
 rect rgb(70, 120, 160)
     RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)

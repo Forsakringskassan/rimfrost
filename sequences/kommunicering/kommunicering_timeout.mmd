@@ -9,9 +9,6 @@ sequenceDiagram
 rect rgb(70, 120, 160)
     note over Process,OUL: Ramverkslogik
 end
-rect rgb(180, 130, 50)
-    note over Process,OUL: Regelspecifik logik
-end
 
 rect rgb(70, 120, 160)
     Process ->> regel_kommunicering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
