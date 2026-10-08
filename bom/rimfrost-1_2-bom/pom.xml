@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Bill of materials for the Rimfrost release rimfrost-1_2.
+
+  Contains every Forsakringskassan/rimfrost-* repository that has the git tag
+  rimfrost-1_2 and publishes a Maven artifact. The poms in those repositories
+  declare *-SNAPSHOT versions, so each version here is the release tag that
+  rimfrost-1_2 points at (the commits in between only update CHANGELOG.md).
+  rimfrost-framework-regel-oul-asyncapi has no 0.0.2 git tag; its version is
+  taken from gradle.properties.
+
+  Tagged rimfrost-1_2 but not included, since they publish no Maven artifact:
+    rimfrost-kubernetes                            -        (Kubernetes manifests and smoketest, no release tag)
+    rimfrost-portal-admin-fe                       0.0.2    (npm frontend, not a Maven artifact)
+    rimfrost-portal-handlaggare                    0.4.0    (npm frontend, not a Maven artifact)
+    rimfrost-regel-bekraftabeslut-fe               0.0.4    (npm frontend, not a Maven artifact)
+    rimfrost-regel-rtf-manuell-fe                  0.0.4    (npm frontend, not a Maven artifact)
+    rimfrost-regel-rtf-manuell-komplettering-fe    0.0.1    (npm frontend, not a Maven artifact)
+    rimfrost-template-micro-fe                     2.0.1    (npm frontend, not a Maven artifact)
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>se.fk.rimfrost</groupId>
+  <artifactId>rimfrost-bom</artifactId>
+  <version>1.2</version>
+  <packaging>pom</packaging>
+
+  <name>Rimfrost BOM (rimfrost-1_2)</name>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- rimfrost-adapter-arbetsgivare -->
+      <dependency>
+        <groupId>se.fk.rimfrost.adapter.arbetsgivare</groupId>
+        <artifactId>rimfrost-adapter-arbetsgivare</artifactId>
+        <version>1.1.4</version>
+      </dependency>
+      <!-- rimfrost-adapter-folkbokford -->
+      <dependency>
+        <groupId>se.fk.rimfrost.adapter.folkbokford</groupId>
+        <artifactId>rimfrost-adapter-folkbokford</artifactId>
+        <version>1.1.5</version>
+      </dependency>
+      <!-- rimfrost-adapter-referensdata -->
+      <dependency>
+        <groupId>se.fk.rimfrost.adapter.referensdata</groupId>
+        <artifactId>rimfrost-adapter-referensdata</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-adapter-team -->
+      <dependency>
+        <groupId>se.fk.rimfrost.adapter.team</groupId>
+        <artifactId>rimfrost-adapter-team</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <!-- rimfrost-ersattning-data -->
+      <dependency>
+        <groupId>se.fk.rimfrost.ersattningdata</groupId>
+        <artifactId>rimfrost-ersattning-data</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <!-- rimfrost-framework-bff -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.bff</groupId>
+        <artifactId>rimfrost-framework-bff</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.bff</groupId>
+        <artifactId>rimfrost-framework-bff</artifactId>
+        <version>0.0.1</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <!-- rimfrost-framework-erbjudande-topic-adapter -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.erbjudande.topic</groupId>
+        <artifactId>rimfrost-framework-erbjudande-topic-adapter</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <!-- rimfrost-framework-handlaggning-adapter -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.handlaggning</groupId>
+        <artifactId>rimfrost-framework-handlaggning-adapter</artifactId>
+        <version>1.2.4</version>
+      </dependency>
+      <!-- rimfrost-framework-oul-adapter -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.oul</groupId>
+        <artifactId>rimfrost-framework-oul-adapter</artifactId>
+        <version>1.1.5</version>
+      </dependency>
+      <!-- rimfrost-framework-oul -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.oul</groupId>
+        <artifactId>rimfrost-framework-oul</artifactId>
+        <version>1.1.3</version>
+      </dependency>
+      <!-- rimfrost-framework-process -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.process</groupId>
+        <artifactId>rimfrost-framework-process</artifactId>
+        <version>1.6.4</version>
+      </dependency>
+      <!-- rimfrost-framework-referensdata-interface -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.referensdata</groupId>
+        <artifactId>rimfrost-framework-referensdata-interface</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <!-- rimfrost-framework-regel-asyncapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel</groupId>
+        <artifactId>rimfrost-framework-regel-asyncapi</artifactId>
+        <version>1.1.4</version>
+      </dependency>
+      <!-- rimfrost-framework-regel-error-codes -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.error</groupId>
+        <artifactId>rimfrost-framework-regel-error-codes</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <!-- rimfrost-framework-regel-komplettering -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.komplettering</groupId>
+        <artifactId>rimfrost-framework-regel-komplettering</artifactId>
+        <version>0.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.komplettering</groupId>
+        <artifactId>rimfrost-framework-regel-komplettering</artifactId>
+        <version>0.1.1</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <!-- rimfrost-framework-regel-manuell-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.manuell</groupId>
+        <artifactId>rimfrost-framework-regel-manuell-openapi-jaxrs-spec</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.manuell</groupId>
+        <artifactId>rimfrost-framework-regel-manuell-openapi-spec</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <!-- rimfrost-framework-regel-manuell -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.manuell</groupId>
+        <artifactId>rimfrost-framework-regel-manuell</artifactId>
+        <version>1.4.5</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.manuell</groupId>
+        <artifactId>rimfrost-framework-regel-manuell</artifactId>
+        <version>1.4.5</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <!-- rimfrost-framework-regel-maskinell -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.maskinell</groupId>
+        <artifactId>rimfrost-framework-regel-maskinell</artifactId>
+        <version>1.1.8</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.maskinell</groupId>
+        <artifactId>rimfrost-framework-regel-maskinell</artifactId>
+        <version>1.1.8</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <!-- rimfrost-framework-regel-oul-asyncapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
+        <artifactId>rimfrost-framework-regel-oul-asyncapi</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <!-- rimfrost-framework-regel-oul-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
+        <artifactId>rimfrost-framework-regel-oul-openapi-jaxrs-spec</artifactId>
+        <version>0.0.3</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
+        <artifactId>rimfrost-framework-regel-oul-openapi-spec</artifactId>
+        <version>0.0.3</version>
+      </dependency>
+      <!-- rimfrost-framework-regel-oul -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
+        <artifactId>rimfrost-framework-regel-oul</artifactId>
+        <version>0.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
+        <artifactId>rimfrost-framework-regel-oul</artifactId>
+        <version>0.1.2</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <!-- rimfrost-framework-regel -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel</groupId>
+        <artifactId>rimfrost-framework-regel</artifactId>
+        <version>1.4.4</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.regel</groupId>
+        <artifactId>rimfrost-framework-regel</artifactId>
+        <version>1.4.4</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <!-- rimfrost-framework-sid-adapter -->
+      <dependency>
+        <groupId>se.fk.rimfrost.framework.sid</groupId>
+        <artifactId>rimfrost-framework-sid-adapter</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <!-- rimfrost-portal-admin-bff -->
+      <dependency>
+        <groupId>se.fk.github</groupId>
+        <artifactId>rimfrost-portal-admin-bff</artifactId>
+        <version>0.0.4</version>
+      </dependency>
+      <!-- rimfrost-portal-bff -->
+      <dependency>
+        <groupId>se.fk.github</groupId>
+        <artifactId>rimfrost-portal-bff</artifactId>
+        <version>2.1.3</version>
+      </dependency>
+      <!-- rimfrost-process-asyncapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-process-asyncapi</artifactId>
+        <version>1.2.3</version>
+      </dependency>
+      <!-- rimfrost-process-vab -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-vard-av-boskap</artifactId>
+        <version>0.0.5</version>
+      </dependency>
+      <!-- rimfrost-process-vah -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-vard-av-husdjur</artifactId>
+        <version>1.1.7</version>
+      </dependency>
+      <!-- rimfrost-referensdata-erbjudande -->
+      <dependency>
+        <groupId>se.fk.rimfrost.referensdata</groupId>
+        <artifactId>rimfrost-referensdata-erbjudande</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <!-- rimfrost-regel-bekraftabeslut-bff -->
+      <dependency>
+        <groupId>se.fk.github</groupId>
+        <artifactId>rimfrost-regel-bekraftabeslut-bff</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <!-- rimfrost-regel-bekraftabeslut-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.regel.bekraftabeslut.openapi</groupId>
+        <artifactId>rimfrost-regel-bekraftabeslut-openapi-jaxrs-spec</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.regel.bekraftabeslut.openapi</groupId>
+        <artifactId>rimfrost-regel-bekraftabeslut-openapi-spec</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-regel-bekraftabeslut-subprocess -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost.regel.subprocess</groupId>
+        <artifactId>rimfrost-regel-bekraftabeslut-subprocess</artifactId>
+        <version>1.1.7</version>
+      </dependency>
+      <!-- rimfrost-regel-bekraftabeslut -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-regel-bekraftabeslut</artifactId>
+        <version>1.1.9</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-manuell-bff -->
+      <dependency>
+        <groupId>se.fk.github</groupId>
+        <artifactId>rimfrost-regel-rtf-manuell-bff</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-manuell-komplettering-bff -->
+      <dependency>
+        <groupId>se.fk.github</groupId>
+        <artifactId>rimfrost-regel-rtf-manuell-komplettering-bff</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-manuell-komplettering -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-regel-rtf-manuell-komplettering</artifactId>
+        <version>0.0.7</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-manuell-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.regel.rtf.manuell</groupId>
+        <artifactId>rimfrost-regel-rtf-manuell-openapi-jaxrs-spec</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.regel.rtf.manuell</groupId>
+        <artifactId>rimfrost-regel-rtf-manuell-openapi-spec</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-manuell-subprocess -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost.regel.subprocess</groupId>
+        <artifactId>rimfrost-regel-rtf-manuell-subprocess</artifactId>
+        <version>1.1.8</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-manuell -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-regel-rtf-manuell</artifactId>
+        <version>1.3.6</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-maskinell-subprocess -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost.regel.subprocess</groupId>
+        <artifactId>rimfrost-regel-rtf-maskinell-subprocess</artifactId>
+        <version>1.1.7</version>
+      </dependency>
+      <!-- rimfrost-regel-rtf-maskinell -->
+      <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>rimfrost-regel-rtf-maskinell</artifactId>
+        <version>1.1.7</version>
+      </dependency>
+      <!-- rimfrost-service-arbetsgivare-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.api.arbetsgivare</groupId>
+        <artifactId>rimfrost-arbetsgivare-api-jaxrs-spec</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.api.arbetsgivare</groupId>
+        <artifactId>rimfrost-arbetsgivare-api-spec</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <!-- rimfrost-service-arbetsgivare -->
+      <dependency>
+        <groupId>fk.rimfrost</groupId>
+        <artifactId>arbetsgivare</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <!-- rimfrost-service-erbjudande-topic-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.erbjudande.kafka.topic</groupId>
+        <artifactId>rimfrost-service-erbjudande-topic-api-jaxrs-spec</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.erbjudande.kafka.topic</groupId>
+        <artifactId>rimfrost-service-erbjudande-topic-api-spec</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <!-- rimfrost-service-erbjudande-topic -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-service-erbjudande-topic</artifactId>
+        <version>0.1.2</version>
+      </dependency>
+      <!-- rimfrost-service-folkbokforing-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.api.folkbokforing</groupId>
+        <artifactId>rimfrost-folkbokforing-api-jaxrs-spec</artifactId>
+        <version>2.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.api.folkbokforing</groupId>
+        <artifactId>rimfrost-folkbokforing-api-spec</artifactId>
+        <version>2.0.2</version>
+      </dependency>
+      <!-- rimfrost-service-folkbokforing -->
+      <dependency>
+        <groupId>fk.rimfrost</groupId>
+        <artifactId>folkbokford</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-service-handlaggning-asyncapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-service-handlaggning-asyncapi</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <!-- rimfrost-service-handlaggning-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-service-handlaggning-openapi-jaxrs-spec</artifactId>
+        <version>2.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-service-handlaggning-openapi-spec</artifactId>
+        <version>2.0.7</version>
+      </dependency>
+      <!-- rimfrost-service-handlaggning -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-service-handlaggning</artifactId>
+        <version>1.3.3</version>
+      </dependency>
+      <!-- rimfrost-service-oul-asyncapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-service-oul-asyncapi</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-service-oul-management-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.oul.management</groupId>
+        <artifactId>rimfrost-service-oul-management-api-jaxrs-spec</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.oul.management</groupId>
+        <artifactId>rimfrost-service-oul-management-api-spec</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+      <!-- rimfrost-service-oul-management-regler-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.oul.management.regler</groupId>
+        <artifactId>rimfrost-service-oul-management-regler-api-jaxrs-spec</artifactId>
+        <version>0.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.oul.management.regler</groupId>
+        <artifactId>rimfrost-service-oul-management-regler-api-spec</artifactId>
+        <version>0.0.7</version>
+      </dependency>
+      <!-- rimfrost-service-oul-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.oul.handlaggning</groupId>
+        <artifactId>rimfrost-service-oul-openapi-jaxrs-spec</artifactId>
+        <version>2.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.oul.handlaggning</groupId>
+        <artifactId>rimfrost-service-oul-openapi-spec</artifactId>
+        <version>2.3.1</version>
+      </dependency>
+      <!-- rimfrost-service-oul -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-operativt-uppgiftslager</artifactId>
+        <version>1.7.1</version>
+      </dependency>
+      <!-- rimfrost-service-referensdata-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-service-referensdata-openapi-jaxrs-spec</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-service-referensdata-openapi-spec</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <!-- rimfrost-service-referensdata -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-service-referensdata</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-service-sid-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.sid</groupId>
+        <artifactId>rimfrost-service-sid-api-jaxrs-spec</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.sid</groupId>
+        <artifactId>rimfrost-service-sid-api-spec</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <!-- rimfrost-service-sid -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-service-sid</artifactId>
+        <version>0.1.1</version>
+      </dependency>
+      <!-- rimfrost-service-team-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.team</groupId>
+        <artifactId>rimfrost-service-team-openapi-jaxrs-spec</artifactId>
+        <version>0.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.team</groupId>
+        <artifactId>rimfrost-service-team-openapi-spec</artifactId>
+        <version>0.1.1</version>
+      </dependency>
+      <!-- rimfrost-service-team -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-service-team</artifactId>
+        <version>0.1.0</version>
+      </dependency>
+      <!-- rimfrost-service-workflow-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.workflow</groupId>
+        <artifactId>rimfrost-service-workflow-openapi-jaxrs-spec</artifactId>
+        <version>0.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.workflow</groupId>
+        <artifactId>rimfrost-service-workflow-openapi-spec</artifactId>
+        <version>0.1.2</version>
+      </dependency>
+      <!-- rimfrost-service-workflow -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-service-workflow</artifactId>
+        <version>0.2.4</version>
+      </dependency>
+      <!-- rimfrost-template-micro-fe-bff -->
+      <dependency>
+        <groupId>se.fk.github</groupId>
+        <artifactId>rimfrost-template-micro-fe-bff</artifactId>
+        <version>0.1.0</version>
+      </dependency>
+      <!-- rimfrost-template-process -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost</groupId>
+        <artifactId>rimfrost-template-process</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-template-referensdata-erbjudande -->
+      <dependency>
+        <groupId>se.fk.rimfrost.referensdata</groupId>
+        <artifactId>rimfrost-template-referensdata-erbjudande</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <!-- rimfrost-template-regel-komplettering-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.template.regel.komplettering.openapi</groupId>
+        <artifactId>rimfrost-template-regel-komplettering-openapi-jaxrs-spec</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.template.regel.komplettering.openapi</groupId>
+        <artifactId>rimfrost-template-regel-komplettering-openapi-spec</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <!-- rimfrost-template-regel-komplettering -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-template-regel-komplettering</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <!-- rimfrost-template-regel-manuell-openapi -->
+      <dependency>
+        <groupId>se.fk.rimfrost.template.regel.manuell.openapi</groupId>
+        <artifactId>rimfrost-template-regel-manuell-openapi-jaxrs-spec</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>se.fk.rimfrost.template.regel.manuell.openapi</groupId>
+        <artifactId>rimfrost-template-regel-manuell-openapi-spec</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <!-- rimfrost-template-regel-manuell -->
+      <dependency>
+        <groupId>se.fk.rimfrost</groupId>
+        <artifactId>rimfrost-template-regel-manuell</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-template-regel-maskinell -->
+      <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>rimfrost-template-regel-maskinell</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <!-- rimfrost-template-regel-subprocess -->
+      <dependency>
+        <groupId>se.fk.github.rimfrost.regel.subprocess</groupId>
+        <artifactId>rimfrost-template-regel-subprocess</artifactId>
+        <version>1.1.3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
