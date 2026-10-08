@@ -1,11 +1,21 @@
 sequenceDiagram
 
-VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
+    participant VAH
+    participant RTF_regel_manuell
+    participant handlaggning
+    participant OUL
+    participant SID
+    participant portal
+    participant folkbokford
+    participant arbetsgivare
 
-rect rgb(200, 200, 200)
+rect rgb(70, 120, 160)
+    note over VAH,arbetsgivare: Ramverkslogik
+end
 
-    note over RTF_regel_manuell: START Framework
+    VAH ->> RTF_regel_manuell: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
 
+rect rgb(70, 120, 160)
     note over RTF_regel_manuell: Hämta handläggningsinformation
     RTF_regel_manuell ->> handlaggning: GET /handlaggning/handlaggningId}
     handlaggning -->> RTF_regel_manuell: (handlaggning)
@@ -16,9 +26,9 @@ rect rgb(200, 200, 200)
     OUL -->> RTF_regel_manuell: (uppgiftId, handlaggningId, status)
 
     note over RTF_regel_manuell: Uppdatera handläggningsinformation med ny uppgiftsinformation
-
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}/
     handlaggning -->> RTF_regel_manuell: (handlaggning)
+end
 
     note over portal: Handläggare listar sina uppgifter
     portal ->> OUL: GET /uppgifter/handlaggare/{handlaggareId}
@@ -51,46 +61,41 @@ end
 
     OUL ->> RTF_regel_manuell: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftsId, status=Tilldelad)
 
+rect rgb(70, 120, 160)
     note over RTF_regel_manuell: Spara uppdaterad uppgift i handläggningsinformation
-
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}/
     handlaggning -->> RTF_regel_manuell: (handlaggning)
 
     OUL -->> portal: (operativUppgift inkl url)
+end
 
     note over portal: Tilldelad uppgift visas för handläggare
     note over portal: url renderar tilldelad uppgift
 
     portal ->> RTF_regel_manuell: GET /regel/rtf-manuell/{handlaggningId}
 
+rect rgb(70, 120, 160)
     note over RTF_regel_manuell: Hämta handläggningsinformation
-
     RTF_regel_manuell ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_manuell: (handlaggning)
 
     note over RTF_regel_manuell: Uppdatera handläggningsinformation med nytt underlag om handläggarens läsning av information
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_manuell: (handlaggning)
-
-    note over RTF_regel_manuell: END Framework
 end
 
-note over RTF_regel_manuell: START Regel (readData)
-note over RTF_regel_manuell: Hämta infon som behövs för regeln
+    note over RTF_regel_manuell: Hämta infon som behövs för regeln
+    note over RTF_regel_manuell: individId hämtas från handläggningsinformation
 
-note over RTF_regel_manuell: individId hämtas från handläggningsinformation
-
-RTF_regel_manuell ->> SID: POST /sid/status (individer)
-SID -->> RTF_regel_manuell: (skyddad identitet)
+    RTF_regel_manuell ->> SID: POST /sid/status (individer)
+    SID -->> RTF_regel_manuell: (skyddad identitet)
 
 alt skyddad identitet: false
-
     RTF_regel_manuell ->> folkbokford: GET /folkbokford/info/{personnummer}
     folkbokford -->> RTF_regel_manuell: person (namn, kön, adress ...)
 
     RTF_regel_manuell ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
     arbetsgivare -->> RTF_regel_manuell: anställningsinfo (period, orgnummer, orgnamn)
-
 
     RTF_regel_manuell -->> portal: (all info som frontend_url behöver)
 else skyddad identitet: true
@@ -99,42 +104,31 @@ else skyddad identitet: true
     RTF_regel_manuell -->> portal: denied
 end
 
-note over RTF_regel_manuell: TODO hantering av handläggare med SID-permissions ?
-note over RTF_regel_manuell: Uppdatera handläggningsinformation
-note over RTF_regel_manuell: END Regel
+    note over RTF_regel_manuell: TODO hantering av handläggare med SID-permissions ?
+    note over RTF_regel_manuell: Uppdatera handläggningsinformation
 
-rect rgb(200, 200, 200)
-
-    note over RTF_regel_manuell: START Framework
-
+rect rgb(70, 120, 160)
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_manuell: (handlaggning)
+end
 
     note over portal: Handläggare utför manuell uppgift
 
-    portal ->>  RTF_regel_manuell: PATCH /regel/rtf-manuell/{handlaggningId} (info om uppgift och resultat)
+    portal ->> RTF_regel_manuell: PATCH /regel/rtf-manuell/{handlaggningId} (info om uppgift och resultat)
 
-    note over RTF_regel_manuell: END Framework
-
-end
-
-note over RTF_regel_manuell: START Regel (updateData)
-
-note over RTF_regel_manuell: Uppdatera handläggningsinformation
-
-note over RTF_regel_manuell: END Regel
-
-rect rgb(200, 200, 200)
-
-    note over RTF_regel_manuell: START Framework
-
-    RTF_regel_manuell -->> portal: OK
-
+rect rgb(70, 120, 160)
+    note over RTF_regel_manuell: Uppdatera handläggningsinformation
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_manuell: (handlaggning)
 
+    RTF_regel_manuell -->> portal: OK
+end
+
     note over portal: Handläggare avslutar uppgift
+
     portal ->> RTF_regel_manuell: POST /regel/rtf-manuell/{handlaggningId}/done
+
+rect rgb(70, 120, 160)
     RTF_regel_manuell -->> portal: OK
     RTF_regel_manuell ->> OUL: POST /uppgifter/{uppgiftId}/close (anledning=Avslutad)
     OUL -->> RTF_regel_manuell: (status)
@@ -142,18 +136,11 @@ rect rgb(200, 200, 200)
     note over RTF_regel_manuell: Uppdatera status för uppgift som del av handläggningsinformation
     RTF_regel_manuell ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_manuell: (handlaggning)
-
-    note over RTF_regel_manuell: END Framework
-
 end
 
-note over RTF_regel_manuell: START Regel (done)
-note over RTF_regel_manuell: Eventuell cleanup som regeln kräver
-note over RTF_regel_manuell: framework-metod: sendRegelResponse(handlaggningId, Utfall=JA)
+    note over RTF_regel_manuell: Eventuell cleanup som regeln kräver
+    note over RTF_regel_manuell: sendRegelResponse(handlaggningId, Utfall=JA)
 
-rect rgb(200, 200, 200)
-    note over RTF_regel_manuell: framework sendRegelResponse skickar:
+rect rgb(70, 120, 160)
     RTF_regel_manuell ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)
 end
-
-note over RTF_regel_manuell: END Regel

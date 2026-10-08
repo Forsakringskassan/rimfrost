@@ -1,11 +1,21 @@
 sequenceDiagram
 
-VAH ->> RTF_regel_komplettering: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
+    participant VAH
+    participant RTF_regel_komplettering
+    participant handlaggning
+    participant OUL
+    participant SID
+    participant portal
+    participant folkbokford
+    participant arbetsgivare
 
-rect rgb(200, 200, 200)
+rect rgb(70, 120, 160)
+    note over VAH,arbetsgivare: Ramverkslogik
+end
 
-    note over RTF_regel_komplettering: START Framework
+    VAH ->> RTF_regel_komplettering: Kafka: RegelRequestMessage (handlaggningId, AktivitetsId)
 
+rect rgb(70, 120, 160)
     note over RTF_regel_komplettering: Hämta handläggningsinformation
     RTF_regel_komplettering ->> handlaggning: GET /handlaggning/handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
@@ -16,9 +26,9 @@ rect rgb(200, 200, 200)
     OUL -->> RTF_regel_komplettering: (uppgiftId, handlaggningId, status)
 
     note over RTF_regel_komplettering: Uppdatera handläggningsinformation med ny uppgiftsinformation
-
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}/
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
+end
 
     note over portal: Handläggare listar sina uppgifter
     portal ->> OUL: GET /uppgifter/handlaggare/{handlaggareId}
@@ -51,46 +61,41 @@ end
 
     OUL ->> RTF_regel_komplettering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftsId, status=Tilldelad)
 
+rect rgb(70, 120, 160)
     note over RTF_regel_komplettering: Spara uppdaterad uppgift i handläggningsinformation
-
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}/
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
 
     OUL -->> portal: (operativUppgift inkl url)
+end
 
     note over portal: Tilldelad uppgift visas för handläggare
     note over portal: url renderar tilldelad uppgift
 
     portal ->> RTF_regel_komplettering: GET /regel/rtf-komplettering/{handlaggningId}
 
+rect rgb(70, 120, 160)
     note over RTF_regel_komplettering: Hämta handläggningsinformation
-
     RTF_regel_komplettering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
 
     note over RTF_regel_komplettering: Uppdatera handläggningsinformation med nytt underlag om handläggarens läsning av information
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
-
-    note over RTF_regel_komplettering: END Framework
 end
 
-note over RTF_regel_komplettering: START Regel (readData)
-note over RTF_regel_komplettering: Hämta infon som behövs för regeln
+    note over RTF_regel_komplettering: Hämta infon som behövs för regeln
+    note over RTF_regel_komplettering: individId hämtas från handläggningsinformation
 
-note over RTF_regel_komplettering: individId hämtas från handläggningsinformation
-
-RTF_regel_komplettering ->> SID: POST /sid/status (individer)
-SID -->> RTF_regel_komplettering: (skyddad identitet)
+    RTF_regel_komplettering ->> SID: POST /sid/status (individer)
+    SID -->> RTF_regel_komplettering: (skyddad identitet)
 
 alt skyddad identitet: false
-
     RTF_regel_komplettering ->> folkbokford: GET /folkbokford/info/{personnummer}
     folkbokford -->> RTF_regel_komplettering: person (namn, kön, adress ...)
 
     RTF_regel_komplettering ->> arbetsgivare: GET /arbetsgivare/info/{personnummer}
     arbetsgivare -->> RTF_regel_komplettering: anställningsinfo (period, orgnummer, orgnamn)
-
 
     RTF_regel_komplettering -->> portal: (all info som frontend_url behöver)
 else skyddad identitet: true
@@ -99,42 +104,31 @@ else skyddad identitet: true
     RTF_regel_komplettering -->> portal: denied
 end
 
-note over RTF_regel_komplettering: TODO hantering av handläggare med SID-permissions ?
-note over RTF_regel_komplettering: Uppdatera handläggningsinformation
-note over RTF_regel_komplettering: END Regel
+    note over RTF_regel_komplettering: TODO hantering av handläggare med SID-permissions ?
+    note over RTF_regel_komplettering: Uppdatera handläggningsinformation
 
-rect rgb(200, 200, 200)
-
-    note over RTF_regel_komplettering: START Framework
-
+rect rgb(70, 120, 160)
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
+end
 
     note over portal: Handläggare utför manuell uppgift
 
-    portal ->>  RTF_regel_komplettering: PATCH /regel/rtf-komplettering/{handlaggningId} (info om uppgift och resultat)
+    portal ->> RTF_regel_komplettering: PATCH /regel/rtf-komplettering/{handlaggningId} (info om uppgift och resultat)
 
-    note over RTF_regel_komplettering: END Framework
-
-end
-
-note over RTF_regel_komplettering: START Regel (updateData)
-
-note over RTF_regel_komplettering: Uppdatera handläggningsinformation
-
-note over RTF_regel_komplettering: END Regel
-
-rect rgb(200, 200, 200)
-
-    note over RTF_regel_komplettering: START Framework
-
-    RTF_regel_komplettering -->> portal: OK
-
+rect rgb(70, 120, 160)
+    note over RTF_regel_komplettering: Uppdatera handläggningsinformation
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
 
+    RTF_regel_komplettering -->> portal: OK
+end
+
     note over portal: Handläggare avslutar uppgift
+
     portal ->> RTF_regel_komplettering: POST /regel/rtf-komplettering/{handlaggningId}/done
+
+rect rgb(70, 120, 160)
     RTF_regel_komplettering -->> portal: OK
     RTF_regel_komplettering ->> OUL: POST /uppgifter/{uppgiftId}/close (anledning=Avslutad)
     OUL -->> RTF_regel_komplettering: (status)
@@ -142,18 +136,11 @@ rect rgb(200, 200, 200)
     note over RTF_regel_komplettering: Uppdatera status för uppgift som del av handläggningsinformation
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
-
-    note over RTF_regel_komplettering: END Framework
-
 end
 
-note over RTF_regel_komplettering: START Regel (done)
-note over RTF_regel_komplettering: Eventuell cleanup som regeln kräver
-note over RTF_regel_komplettering: framework-metod: sendRegelResponse(handlaggningId, Utfall=JA)
+    note over RTF_regel_komplettering: Eventuell cleanup som regeln kräver
+    note over RTF_regel_komplettering: sendRegelResponse(handlaggningId, Utfall=JA)
 
-rect rgb(200, 200, 200)
-    note over RTF_regel_komplettering: framework sendRegelResponse skickar:
+rect rgb(70, 120, 160)
     RTF_regel_komplettering ->> VAH: Kafka: RegelResponseMessage (handlaggningId, utfall)
 end
-
-note over RTF_regel_komplettering: END Regel

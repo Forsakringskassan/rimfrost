@@ -7,12 +7,13 @@ sequenceDiagram
     participant OUL
     participant portal
 
+rect rgb(70, 120, 160)
+    note over Process,portal: Ramverkslogik
+end
+
     Process ->> regel_kommunicering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
 
-rect rgb(200, 200, 200)
-
-    note over regel_kommunicering: START Framework
-
+rect rgb(70, 120, 160)
     note over regel_kommunicering: Hämta handläggningsinformation
     regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
@@ -24,9 +25,6 @@ rect rgb(200, 200, 200)
     note over regel_kommunicering: Uppdatera handläggningsinformation med uppgiftsinformation
     regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
-
-    note over regel_kommunicering: END Framework
-
 end
 
     note over portal: Initierad av kundinitierad kontakt
@@ -43,16 +41,10 @@ end
 
     OUL ->> regel_kommunicering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftId, status=Tilldelad)
 
-rect rgb(200, 200, 200)
-
-    note over regel_kommunicering: START Framework
-
+rect rgb(70, 120, 160)
     note over regel_kommunicering: Spara uppdaterad uppgift i handläggningsinformation
     regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
-
-    note over regel_kommunicering: END Framework
-
 end
 
     note over portal: Tilldelad uppgift visas för handläggare
@@ -60,49 +52,76 @@ end
 
     portal ->> regel_kommunicering: GET /regel/kommunicering/{handlaggningId}
 
-rect rgb(200, 200, 200)
-
-    note over regel_kommunicering: START Framework
-
+rect rgb(70, 120, 160)
     regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
-
-    note over regel_kommunicering: END Framework
-
 end
 
-note over regel_kommunicering: START Regel (readData)
-note over regel_kommunicering: Hämta data som behövs för kommuniceringsuppgiften
-note over regel_kommunicering: END Regel
+    note over regel_kommunicering: Hämta data som behövs för kommuniceringsuppgiften
 
     regel_kommunicering -->> portal: (data för kommuniceringsuppgiften)
 
 alt Handläggare nekar bestridande
-    note over portal: Handläggare nekar bestridande och anger motivering
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=JA, motivering)
+    note over portal: Handläggare nekar bestridande och anger kommentar
+
+    portal ->> regel_kommunicering: PATCH /regel/uppgiftskommentar/{handlaggningId} (kommentar)
+
+    rect rgb(70, 120, 160)
+        note over regel_kommunicering: uppdatera handläggningsunderlag med uppgiftskommentar
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+    end
+
+    portal ->> regel_kommunicering: PATCH /regel/kommuniceringsutfall/{handlaggningId} (utfall=NekatBestridande)
+
+    rect rgb(70, 120, 160)
+        note over regel_kommunicering: utfall: Ja
+        note over regel_kommunicering: Uppdatera handläggningsinformation med regelutfall
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+        regel_kommunicering -->> portal: OK
+    end
+
 else Handläggare accepterar bestridande
-    note over portal: Handläggare accepterar bestridande
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=NEJ)
+    note over portal: Handläggare accepterar bestridande och uppdaterar regelspecifik kommuniceringsinformation
+
+    portal ->> regel_kommunicering: PATCH /regel/rtf-kommunicering/{handlaggningId} (regelspecifik kommuniceringsinformation)
+
+    rect rgb(70, 120, 160)
+        note over regel_kommunicering: uppdatera handläggningsunderlag med regelspecifik kommuniceringsinformation
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+    end
+
+    portal ->> regel_kommunicering: PATCH /regel/kommuniceringsutfall/{handlaggningId} (utfall=AccepteratBestridande)
+
+    rect rgb(70, 120, 160)
+        note over regel_kommunicering: utfall: Nej
+        note over regel_kommunicering: Uppdatera handläggningsinformation med regelutfall
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+        regel_kommunicering -->> portal: OK
+    end
+
 else Handläggare registrerar kundens godkännande
     note over portal: Kunden har hört av sig och godkänt
-    portal ->> regel_kommunicering: PATCH /regel/kommunicering/{handlaggningId} (utfall=JA)
+
+    portal ->> regel_kommunicering: PATCH /regel/kommuniceringsutfall/{handlaggningId} (utfall=KundAccepterat)
+
+    rect rgb(70, 120, 160)
+        note over regel_kommunicering: utfall: Ja
+        note over regel_kommunicering: Uppdatera handläggningsinformation med regelutfall
+        regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_kommunicering: (handlaggning)
+        regel_kommunicering -->> portal: OK
+    end
 end
 
-note over regel_kommunicering: START Regel (updateData)
-note over regel_kommunicering: Uppdatera handläggningsinformation
-note over regel_kommunicering: END Regel
-
-rect rgb(200, 200, 200)
-
-    note over regel_kommunicering: START Framework
-
-    regel_kommunicering -->> portal: OK
-
-    regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
-    handlaggning -->> regel_kommunicering: (handlaggning)
-
     note over portal: Handläggare avslutar uppgiften
+
     portal ->> regel_kommunicering: POST /regel/kommunicering/{handlaggningId}/done
+
+rect rgb(70, 120, 160)
     regel_kommunicering -->> portal: OK
 
     regel_kommunicering ->> OUL: POST /uppgifter/{uppgiftId}/end (reason=Avslutad)
@@ -110,18 +129,14 @@ rect rgb(200, 200, 200)
 
     regel_kommunicering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
-
-    note over regel_kommunicering: END Framework
-
 end
 
-note over regel_kommunicering: START Regel (done)
-note over regel_kommunicering: Eventuell cleanup
-note over regel_kommunicering: framework-metod: sendRegelResponse(handlaggningId, utfall)
+    note over regel_kommunicering: Eventuell cleanup
+    note over regel_kommunicering: sendRegelResponse(handlaggningId)
 
-rect rgb(200, 200, 200)
-    note over regel_kommunicering: framework sendRegelResponse skickar:
-    regel_kommunicering ->> Process: Kafka: RegelResponseMessage (handlaggningId, utfall=JA|NEJ)
+rect rgb(70, 120, 160)
+    regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
+    handlaggning -->> regel_kommunicering: (handlaggning)
+    note over regel_kommunicering: utfall hämtas ur handläggningsdata
+    regel_kommunicering ->> Process: Kafka: RegelResponseMessage (handlaggningId, utfall)
 end
-
-note over regel_kommunicering: END Regel
