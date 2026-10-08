@@ -53,9 +53,8 @@ end
     note over portal: Tilldelad uppgift visas för handläggare
     note over portal: url renderar kommuniceringsuppgiften
 
-    portal ->> regel_kommunicering: GET /regel/kommunicering/{handlaggningId}
-
 rect rgb(70, 120, 160)
+    portal ->> regel_kommunicering: GET /regel/kommunicering/{handlaggningId}
     regel_kommunicering ->> handlaggning: GET /handlaggning/{handlaggningId}
     handlaggning -->> regel_kommunicering: (handlaggning)
 end
@@ -93,8 +92,11 @@ rect rgb(70, 120, 160)
     handlaggning -->> regel_kommunicering: (handlaggning)
 
     regel_kommunicering -->> portal: OK
+end
 
     note over portal: Handläggare avslutar uppgiften
+
+rect rgb(70, 120, 160)
     portal ->> regel_kommunicering: POST /regel/kommunicering/{handlaggningId}/done
     regel_kommunicering -->> portal: OK
 

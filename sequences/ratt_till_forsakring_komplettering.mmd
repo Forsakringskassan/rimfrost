@@ -31,6 +31,7 @@ rect rgb(70, 120, 160)
     note over RTF_regel_komplettering: Uppdatera handläggningsinformation med ny uppgiftsinformation
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}/
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
+end
 
     note over portal: Handläggare listar sina uppgifter
     portal ->> OUL: GET /uppgifter/handlaggare/{handlaggareId}
@@ -61,6 +62,7 @@ end
 
     note over OUL: tilldela uppgift till handläggare
 
+rect rgb(70, 120, 160)
     OUL ->> RTF_regel_komplettering: Kafka: OperativtUppgiftslagerStatusMessage (uppgiftsId, status=Tilldelad)
 
     note over RTF_regel_komplettering: Spara uppdaterad uppgift i handläggningsinformation
@@ -111,8 +113,11 @@ end
 rect rgb(70, 120, 160)
     RTF_regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
+end
 
     note over portal: Handläggare utför manuell uppgift
+
+rect rgb(70, 120, 160)
     portal ->> RTF_regel_komplettering: PATCH /regel/rtf-komplettering/{handlaggningId} (info om uppgift och resultat)
 end
 
@@ -125,8 +130,11 @@ rect rgb(70, 120, 160)
     handlaggning -->> RTF_regel_komplettering: (handlaggning)
 
     RTF_regel_komplettering -->> portal: OK
+end
 
     note over portal: Handläggare avslutar uppgift
+
+rect rgb(70, 120, 160)
     portal ->> RTF_regel_komplettering: POST /regel/rtf-komplettering/{handlaggningId}/done
     RTF_regel_komplettering -->> portal: OK
     RTF_regel_komplettering ->> OUL: POST /uppgifter/{uppgiftId}/close (anledning=Avslutad)
