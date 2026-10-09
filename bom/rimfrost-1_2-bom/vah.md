@@ -8,22 +8,6 @@ This lists every `Forsakringskassan/rimfrost-*` repository that has the git tag 
 
 72 repositories publish Maven artifacts, and 7 more are tagged but publish none.
 
-## Using the BOM
-
-```xml
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>se.fk.rimfrost</groupId>
-      <artifactId>rimfrost-bom</artifactId>
-      <version>1.2</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-```
-
 ## Framework
 
 | Repository | Artifacts (groupId:artifactId) | Version | Build |

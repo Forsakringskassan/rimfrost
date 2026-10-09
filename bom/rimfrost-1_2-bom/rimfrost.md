@@ -4,22 +4,6 @@
 - **Version** links to the release tag. The poms in the repositories declare `*-SNAPSHOT`, so the version is the release tag that `rimfrost-1_2` points at. Between that release tag and `rimfrost-1_2` the only change is a changelog update.
 - `rimfrost-framework-regel-oul-asyncapi` has no `0.0.2` git tag, so its version comes from `gradle.properties`.
 
-## Using the BOM
-
-```xml
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>se.fk.rimfrost</groupId>
-      <artifactId>rimfrost-bom</artifactId>
-      <version>1.2</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-```
-
 ## Framework
 
 | Repository | Artifacts (groupId:artifactId) | Version | Build |
@@ -47,7 +31,6 @@
 
 | Repository | Artifacts (groupId:artifactId) | Version | Build |
 |---|---|---|---|
-| [rimfrost-adapter-referensdata](https://github.com/Forsakringskassan/rimfrost-adapter-referensdata/tree/rimfrost-1_2) | `se.fk.rimfrost.adapter.referensdata:rimfrost-adapter-referensdata` | [1.1.2](https://github.com/Forsakringskassan/rimfrost-adapter-referensdata/tree/1.1.2) | Maven |
 | [rimfrost-adapter-team](https://github.com/Forsakringskassan/rimfrost-adapter-team/tree/rimfrost-1_2) | `se.fk.rimfrost.adapter.team:rimfrost-adapter-team` | [0.0.1](https://github.com/Forsakringskassan/rimfrost-adapter-team/tree/0.0.1) | Maven |
 
 ## Service APIs
@@ -61,7 +44,6 @@
 | [rimfrost-service-oul-management-openapi](https://github.com/Forsakringskassan/rimfrost-service-oul-management-openapi/tree/rimfrost-1_2) | `se.fk.rimfrost.oul.management:rimfrost-service-oul-management-api-jaxrs-spec`<br>`se.fk.rimfrost.oul.management:rimfrost-service-oul-management-api-spec` | [1.4.1](https://github.com/Forsakringskassan/rimfrost-service-oul-management-openapi/tree/1.4.1) | Gradle |
 | [rimfrost-service-oul-management-regler-openapi](https://github.com/Forsakringskassan/rimfrost-service-oul-management-regler-openapi/tree/rimfrost-1_2) | `se.fk.rimfrost.oul.management.regler:rimfrost-service-oul-management-regler-api-jaxrs-spec`<br>`se.fk.rimfrost.oul.management.regler:rimfrost-service-oul-management-regler-api-spec` | [0.0.7](https://github.com/Forsakringskassan/rimfrost-service-oul-management-regler-openapi/tree/0.0.7) | Gradle |
 | [rimfrost-service-oul-openapi](https://github.com/Forsakringskassan/rimfrost-service-oul-openapi/tree/rimfrost-1_2) | `se.fk.rimfrost.oul.handlaggning:rimfrost-service-oul-openapi-jaxrs-spec`<br>`se.fk.rimfrost.oul.handlaggning:rimfrost-service-oul-openapi-spec` | [2.3.1](https://github.com/Forsakringskassan/rimfrost-service-oul-openapi/tree/2.3.1) | Gradle |
-| [rimfrost-service-referensdata-openapi](https://github.com/Forsakringskassan/rimfrost-service-referensdata-openapi/tree/rimfrost-1_2) | `se.fk.rimfrost:rimfrost-service-referensdata-openapi-jaxrs-spec`<br>`se.fk.rimfrost:rimfrost-service-referensdata-openapi-spec` | [1.1.1](https://github.com/Forsakringskassan/rimfrost-service-referensdata-openapi/tree/1.1.1) | Gradle |
 | [rimfrost-service-sid-openapi](https://github.com/Forsakringskassan/rimfrost-service-sid-openapi/tree/rimfrost-1_2) | `se.fk.rimfrost.sid:rimfrost-service-sid-api-jaxrs-spec`<br>`se.fk.rimfrost.sid:rimfrost-service-sid-api-spec` | [0.0.2](https://github.com/Forsakringskassan/rimfrost-service-sid-openapi/tree/0.0.2) | Gradle |
 | [rimfrost-service-team-openapi](https://github.com/Forsakringskassan/rimfrost-service-team-openapi/tree/rimfrost-1_2) | `se.fk.rimfrost.team:rimfrost-service-team-openapi-jaxrs-spec`<br>`se.fk.rimfrost.team:rimfrost-service-team-openapi-spec` | [0.1.1](https://github.com/Forsakringskassan/rimfrost-service-team-openapi/tree/0.1.1) | Gradle |
 | [rimfrost-service-workflow-openapi](https://github.com/Forsakringskassan/rimfrost-service-workflow-openapi/tree/rimfrost-1_2) | `se.fk.rimfrost.workflow:rimfrost-service-workflow-openapi-jaxrs-spec`<br>`se.fk.rimfrost.workflow:rimfrost-service-workflow-openapi-spec` | [0.1.2](https://github.com/Forsakringskassan/rimfrost-service-workflow-openapi/tree/0.1.2) | Gradle |
@@ -70,12 +52,8 @@
 
 | Repository | Artifacts (groupId:artifactId) | Version | Build |
 |---|---|---|---|
-| [rimfrost-service-erbjudande-topic](https://github.com/Forsakringskassan/rimfrost-service-erbjudande-topic/tree/rimfrost-1_2) | `se.fk.github.rimfrost:rimfrost-service-erbjudande-topic` | [0.1.2](https://github.com/Forsakringskassan/rimfrost-service-erbjudande-topic/tree/0.1.2) | Maven |
 | [rimfrost-service-handlaggning](https://github.com/Forsakringskassan/rimfrost-service-handlaggning/tree/rimfrost-1_2) | `se.fk.github.rimfrost:rimfrost-service-handlaggning` | [1.3.3](https://github.com/Forsakringskassan/rimfrost-service-handlaggning/tree/1.3.3) | Maven |
 | [rimfrost-service-oul](https://github.com/Forsakringskassan/rimfrost-service-oul/tree/rimfrost-1_2) | `se.fk.github.rimfrost:rimfrost-operativt-uppgiftslager` | [1.7.1](https://github.com/Forsakringskassan/rimfrost-service-oul/tree/1.7.1) | Maven |
-| [rimfrost-service-referensdata](https://github.com/Forsakringskassan/rimfrost-service-referensdata/tree/rimfrost-1_2) | `se.fk.github.rimfrost:rimfrost-service-referensdata` | [1.1.2](https://github.com/Forsakringskassan/rimfrost-service-referensdata/tree/1.1.2) | Maven |
-| [rimfrost-service-sid](https://github.com/Forsakringskassan/rimfrost-service-sid/tree/rimfrost-1_2) | `se.fk.github.rimfrost:rimfrost-service-sid` | [0.1.1](https://github.com/Forsakringskassan/rimfrost-service-sid/tree/0.1.1) | Maven |
-| [rimfrost-service-team](https://github.com/Forsakringskassan/rimfrost-service-team/tree/rimfrost-1_2) | `se.fk.github.rimfrost:rimfrost-service-team` | [0.1.0](https://github.com/Forsakringskassan/rimfrost-service-team/tree/0.1.0) | Maven |
 | [rimfrost-service-workflow](https://github.com/Forsakringskassan/rimfrost-service-workflow/tree/rimfrost-1_2) | `se.fk.github.rimfrost:rimfrost-service-workflow` | [0.2.4](https://github.com/Forsakringskassan/rimfrost-service-workflow/tree/0.2.4) | Maven |
 
 ## Process APIs and processes
@@ -104,13 +82,6 @@
 | [rimfrost-template-regel-manuell](https://github.com/Forsakringskassan/rimfrost-template-regel-manuell/tree/rimfrost-1_2) | `se.fk.rimfrost:rimfrost-template-regel-manuell` | [1.1.2](https://github.com/Forsakringskassan/rimfrost-template-regel-manuell/tree/1.1.2) | Maven |
 | [rimfrost-template-regel-maskinell](https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/tree/rimfrost-1_2) | `com.example:rimfrost-template-regel-maskinell` | [1.1.2](https://github.com/Forsakringskassan/rimfrost-template-regel-maskinell/tree/1.1.2) | Maven |
 | [rimfrost-template-regel-subprocess](https://github.com/Forsakringskassan/rimfrost-template-regel-subprocess/tree/rimfrost-1_2) | `se.fk.github.rimfrost.regel.subprocess:rimfrost-template-regel-subprocess` | [1.1.3](https://github.com/Forsakringskassan/rimfrost-template-regel-subprocess/tree/1.1.3) | Maven |
-
-## Other
-
-| Repository | Artifacts (groupId:artifactId) | Version | Build |
-|---|---|---|---|
-| [rimfrost-ersattning-data](https://github.com/Forsakringskassan/rimfrost-ersattning-data/tree/rimfrost-1_2) | `se.fk.rimfrost.ersattningdata:rimfrost-ersattning-data` | [1.0.0](https://github.com/Forsakringskassan/rimfrost-ersattning-data/tree/1.0.0) | Maven |
-| [rimfrost-referensdata-erbjudande](https://github.com/Forsakringskassan/rimfrost-referensdata-erbjudande/tree/rimfrost-1_2) | `se.fk.rimfrost.referensdata:rimfrost-referensdata-erbjudande` | [1.1.1](https://github.com/Forsakringskassan/rimfrost-referensdata-erbjudande/tree/1.1.1) | Maven |
 
 ## Tagged, but not in the Maven BOM
 
