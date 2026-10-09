@@ -89,10 +89,6 @@ These repositories have the `rimfrost-1_2` tag but publish no Maven artifact.
 
 | Repository | Version | Type |
 |---|---|---|
-| [rimfrost-kubernetes](https://github.com/Forsakringskassan/rimfrost-kubernetes/tree/rimfrost-1_2) | - | Kubernetes manifests and smoketest, no release tag |
 | [rimfrost-portal-admin-fe](https://github.com/Forsakringskassan/rimfrost-portal-admin-fe/tree/rimfrost-1_2) | [0.0.2](https://github.com/Forsakringskassan/rimfrost-portal-admin-fe/tree/0.0.2) | npm frontend |
 | [rimfrost-portal-handlaggare](https://github.com/Forsakringskassan/rimfrost-portal-handlaggare/tree/rimfrost-1_2) | [0.4.0](https://github.com/Forsakringskassan/rimfrost-portal-handlaggare/tree/0.4.0) | npm frontend |
-| [rimfrost-regel-bekraftabeslut-fe](https://github.com/Forsakringskassan/rimfrost-regel-bekraftabeslut-fe/tree/rimfrost-1_2) | [0.0.4](https://github.com/Forsakringskassan/rimfrost-regel-bekraftabeslut-fe/tree/0.0.4) | npm frontend |
-| [rimfrost-regel-rtf-manuell-fe](https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-fe/tree/rimfrost-1_2) | [0.0.4](https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-fe/tree/0.0.4) | npm frontend |
-| [rimfrost-regel-rtf-manuell-komplettering-fe](https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-komplettering-fe/tree/rimfrost-1_2) | [0.0.1](https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-komplettering-fe/tree/0.0.1) | npm frontend |
 | [rimfrost-template-micro-fe](https://github.com/Forsakringskassan/rimfrost-template-micro-fe/tree/rimfrost-1_2) | [2.0.1](https://github.com/Forsakringskassan/rimfrost-template-micro-fe/tree/2.0.1) | npm frontend |
