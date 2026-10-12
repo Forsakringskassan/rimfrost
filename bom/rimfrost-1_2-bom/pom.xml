@@ -68,13 +68,6 @@
         <version>${rimfrost-framework-bff.version}</version>
       </dependency>
       <dependency>
-        <groupId>se.fk.rimfrost.framework.bff</groupId>
-        <artifactId>rimfrost-framework-bff</artifactId>
-        <version>${rimfrost-framework-bff.version}</version>
-        <type>test-jar</type>
-        <classifier>tests</classifier>
-      </dependency>
-      <dependency>
         <groupId>se.fk.rimfrost.framework.erbjudande.topic</groupId>
         <artifactId>rimfrost-framework-erbjudande-topic-adapter</artifactId>
         <version>${rimfrost-framework-erbjudande-topic-adapter.version}</version>
@@ -120,13 +113,6 @@
         <version>${rimfrost-framework-regel-komplettering.version}</version>
       </dependency>
       <dependency>
-        <groupId>se.fk.rimfrost.framework.regel.komplettering</groupId>
-        <artifactId>rimfrost-framework-regel-komplettering</artifactId>
-        <version>${rimfrost-framework-regel-komplettering.version}</version>
-        <type>test-jar</type>
-        <classifier>tests</classifier>
-      </dependency>
-      <dependency>
         <groupId>se.fk.rimfrost.framework.regel.manuell</groupId>
         <artifactId>rimfrost-framework-regel-manuell-openapi-jaxrs-spec</artifactId>
         <version>${rimfrost-framework-regel-manuell-openapi.version}</version>
@@ -142,23 +128,9 @@
         <version>${rimfrost-framework-regel-manuell.version}</version>
       </dependency>
       <dependency>
-        <groupId>se.fk.rimfrost.framework.regel.manuell</groupId>
-        <artifactId>rimfrost-framework-regel-manuell</artifactId>
-        <version>${rimfrost-framework-regel-manuell.version}</version>
-        <type>test-jar</type>
-        <classifier>tests</classifier>
-      </dependency>
-      <dependency>
         <groupId>se.fk.rimfrost.framework.regel.maskinell</groupId>
         <artifactId>rimfrost-framework-regel-maskinell</artifactId>
         <version>${rimfrost-framework-regel-maskinell.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.rimfrost.framework.regel.maskinell</groupId>
-        <artifactId>rimfrost-framework-regel-maskinell</artifactId>
-        <version>${rimfrost-framework-regel-maskinell.version}</version>
-        <type>test-jar</type>
-        <classifier>tests</classifier>
       </dependency>
       <dependency>
         <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
@@ -181,23 +153,9 @@
         <version>${rimfrost-framework-regel-oul.version}</version>
       </dependency>
       <dependency>
-        <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
-        <artifactId>rimfrost-framework-regel-oul</artifactId>
-        <version>${rimfrost-framework-regel-oul.version}</version>
-        <type>test-jar</type>
-        <classifier>tests</classifier>
-      </dependency>
-      <dependency>
         <groupId>se.fk.rimfrost.framework.regel</groupId>
         <artifactId>rimfrost-framework-regel</artifactId>
         <version>${rimfrost-framework-regel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.rimfrost.framework.regel</groupId>
-        <artifactId>rimfrost-framework-regel</artifactId>
-        <version>${rimfrost-framework-regel.version}</version>
-        <type>test-jar</type>
-        <classifier>tests</classifier>
       </dependency>
       <dependency>
         <groupId>se.fk.rimfrost.framework.sid</groupId>
