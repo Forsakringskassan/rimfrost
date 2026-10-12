@@ -262,23 +262,6 @@
         <version>${rimfrost-service-workflow-openapi.version}</version>
       </dependency>
 
-      <!-- Services -->
-      <dependency>
-        <groupId>se.fk.github.rimfrost</groupId>
-        <artifactId>rimfrost-service-handlaggning</artifactId>
-        <version>${rimfrost-service-handlaggning.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.github.rimfrost</groupId>
-        <artifactId>rimfrost-operativt-uppgiftslager</artifactId>
-        <version>${rimfrost-service-oul.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.github.rimfrost</groupId>
-        <artifactId>rimfrost-service-workflow</artifactId>
-        <version>${rimfrost-service-workflow.version}</version>
-      </dependency>
-
       <!-- Process APIs and processes -->
       <dependency>
         <groupId>se.fk.rimfrost</groupId>
@@ -286,29 +269,7 @@
         <version>${rimfrost-process-asyncapi.version}</version>
       </dependency>
 
-      <!-- Portal -->
-      <dependency>
-        <groupId>se.fk.github</groupId>
-        <artifactId>rimfrost-portal-admin-bff</artifactId>
-        <version>${rimfrost-portal-admin-bff.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.github</groupId>
-        <artifactId>rimfrost-portal-bff</artifactId>
-        <version>${rimfrost-portal-bff.version}</version>
-      </dependency>
-
       <!-- Templates -->
-      <dependency>
-        <groupId>se.fk.github</groupId>
-        <artifactId>rimfrost-template-micro-fe-bff</artifactId>
-        <version>${rimfrost-template-micro-fe-bff.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.github.rimfrost</groupId>
-        <artifactId>rimfrost-template-process</artifactId>
-        <version>${rimfrost-template-process.version}</version>
-      </dependency>
       <dependency>
         <groupId>se.fk.rimfrost.referensdata</groupId>
         <artifactId>rimfrost-template-referensdata-erbjudande</artifactId>
@@ -323,11 +284,6 @@
         <groupId>se.fk.rimfrost.template.regel.komplettering.openapi</groupId>
         <artifactId>rimfrost-template-regel-komplettering-openapi-spec</artifactId>
         <version>${rimfrost-template-regel-komplettering-openapi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.rimfrost</groupId>
-        <artifactId>rimfrost-template-regel-komplettering</artifactId>
-        <version>${rimfrost-template-regel-komplettering.version}</version>
       </dependency>
       <dependency>
         <groupId>se.fk.rimfrost.template.regel.manuell.openapi</groupId>
