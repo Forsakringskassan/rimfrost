@@ -30,12 +30,21 @@ end
     note over portal: Initierad av kundinitierad kontakt
 
     note over portal: Handläggare söker kommuniceringsuppgifter för yrkandeindivid
-    portal ->> OUL: GET /uppgifter/individ/{idTyp}/{idVarde}?assignable=false
+    portal ->> OUL: POST /uppgifter/individ (id_typ, id_varde, statuses, assignable=false)
 
-    note over OUL: individ ej SIDad — returnerar kommuniceringsuppgifter
+rect rgb(70, 120, 160)
+    note over OUL: Filtrera uppgifter i OUL på status och assignable
+    loop för varje kandidatuppgift
+        OUL ->> handlaggning: GET /handlaggning/{handlaggningId}
+        handlaggning -->> OUL: (handlaggning inkl kundbehovsroller)
+        note over OUL: Kontrollera om individen (personnummer) har någon av de angivna yrkanderollerna
+    end
+    note over OUL: individ ej SIDad — returnerar matchande kommuniceringsuppgifter
+end
+
     OUL -->> portal: (kommuniceringsuppgifter)
 
-    note over portal: Handläggare tilldelar sig uppgiften
+    note over portal: Handläggare tilldelar sig matchande kommuniceringsuppgift
     portal ->> OUL: POST /uppgifter/{uppgiftId}/handlaggare
     OUL -->> portal: (uppgift inkl url)
 
