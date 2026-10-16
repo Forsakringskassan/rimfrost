@@ -37,7 +37,7 @@ rect rgb(70, 120, 160)
     loop för varje kandidatuppgift
         OUL ->> handlaggning: GET /handlaggning/{handlaggningId}
         handlaggning -->> OUL: (handlaggning inkl kundbehovsroller)
-        note over OUL: Kontrollera om individen (personnummer) har någon av de angivna yrkanderollerna
+        note over OUL: Kontrollera om individen har någon yrkanderoll i handläggningen
     end
     note over OUL: individ ej SIDad — returnerar matchande kommuniceringsuppgifter
 end
