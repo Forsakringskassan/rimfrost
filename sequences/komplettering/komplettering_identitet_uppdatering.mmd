@@ -1,0 +1,56 @@
+sequenceDiagram
+    title komplettering — identitet uppdaterad av extern källa
+    participant Process
+    participant regel_komplettering
+    participant handlaggning
+    participant OUL
+    participant identitet_prenumeration
+
+    rect rgb(70, 120, 160)
+        note over Process, identitet_prenumeration: Ramverkslogik
+    end
+
+    Process ->> regel_komplettering: Kafka: RegelRequestMessage (handlaggningId, aktivitetId)
+
+    rect rgb(70, 120, 160)
+        note over regel_komplettering: Hämta handläggningsinformation
+        regel_komplettering ->> handlaggning: GET /handlaggning/{handlaggningId}
+        handlaggning -->> regel_komplettering: (handlaggning)
+    end
+    note over regel_komplettering: isKompletteringRequired(handlaggning) -> JA
+    note over regel_komplettering: getPrenumerationsIdentiteter(handlaggning) -> identiteter
+
+    rect rgb(70, 120, 160)
+        regel_komplettering ->> identitet_prenumeration: POST /prenumerationer (prenumerationId=handlaggningId, identiteter, replyTo)
+        identitet_prenumeration -->> regel_komplettering: (201 Created)
+        note over regel_komplettering: Skapa kompletteringsuppgift
+        regel_komplettering ->> OUL: POST /uppgifter (handlaggningId, assignable=true, url, roll, status_topic, ...)
+        OUL -->> regel_komplettering: (uppgiftId, handlaggningId, status)
+        note over regel_komplettering: Uppdatera handläggningsinformation med uppgiftsinformation
+        regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_komplettering: (handlaggning)
+    end
+
+    identitet_prenumeration ->> regel_komplettering: Kafka: IdentitetUppdateradEvent (prenumerationId=handlaggningId)
+    rect rgb(70, 120, 160)
+        note over regel_komplettering: Hämta handläggningsinformation
+        regel_komplettering ->> handlaggning: GET /handlaggning/{handlaggningId}
+        handlaggning -->> regel_komplettering: (handlaggning)
+    end
+    note over regel_komplettering: isKompletteringRequired(handlaggning) -> NEJ
+
+    rect rgb(70, 120, 160)
+        regel_komplettering ->> OUL: POST /uppgifter/{uppgiftId}/end (reason=Avslutad)
+        OUL -->> regel_komplettering: (status)
+        regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
+        handlaggning -->> regel_komplettering: (handlaggning)
+    end
+    rect rgb(70, 120, 160)
+        regel_komplettering ->> identitet_prenumeration: DELETE /prenumerationer/{prenumerationId=handlaggningId}
+        identitet_prenumeration -->> regel_komplettering: (204 No Content)
+    end
+    regel_komplettering ->> Process: Kafka: RegelResponseMessage (handlaggningId, Utfall.JA)
+
+
+
+
