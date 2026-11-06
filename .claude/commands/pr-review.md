@@ -61,6 +61,7 @@ If the user chooses 1:
 - Write the file with:
   - A heading `# Review findings — <TICKET-ID> (PR #<pr-number>)`
   - A **Blockers** section (🔴 items) and a **Issues** section (🟡 items) and a **Minor** section (🟢 items), omitting empty sections
+  - A **Pre-existing issues (not introduced by this PR)** section for any findings that predate this branch — always keep these separate from findings introduced by the PR
   - All findings numbered sequentially (1, 2, 3…) across all sections
   - Each finding as `N. **Title** — description`
 - Report the file path written.
