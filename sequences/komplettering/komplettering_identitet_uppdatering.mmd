@@ -24,7 +24,7 @@ sequenceDiagram
         regel_komplettering ->> identitet_prenumeration: POST /prenumerationer (prenumerationId=handlaggningId, identiteter, replyTo)
         identitet_prenumeration -->> regel_komplettering: (201 Created)
         note over regel_komplettering: Skapa kompletteringsuppgift
-        regel_komplettering ->> OUL: POST /uppgifter (handlaggningId, assignable=true, url, roll, status_topic, ...)
+        regel_komplettering ->> OUL: POST /uppgifter (handlaggningId, assignable=false, url, roll, status_topic, ...)
         OUL -->> regel_komplettering: (uppgiftId, handlaggningId, status)
         note over regel_komplettering: Uppdatera handläggningsinformation med uppgiftsinformation
         regel_komplettering ->> handlaggning: PUT /handlaggning/{handlaggningId}
