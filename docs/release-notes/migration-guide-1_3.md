@@ -24,6 +24,12 @@ sendResponse(handlaggningId, cloudEventData, errorInformation);
 
 **Testhjälpklasser**: `RegelKafkaConnector.sendRegelRequest()` och `RegelTestData.newRegelRequestMessagePayload()` tar inte längre emot något `replyTo`-argument.
 
+**Kafka consumer group ID**: utan `replyTo` identifierar varje process och subprocess sig via ett unikt consumer group ID. Varje process och subprocess behöver en explicit `group.id` i `application.properties`, annars riskerar flera tjänster att konsumera varandras meddelanden från det delade topic:t:
+
+```properties
+mp.messaging.incoming.vah-handlaggning-requests.group.id=vah-handlaggning-requests-consumer
+```
+
 ### 2. Kafka-svar från regler kastar nu exception vid fel (`rimfrost-framework-regel` 1.6.1)
 
 Publicering av regelsvar använde tidigare fire-and-forget. Nu **väntar ramverket på kvittens från Kafka** och kastar `RegelResponseException` vid fel. Detta garanterar leverans men kräver att anroparen hanterar exceptionet.
@@ -271,6 +277,23 @@ Regelimplementationen påverkas inte — `readSvarData()` implementeras på samm
 
 ---
 
+## Driftsättning: databas per process
+
+*Detta är inte nytt i 1.3, men värt att dokumentera eftersom integrationsmiljön (`rimfrost-kubernetes`) nu konfigurerar det explicit.*
+
+Kogito använder JDBC-persistens mot PostgreSQL och hanterar sitt eget databasschema via KIE Flyway vid uppstart. Varje process måste därför ha ett eget isolerat schema — antingen en dedikerad databas, eller ett unikt PostgreSQL-schema inom en delad databas.
+
+I integrationsmiljön delar VAH och VAB en gemensam databas men separeras via `currentSchema` i JDBC-URL:en:
+
+```
+jdbc:postgresql://host:5432/rimfrost-test?currentSchema=vah
+jdbc:postgresql://host:5432/rimfrost-test?currentSchema=vab
+```
+
+Utan isolation riskerar Kogitos Flyway-migrationer att krocka mellan processer.
+
+---
+
 ## Checklista för migrering
 
 ### Regelimplementationer
@@ -286,6 +309,7 @@ Regelimplementationen påverkas inte — `readSvarData()` implementeras på samm
 
 ### Processimplementationer
 
+- [ ] Lägg till `group.id` för incoming handlaggning-requests-konsumenten i `application.properties` (gäller även subprocesser)
 - [ ] Uppdatera alla anrop till `RegelService.createRegelRequest()` — ta bort det tredje argumentet
 - [ ] Lägg valfritt till `processvy.url` i `application.properties` för att aktivera processvyn
 - [ ] Lägg valfritt till `processbeskrivning.json` för att aktivera processvy-endpoint:en
