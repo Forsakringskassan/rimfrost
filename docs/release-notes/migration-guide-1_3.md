@@ -85,15 +85,26 @@ Metoderna i `RegelUtils` (`createSakfragaStallningstagande()`, `mergeSakfragorSt
 
 Processvyn ger handläggaren en livebild av var i ett flöde ett ärende befinner sig. I stället för att behöva tolka råa BPMN-tillstånd ser handläggaren en namngiven, ordnad lista med steg — med tydlig markering för vilket steg som pågår, vilka som är klara och vilka som återstår. Detta visas i handläggarportalen genom att portalen anropar processens `/processvy/steg`-endpoint med aktuellt BPMN-aktivitets-ID.
 
-Processer kan nu exponera en processvy-endpoint. Två saker krävs:
+Det är viktigt att skilja på de två delarna:
 
-**1. Ange URL:en i `application.properties`:**
+- **`processvy.url`** är *inte* det som exponerar endpoint:en. Det är URL:en som skickas med i regelanrop och vidare till OUL-uppgiften, så att portalen vet att uppgiften har en processvy och vilken mikrofrontend som ska laddas.
+- **`processbeskrivning.json`** är det som styr endpoint:en `GET /processvy/steg` — ramverket exponerar den alltid, men returnerar `404` om filen saknas.
+
+Flödet i portalen ser ut så här:
+1. Portalen läser `processvyUrl` (t.ex. `/process/vah`) från OUL-uppgiften
+2. Portalen tar sista ledet (`vah`) och laddar `process-vah-fe` som mikrofrontend
+3. Mikrofrontenden anropar `process-vah-bff GET /api/steg?aktivitetId=…`
+4. BFF:en anropar processens `GET /processvy/steg?aktivitetId=…`
+
+Två saker krävs för att aktivera processvyn:
+
+**1. Ange URL:en i `application.properties`** (signalerar till portalen att uppgiften har en processvy):
 
 ```properties
 processvy.url=/process/vah
 ```
 
-**2. Skapa `src/main/resources/processbeskrivning.json`** (valfritt men nödvändigt för att endpoint:en ska returnera data).
+**2. Skapa `src/main/resources/processbeskrivning.json`** (aktiverar endpoint:en med faktisk steginformation).
 
 Exempel med tre steg, där ett steg täcker två BPMN-aktiviteter:
 
