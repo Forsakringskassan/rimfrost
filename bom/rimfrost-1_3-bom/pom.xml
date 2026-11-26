@@ -45,7 +45,6 @@
     <rimfrost-service-handlaggning-asyncapi.version>1.0.0</rimfrost-service-handlaggning-asyncapi.version>
     <rimfrost-service-handlaggning-openapi.version>2.1.1</rimfrost-service-handlaggning-openapi.version>
     <rimfrost-service-identitet-prenumeration-openapi.version>0.0.1</rimfrost-service-identitet-prenumeration-openapi.version>
-    <rimfrost-service-identitet-prenumeration-test-openapi.version>0.0.2</rimfrost-service-identitet-prenumeration-test-openapi.version>
     <rimfrost-service-identity-openapi.version>0.0.1</rimfrost-service-identity-openapi.version>
     <rimfrost-service-informationsaccess-asyncapi.version>0.2.0</rimfrost-service-informationsaccess-asyncapi.version>
     <rimfrost-service-oul-asyncapi.version>1.1.4</rimfrost-service-oul-asyncapi.version>
@@ -269,16 +268,6 @@
         <groupId>se.fk.rimfrost.service.identitet.prenumeration</groupId>
         <artifactId>rimfrost-service-identitet-prenumeration-openapi-spec</artifactId>
         <version>${rimfrost-service-identitet-prenumeration-openapi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.rimfrost.service.identitet.prenumeration.test</groupId>
-        <artifactId>rimfrost-service-identitet-prenumeration-test-openapi-jaxrs-spec</artifactId>
-        <version>${rimfrost-service-identitet-prenumeration-test-openapi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>se.fk.rimfrost.service.identitet.prenumeration.test</groupId>
-        <artifactId>rimfrost-service-identitet-prenumeration-test-openapi-spec</artifactId>
-        <version>${rimfrost-service-identitet-prenumeration-test-openapi.version}</version>
       </dependency>
       <dependency>
         <groupId>se.fk.rimfrost.identity</groupId>
