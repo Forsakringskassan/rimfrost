@@ -2,7 +2,6 @@
 
 - **Repository** links to the repository at the `rimfrost-1_3` tag.
 - **Version** links to the release tag. The poms in the repositories declare `*-SNAPSHOT`, so the version is the latest release tag before `rimfrost-1_3`. In most repositories the only change between that release tag and `rimfrost-1_3` is a changelog update.
-- `rimfrost-service-handlaggning-asyncapi` was re-released as `0.0.0` after `1.0.0`, with no change to `asyncapi.yaml`. This BOM uses `1.0.0`.
 - `rimfrost-service-sid-openapi` renamed its artifacts from `rimfrost-service-sid-api-*` to `rimfrost-service-sid-openapi-*`.
 
 ## Framework
