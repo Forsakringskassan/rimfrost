@@ -27,7 +27,7 @@ sendResponse(handlaggningId, cloudEventData, errorInformation);
 **Kafka consumer group ID**: utan `replyTo` identifierar varje process och subprocess sig via ett unikt consumer group ID. Varje process och subprocess behöver en explicit `group.id` i `application.properties`, annars riskerar flera tjänster att konsumera varandras meddelanden från det delade topic:
 
 ```properties
-mp.messaging.incoming.vah-handlaggning-requests.group.id=vah-handlaggning-requests-consumer
+mp.messaging.incoming.vah-handlaggning-requests.group.id=${PROCESS_ID}-handlaggning-requests-consumer
 ```
 
 ### 2. Kafka-svar från regler kastar nu exception vid fel (`rimfrost-framework-regel` 1.6.1)
