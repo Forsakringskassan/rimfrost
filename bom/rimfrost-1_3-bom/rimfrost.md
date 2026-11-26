@@ -1,7 +1,6 @@
 # Rimfrost release rimfrost-1_3: bill of materials
 
 - **Repository** links to the repository at the `rimfrost-1_3` tag.
-- **Version** links to the release tag. The poms in the repositories declare `*-SNAPSHOT`, so the version is the latest release tag before `rimfrost-1_3`. In most repositories the only change between that release tag and `rimfrost-1_3` is a changelog update.
 - `rimfrost-service-sid-openapi` renamed its artifacts from `rimfrost-service-sid-api-*` to `rimfrost-service-sid-openapi-*`.
 
 ## Framework

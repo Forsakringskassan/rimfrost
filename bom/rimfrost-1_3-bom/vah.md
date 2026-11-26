@@ -3,10 +3,7 @@
 This lists every public `Forsakringskassan/rimfrost-*` repository that has the git tag `rimfrost-1_3`, with the artifacts it publishes and their versions.
 
 - **Repository** links to the repository at the `rimfrost-1_3` tag.
-- **Version** links to the release tag. The poms in the repositories declare `*-SNAPSHOT`, so the version is the latest release tag before `rimfrost-1_3`. In most repositories the only change between that release tag and `rimfrost-1_3` is a changelog update.
 - `rimfrost-service-sid-openapi` renamed its artifacts from `rimfrost-service-sid-api-*` to `rimfrost-service-sid-openapi-*`.
-
-101 repositories publish Maven artifacts, and 9 more are tagged but publish none.
 
 ## Framework
 
@@ -170,63 +167,8 @@ These repositories have the `rimfrost-1_3` tag but publish no Maven artifact.
 | [rimfrost-regel-rtf-manuell-komplettering-fe](https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-komplettering-fe/tree/rimfrost-1_3) | [0.0.3](https://github.com/Forsakringskassan/rimfrost-regel-rtf-manuell-komplettering-fe/tree/0.0.3) | npm frontend |
 | [rimfrost-template-micro-fe](https://github.com/Forsakringskassan/rimfrost-template-micro-fe/tree/rimfrost-1_3) | [2.1.0](https://github.com/Forsakringskassan/rimfrost-template-micro-fe/tree/2.1.0) | npm frontend |
 
-## Unreleased commits at `rimfrost-1_3`
-
-In these repositories `rimfrost-1_3` is more than one commit after the release tag. The extra commits are not in the released artifact. Except for a docs change in `rimfrost-framework-process`, they are Renovate dependency and CI updates.
-
-- `rimfrost-adapter-identity`: 1 commit after `0.0.2`
-- `rimfrost-adapter-permissions`: 1 commit after `0.0.4`
-- `rimfrost-framework-identitet-prenumeration-adapter`: 1 commit after `0.0.2`
-- `rimfrost-framework-oul`: 1 commit after `1.1.6`
-- `rimfrost-framework-process`: 2 commits after `2.1.1`
-- `rimfrost-framework-process-openapi`: 2 commits after `1.1.0`
-- `rimfrost-framework-referensdata-interface`: 2 commits after `1.1.1`
-- `rimfrost-framework-regel-asyncapi`: 1 commit after `1.2.3`
-- `rimfrost-framework-regel-kommuniceringsutfall-openapi`: 4 commits after `0.0.1`
-- `rimfrost-framework-regel-oul-openapi`: 3 commits after `0.0.4`
-- `rimfrost-identitet-uppdaterad-asyncapi`: 1 commit after `0.0.4`
-- `rimfrost-process-asyncapi`: 1 commit after `1.2.4`
-- `rimfrost-process-vah-fe`: 2 commits after `0.0.1`
-- `rimfrost-regel-bekraftabeslut-openapi`: 5 commits after `1.1.3`
-- `rimfrost-regel-kommunicering-openapi`: 3 commits after `0.1.0`
-- `rimfrost-regel-rtf-manuell-asyncapi`: 1 commit after `0.3.3`
-- `rimfrost-regel-rtf-manuell-komplettering-openapi`: 4 commits after `0.0.2`
-- `rimfrost-regel-rtf-manuell-openapi`: 2 commits after `1.2.2`
-- `rimfrost-service-arbetsgivare-openapi`: 3 commits after `2.0.3`
-- `rimfrost-service-erbjudande-topic`: 1 commit after `0.1.3`
-- `rimfrost-service-erbjudande-topic-openapi`: 4 commits after `0.0.3`
-- `rimfrost-service-folkbokforing-openapi`: 3 commits after `2.0.3`
-- `rimfrost-service-handlaggning`: 1 commit after `1.3.5`
-- `rimfrost-service-handlaggning-openapi`: 4 commits after `2.1.1`
-- `rimfrost-service-identitet-prenumeration-openapi`: 1 commit after `0.0.1`
-- `rimfrost-service-identitet-prenumeration-test-openapi`: 2 commits after `0.0.2`
-- `rimfrost-service-identity`: 1 commit after `0.0.1`
-- `rimfrost-service-identity-openapi`: 5 commits after `0.0.1`
-- `rimfrost-service-informationsaccess-asyncapi`: 2 commits after `0.2.0`
-- `rimfrost-service-oul-asyncapi`: 1 commit after `1.1.4`
-- `rimfrost-service-oul-management-openapi`: 3 commits after `1.4.2`
-- `rimfrost-service-oul-openapi`: 2 commits after `2.4.1`
-- `rimfrost-service-permissions-openapi`: 4 commits after `0.0.2`
-- `rimfrost-service-referensdata-openapi`: 5 commits after `1.1.2`
-- `rimfrost-service-sid`: 1 commit after `0.1.3`
-- `rimfrost-service-sid-openapi`: 1 commit after `0.0.5`
-- `rimfrost-service-team`: 1 commit after `0.1.3`
-- `rimfrost-service-team-openapi`: 5 commits after `0.1.3`
-- `rimfrost-template-regel-komplettering-openapi`: 4 commits after `0.0.3`
-
 ## Dropped since rimfrost-1_2
 
 These repositories had the `rimfrost-1_2` tag but have no `rimfrost-1_3` tag:
 
 - `rimfrost-framework-regel-manuell-openapi`
-- `rimfrost-kubernetes`
-
-## Not checked
-
-These repositories are not public, so their tags were not checked for `rimfrost-1_3`:
-
-- `rimfrost-framework-kundbehovsflode-adapter`
-- `rimfrost-process-vah-asyncapi`
-- `rimfrost-service-kundbehovsflode-openapi`
-- `rimfrost-template-second-subprocess`
-- `rimfrost-template-subprocess`
