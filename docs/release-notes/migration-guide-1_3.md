@@ -57,9 +57,19 @@ createRegelRequest(handlaggningId, aktivitetId, "mp.messaging.outgoing.regel-res
 createRegelRequest(handlaggningId, aktivitetId);
 ```
 
-### 4. Komplettering GET-svar: nytt svarsformat (`rimfrost-framework-regel-komplettering`)
+### 4. GET-svar: nytt svarsformat med informationsaccess
 
-`GET /{handlaggningId}` returnerar nu `RegelKompletteringReadResponse<T>` i stället för enbart `T`. Se avsnittet [Informationsaccess i komplettering GET-svar](#informationsaccess-i-komplettering-get-svar) för detaljer. Regelimplementationen påverkas inte — enbart BFF:er som anropar endpoint:en behöver uppdateras.
+Gäller alla regelramverk med REST-gränssnitt mot handläggarportalen: `rimfrost-framework-regel-komplettering`, `rimfrost-framework-regel-manuell` och `rimfrost-framework-regel-kommunicering`.
+
+`GET /{handlaggningId}` returnerar nu ett insvept svar med ett `informationsaccess`-fält i stället för enbart regeldata (`T`):
+
+| Ramverk | Ny svarstyp |
+|---------|------------|
+| komplettering | `RegelKompletteringReadResponse<T>` |
+| manuell | `RegelManuellReadResponse<T>` |
+| kommunicering | `RegelKommuniceringReadResponse<T>` |
+
+Regelimplementationen påverkas inte — enbart BFF:er som anropar endpoint:en behöver uppdateras. Se avsnittet *Informationsaccess i komplettering GET-svar* för detaljer om svarsformatet.
 
 ### 5. `SakfragaStallningstagande` omdöpt till `SakfragaStallningstagandeContainer` (`rimfrost-framework-regel` 1.6.0)
 
@@ -314,9 +324,9 @@ Utan isolation riskerar Kogitos Flyway-migrationer att krocka mellan processer.
 - [ ] Byt ut `SakfragaStallningstagande` mot `SakfragaStallningstagandeContainer` i imports och typreferenser
 - [ ] Läs valfritt `RegelDataRequest.processvyUrl()` om processens URL behövs
 
-### BFF:er mot kompletteringsregler
+### BFF:er mot komplettering, manuell och kommunicering
 
-- [ ] Uppdatera parsning av `GET /{handlaggningId}` — svaret är nu insvept i `RegelKompletteringReadResponse<T>`, se avsnittet *Informationsaccess i komplettering GET-svar*
+- [ ] Uppdatera parsning av `GET /{handlaggningId}` — svaret är nu insvept i `Regel*ReadResponse<T>`, se Breaking change 4 och avsnittet *Informationsaccess i komplettering GET-svar*
 
 ### Processimplementationer
 
