@@ -24,7 +24,7 @@ sendResponse(handlaggningId, cloudEventData, errorInformation);
 
 **Testhjälpklasser**: `RegelKafkaConnector.sendRegelRequest()` och `RegelTestData.newRegelRequestMessagePayload()` tar inte längre emot något `replyTo`-argument.
 
-**Kafka consumer group ID**: utan `replyTo` identifierar varje process och subprocess sig via ett unikt consumer group ID. Varje process och subprocess behöver en explicit `group.id` i `application.properties`, annars riskerar flera tjänster att konsumera varandras meddelanden från det delade topic:t:
+**Kafka consumer group ID**: utan `replyTo` identifierar varje process och subprocess sig via ett unikt consumer group ID. Varje process och subprocess behöver en explicit `group.id` i `application.properties`, annars riskerar flera tjänster att konsumera varandras meddelanden från det delade topic:
 
 ```properties
 mp.messaging.incoming.vah-handlaggning-requests.group.id=vah-handlaggning-requests-consumer
